@@ -1,0 +1,24 @@
+package com.example.travelbuddyv2;
+
+import java.util.List;
+
+public class tripSection {
+
+    String date;
+    List<tripModel> tripList;
+
+    public tripSection(String date, List<tripModel> tripList) {
+        this.date = date;
+        this.tripList = tripList;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public List<tripModel> getTripList() {
+        return tripList;
+    }
+}
+
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="16dp"
+    style="@style/Theme.AppCompat.Dialog">
+
+
+    <EditText
+        android:id="@+id/etDestination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Destination"
+        android:inputType="text"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
+        tools:text="@tools:sample/cities" />
+
+    <EditText
+        android:id="@+id/Timepicker1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDestination"
+        android:layout_alignLeft="@+id/etDestination"
+        android:hint="Start time"
+        android:imeOptions="actionDone"
+        android:textAlignment="textStart"
+        android:textSize="16dp"
+        tools:text="@tools:sample/cities" />
+
+    <EditText
+        android:id="@+id/Timepicker2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDestination"
+        android:layout_alignRight="@+id/etDestination"
+        android:hint="End Time"
+        android:imeOptions="actionDone"
+        android:textAlignment="textEnd"
+        android:textSize="16dp"
+        tools:text="@tools:sample/cities" />
+
+
+    <EditText
+        android:id="@+id/currentDatePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Timepicker1"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="50dp"
+        android:hint="Date"
+        android:imeOptions="actionDone"
+        android:textAlignment="center"
+        tools:text="@tools:sample/date/ddmmyy" />
+
+    <Button
+        android:id="@+id/btnSubmitEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/currentDatePicker"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="80dp"
+        android:hint="Done"/>
+
+
+</RelativeLayout>
