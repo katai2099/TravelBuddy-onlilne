@@ -134,7 +134,9 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
         databaseHelper.DeleteTripDetail(id);
         //Item is not remove from list; !!!! Fix here , it need to be removed from the list
-       rcvTripDetail.setAdapter(mainrecycler);
+        deleteTripDetailFromList(id);
+        mainrecycler.notifyDataSetChanged();
+       //rcvTripDetail.setAdapter(mainrecycler);
     }
 
     @Override
@@ -148,7 +150,7 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
 
     }
 
-    
+
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -161,5 +163,21 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         }
     };
 
+    public void deleteTripDetailFromList(int id){
+        for(int i=0;i<sectionList.size();i++)
+        {
+            for(int j=0;j<sectionList.get(i).getTripList().size();j++)
+            {
+                if(id==sectionList.get(i).getTripList().get(j).getId())
+                    sectionList.get(i).getTripList().remove(j);
+            }
+        }
+    }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 }
