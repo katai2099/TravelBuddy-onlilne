@@ -1,6 +1,8 @@
 package com.example.travelbuddyv2;
 
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -9,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.sql.SQLOutput;
 import java.util.List;
 
 public class childRecyclerAdapter extends RecyclerView.Adapter<childRecyclerAdapter.ViewHolder> {
@@ -35,14 +38,20 @@ public class childRecyclerAdapter extends RecyclerView.Adapter<childRecyclerAdap
                 @Override
                 public void onClick(View v) {
                     //System.out.println(getAdapterPosition());
-                  childAdapterListener.onItemClicked(list.get(getAdapterPosition()).getId());
+                //  childAdapterListener.onItemClicked(list.get(getAdapterPosition()).getId());
+                }
+            });
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    childAdapterListener.onItemClicked(list.get(getAdapterPosition()).getId());
+                   // System.out.println(list.get(getAdapterPosition()).getId());
+                    return false;
                 }
             });
 
 
         }
-
-
 
     }
 

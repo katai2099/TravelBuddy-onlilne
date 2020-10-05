@@ -30,6 +30,7 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
     int tmpID;
     RecyclerView rcvTripDetail;
     List<tripSection> sectionList = new ArrayList<>();
+    mainRecyclerAdapter mainrecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +46,11 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
 //        System.out.println(sectionList.get(0).getTripList().get(0).toString());
         rcvTripDetail = findViewById(R.id.rcvTripDetailList);
         rcvTripDetail.setLayoutManager(new LinearLayoutManager(this));
-        mainRecyclerAdapter mainrecycler = new mainRecyclerAdapter(sectionList,this,this);
+        mainrecycler = new mainRecyclerAdapter(sectionList,this,this);
         rcvTripDetail.setAdapter(mainrecycler);
 
-
+       // ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        //itemTouchHelper.attachToRecyclerView(mainRecyclerAdapter.ViewHolder.childRecyclerView);
 
         fabEditInformation = findViewById(R.id.addNewTripDetail);
         fabEditInformation.setOnClickListener(new View.OnClickListener() {
@@ -124,15 +126,29 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
 
     @Override
     public void onTitleClicked(int position) {
-        Toast.makeText(this,new StringBuilder().append(position).toString(),Toast.LENGTH_SHORT).show();
-        System.out.println(position);
+        Toast.makeText(this,new StringBuilder().append(position).append(" Parent Clicked").toString(),Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void deleteClickedTripDetail(int id) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        databaseHelper.DeleteTripDetail(id);
+        //Item is not remove from list; !!!! Fix here , it need to be removed from the list
+       rcvTripDetail.setAdapter(mainrecycler);
     }
 
     @Override
     public void onItemClicked(int position) {
-        Toast.makeText(this,new StringBuilder().append(position).toString(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,new StringBuilder().append(position).append(" Child Clicked").toString(),Toast.LENGTH_SHORT).show();
+      //  DatabaseHelper databaseHelper = new DatabaseHelper(this);
+       // databaseHelper.DeleteTripDetail(position);
+
+        //we do this so we can get reference of listID in childView recyCler view
+        mainrecycler.tmp_id_from_child = position;
+
     }
-    /*
+
+    
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -143,7 +159,7 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             Toast.makeText(tripDetail.this,"You have swipe " + new StringBuilder().append(viewHolder.getAdapterPosition()).toString(),Toast.LENGTH_SHORT).show();
         }
-    }; */
+    };
 
 
 }

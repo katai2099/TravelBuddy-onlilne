@@ -11,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapter.ViewHolder> {
+public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapter.ViewHolder>  {
 
+    int tmp_id_from_child;
     List<tripSection> list;
     mainAdapterListener mainAdapterListener;
     childRecyclerAdapter.ChildAdapterListener childAdapterListener;
@@ -23,12 +24,12 @@ public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapte
         this.childAdapterListener = childAdapterListener;
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView sectionTextview;
         RecyclerView childRecyclerView;
         mainAdapterListener mainAdapterListener;
-        //childRecyclerAdapter.ChildAdapterListener childAdapterListener;
 
         public ViewHolder(@NonNull View itemView, final mainAdapterListener mainAdapterListener) {
             super(itemView);
@@ -41,10 +42,12 @@ public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapte
                 }
             });
 
-            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+
+           ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
             itemTouchHelper.attachToRecyclerView(childRecyclerView);
 
         }
+
     }
     @NonNull
     @Override
@@ -61,11 +64,8 @@ public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapte
         tripSection section = list.get(position);
         String date = section.getDate();
         List<tripModel> trips = section.getTripList();
-
         holder.sectionTextview.setText(date);
-
         childRecyclerAdapter childrecyclerAdapter = new childRecyclerAdapter(trips,childAdapterListener);
-
         holder.childRecyclerView.setAdapter(childrecyclerAdapter);
 
     }
@@ -77,9 +77,10 @@ public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapte
 
     public interface mainAdapterListener{
         public void onTitleClicked(int position);
+        public void deleteClickedTripDetail(int id);
     }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
+     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
@@ -87,9 +88,13 @@ public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapte
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            System.out.println(viewHolder.getAdapterPosition());
+
+         //  mainAdapterListener.k(viewHolder.getAdapterPosition());
+          //System.out.println(tmp_id_from_child);
+            mainAdapterListener.deleteClickedTripDetail(tmp_id_from_child);
         }
     };
+
 
 
 }
