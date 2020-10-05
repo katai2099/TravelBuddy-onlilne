@@ -58,11 +58,22 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            Toast.makeText(myTrip.this,"You have swipe",Toast.LENGTH_SHORT).show();
-            myTripadapter.notifyDataSetChanged();
+            Toast.makeText(myTrip.this,"You have swipe " + new StringBuilder().append(viewHolder.getAdapterPosition()).toString(),Toast.LENGTH_SHORT).show();
+           // viewHolder.getAdapterPosition();
+         //   databaseHelper = new DatabaseHelper(myTrip.this);
+         //   databaseHelper.DeleteTrip(list.get(viewHolder.getAdapterPosition()).getId());
+         //   updateList(list);
+          //  myTripadapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+          //  myTripadapter.notifyItemRangeChanged(viewHolder.getAdapterPosition(), list.size());
+           // myTripadapter.notifyDataSetChanged();
+
         }
-
-
     };
+
+    public void updateList(List<tripModel>list)
+    {
+        databaseHelper = new DatabaseHelper(myTrip.this);
+        list = databaseHelper.getTripList();
+    }
 
 }

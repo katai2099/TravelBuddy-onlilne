@@ -162,5 +162,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public void DeleteTrip(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String QueryString1 = "DELETE FROM TRIP WHERE ID = " + id ;
+        String QueryString2 = "DELETE FROM TRIP_DETAIL WHERE ID = " +id;
+        db.execSQL(QueryString1);
+        db.execSQL(QueryString2);
+    }
+
 
 }

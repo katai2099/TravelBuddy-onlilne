@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -13,20 +14,36 @@ import java.util.List;
 public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapter.ViewHolder> {
 
     List<tripSection> list;
+    mainAdapterListener mainAdapterListener;
+    childRecyclerAdapter.ChildAdapterListener childAdapterListener;
 
-    public mainRecyclerAdapter(List<tripSection> list) {
+    public mainRecyclerAdapter(List<tripSection> list, mainAdapterListener mainAdapterListener, childRecyclerAdapter.ChildAdapterListener childAdapterListener) {
         this.list = list;
+        this.mainAdapterListener = mainAdapterListener;
+        this.childAdapterListener = childAdapterListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView sectionTextview;
         RecyclerView childRecyclerView;
+        mainAdapterListener mainAdapterListener;
+        //childRecyclerAdapter.ChildAdapterListener childAdapterListener;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, final mainAdapterListener mainAdapterListener) {
             super(itemView);
             sectionTextview = itemView.findViewById(R.id.sectionNameTextView);
             childRecyclerView = itemView.findViewById(R.id.childRecyclerView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainAdapterListener.onTitleClicked(getAdapterPosition());
+                }
+            });
+
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+            itemTouchHelper.attachToRecyclerView(childRecyclerView);
+
         }
     }
     @NonNull
@@ -35,7 +52,7 @@ public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapte
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.section_row,parent,false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view,mainAdapterListener);
     }
 
     @Override
@@ -47,7 +64,7 @@ public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapte
 
         holder.sectionTextview.setText(date);
 
-        childRecyclerAdapter childrecyclerAdapter = new childRecyclerAdapter(trips);
+        childRecyclerAdapter childrecyclerAdapter = new childRecyclerAdapter(trips,childAdapterListener);
 
         holder.childRecyclerView.setAdapter(childrecyclerAdapter);
 
@@ -57,6 +74,22 @@ public class mainRecyclerAdapter extends RecyclerView.Adapter<mainRecyclerAdapte
     public int getItemCount() {
         return list.size();
     }
+
+    public interface mainAdapterListener{
+        public void onTitleClicked(int position);
+    }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            System.out.println(viewHolder.getAdapterPosition());
+        }
+    };
 
 
 }

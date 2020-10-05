@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -13,25 +14,31 @@ import java.util.List;
 public class childRecyclerAdapter extends RecyclerView.Adapter<childRecyclerAdapter.ViewHolder> {
 
     List<tripModel> list;
+    ChildAdapterListener childAdapterListener;
 
-    public childRecyclerAdapter(List<tripModel> list) {
+    public childRecyclerAdapter(List<tripModel> list,ChildAdapterListener childAdapterListener) {
         this.list = list;
+        this.childAdapterListener = childAdapterListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView itemTextView;
+        ChildAdapterListener childAdapterListener;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView,final ChildAdapterListener childAdapterListener) {
             super(itemView);
             itemTextView =itemView.findViewById(R.id.itemTextView);
+            this.childAdapterListener = childAdapterListener;
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println(getAdapterPosition());
+                    //System.out.println(getAdapterPosition());
+                  childAdapterListener.onItemClicked(list.get(getAdapterPosition()).getId());
                 }
             });
+
 
         }
 
@@ -46,7 +53,7 @@ public class childRecyclerAdapter extends RecyclerView.Adapter<childRecyclerAdap
        // View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mytripview,parent,false);
         View view = layoutInflater.inflate(R.layout.item_row,parent,false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view,childAdapterListener);
     }
 
     @Override
@@ -59,5 +66,10 @@ public class childRecyclerAdapter extends RecyclerView.Adapter<childRecyclerAdap
     public int getItemCount() {
         return list.size();
     }
+
+    public interface ChildAdapterListener{
+        void onItemClicked(int position);
+    }
+
 
 }

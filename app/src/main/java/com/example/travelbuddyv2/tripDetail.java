@@ -1,6 +1,8 @@
 package com.example.travelbuddyv2;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +24,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class tripDetail extends AppCompatActivity {
+public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter.mainAdapterListener , childRecyclerAdapter.ChildAdapterListener {
 
     FloatingActionButton fabEditInformation;
     int tmpID;
@@ -43,8 +45,9 @@ public class tripDetail extends AppCompatActivity {
 //        System.out.println(sectionList.get(0).getTripList().get(0).toString());
         rcvTripDetail = findViewById(R.id.rcvTripDetailList);
         rcvTripDetail.setLayoutManager(new LinearLayoutManager(this));
-        mainRecyclerAdapter mainrecycler = new mainRecyclerAdapter(sectionList);
+        mainRecyclerAdapter mainrecycler = new mainRecyclerAdapter(sectionList,this,this);
         rcvTripDetail.setAdapter(mainrecycler);
+
 
 
         fabEditInformation = findViewById(R.id.addNewTripDetail);
@@ -78,23 +81,6 @@ public class tripDetail extends AppCompatActivity {
             List<tripModel> sectionItems = databaseHelper.getTripListOnACertainDate(sectionName,tmpID);
             sectionList.add(new tripSection(sectionName,sectionItems));
         }
-
-       // String sectionOneName = databaseHelper.getStartDateOfTrip(1);
-        //List<tripModel> sectionOneItems = databaseHelper.getTripListOnACertainDate(sectionOneName);
-
-
-        //String sectionTwoName = "2020-9-4";
-        //List<tripModel> sectionTwoItems = databaseHelper.getTripListOnACertainDate(sectionTwoName);
-
-        //String sectionThreeName = "2020-9-5";
-        //List<tripModel> sectionThreeItems = databaseHelper.getTripListOnACertainDate(sectionThreeName);
-
-
-       // sectionList.add(new tripSection(sectionOneName, sectionOneItems));
-        //sectionList.add(new tripSection(sectionTwoName, sectionTwoItems));
-       // sectionList.add(new tripSection(sectionThreeName, sectionThreeItems));
-
-
 
     }
 
@@ -136,6 +122,28 @@ public class tripDetail extends AppCompatActivity {
         return listOfdate;
     }
 
+    @Override
+    public void onTitleClicked(int position) {
+        Toast.makeText(this,new StringBuilder().append(position).toString(),Toast.LENGTH_SHORT).show();
+        System.out.println(position);
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        Toast.makeText(this,new StringBuilder().append(position).toString(),Toast.LENGTH_SHORT).show();
+    }
+    /*
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            Toast.makeText(tripDetail.this,"You have swipe " + new StringBuilder().append(viewHolder.getAdapterPosition()).toString(),Toast.LENGTH_SHORT).show();
+        }
+    }; */
 
 
 }
