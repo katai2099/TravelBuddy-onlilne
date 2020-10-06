@@ -41,7 +41,7 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         {
             tmpID = extra.getInt("TripID");
         }
-        initData();
+       // initData();
         Toast.makeText(this,new StringBuilder().append(tmpID).toString(),Toast.LENGTH_SHORT).show();
 //        System.out.println(sectionList.get(0).getTripList().get(0).toString());
         rcvTripDetail = findViewById(R.id.rcvTripDetailList);
@@ -178,6 +178,10 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
     @Override
     protected void onResume() {
         super.onResume();
+        sectionList.clear();
+        initData();
+        mainrecycler.notifyDataSetChanged();
 
+        Toast.makeText(this,"Resume",Toast.LENGTH_SHORT).show();
     }
 }

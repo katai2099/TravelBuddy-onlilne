@@ -2,11 +2,13 @@ package com.example.travelbuddyv2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -50,6 +52,16 @@ public class EditTrip extends AppCompatActivity {
         datePicker = findViewById(R.id.currentDatePicker);
         datePicker.setInputType(InputType.TYPE_NULL);
         DestinationField = findViewById(R.id.etDestination);
+
+        DestinationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus)
+                {
+                    hideKeyboard(v);
+                }
+            }
+        });
 
         timePicker1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,5 +146,10 @@ public class EditTrip extends AppCompatActivity {
 
         return res;
     } */
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
 }
