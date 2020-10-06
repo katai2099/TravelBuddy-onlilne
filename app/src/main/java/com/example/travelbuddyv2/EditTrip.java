@@ -44,6 +44,7 @@ public class EditTrip extends AppCompatActivity {
         }
         Toast.makeText(this,new StringBuilder().append(tmpID).toString(),Toast.LENGTH_SHORT).show();
 
+        databaseHelper = new DatabaseHelper(EditTrip.this);
         btnSubmit = findViewById(R.id.btnSubmitEdit);
         timePicker1 = findViewById(R.id.Timepicker1);
         timePicker1.setInputType(InputType.TYPE_NULL);
@@ -74,7 +75,9 @@ public class EditTrip extends AppCompatActivity {
                 timePickerDialogStartTime = new TimePickerDialog(EditTrip.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        timePicker1.setText(new StringBuilder().append(hourOfDay).append(":").append(minute).toString());
+                        String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
+                        String end_res = Helper.changeInputTimeFormat(tmp_time);
+                        timePicker1.setText(end_res);
                     }
                 },hour,min,true);
                 timePickerDialogStartTime.show();
@@ -92,7 +95,9 @@ public class EditTrip extends AppCompatActivity {
                 timePickerDialogEndTime = new TimePickerDialog(EditTrip.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        timePicker2.setText(new StringBuilder().append(hourOfDay).append(":").append(minute).toString());
+                        String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
+                        String end_res = Helper.changeInputTimeFormat(tmp_time);
+                        timePicker2.setText(end_res);
                     }
                 },hour,min,true);
                 timePickerDialogEndTime.show();
@@ -116,6 +121,26 @@ public class EditTrip extends AppCompatActivity {
                         datePicker.setText(new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString());
                     }
                 },year,month,date);
+
+
+                String startDate = databaseHelper.getStartDateOfTrip(tmpID);
+                String endDate = databaseHelper.getEndDateOfTrip(tmpID);
+                Date tmpdate = Helper.stringToDate(startDate);
+                int yeartmp = tmpdate.getYear()+1900;
+                System.out.println(yeartmp);
+                int monthtmp = tmpdate.getMonth();
+                int daytmp = tmpdate.getDate();
+                Calendar tmpcal = Calendar.getInstance();
+                tmpcal.set(yeartmp,monthtmp,daytmp,0,0,0);
+                datePickerDialog.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
+                Date tmpdate2 = Helper.stringToDate(endDate);
+                int yeartmp2 = tmpdate2.getYear()+1900;
+                int monthtmp2 = tmpdate2.getMonth();
+                int daytmp2 = tmpdate2.getDate();
+                Calendar tmpcal2 = Calendar.getInstance();
+                tmpcal2.set(yeartmp2,monthtmp2,daytmp2,0,0,0);
+                datePickerDialog.getDatePicker().setMaxDate(tmpcal2.getTimeInMillis());
+
               /*code to set min date
 
                 int yeartmp=2020, monthtmp=10, daytmp=5; // for min. date: 1. feb. 2017
@@ -130,31 +155,38 @@ public class EditTrip extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                   databaseHelper = new DatabaseHelper(EditTrip.this);
+                   String tmpStartTime = timePicker1.getText().toString();
+                   String tmpEndTime = timePicker2.getText().toString();
                    String tmpDate = DatabaseHelper.changeDateFormat(datePicker.getText().toString());
-                   tripModel tmp = new tripModel(tmpID,"Budapest",tmpDate,timePicker1.getText().toString(),timePicker2.getText().toString(),DestinationField.getText().toString());
-                   databaseHelper.addTripDetail(tmp);
+
+                   if(Helper.isEditTextEmpty(timePicker1))
+                   {
+                       Toast.makeText(EditTrip.this,"Please fill all Detail",Toast.LENGTH_SHORT).show();
+                   }
+                   else if(Helper.isEditTextEmpty(timePicker2))
+                   {
+                       Toast.makeText(EditTrip.this,"Please fill all Detail",Toast.LENGTH_SHORT).show();
+                   }
+                   else if(Helper.isEditTextEmpty(DestinationField))
+                   {
+                       Toast.makeText(EditTrip.this,"Please fill all Detail",Toast.LENGTH_SHORT).show();
+                   }
+                   else if(tmpStartTime.equals(tmpEndTime))
+                   {
+                       //Or we could filter out time on timepicker
+                       Toast.makeText(EditTrip.this,"Time cannot be the same",Toast.LENGTH_SHORT).show();
+                   }
+                   else if(databaseHelper.checkIfTimeOverlappingExistingTrip(tmpStartTime,tmpID)||databaseHelper.checkIfTimeOverlappingExistingTrip(tmpEndTime,tmpID))
+                   {
+                       Toast.makeText(EditTrip.this,"You already have plan during that time",Toast.LENGTH_SHORT).show();
+                   }
+                   else {
+                       tripModel tmp = new tripModel(tmpID, "Budapest", tmpDate, tmpStartTime, tmpEndTime, DestinationField.getText().toString());
+                       databaseHelper.addTripDetail(tmp);
+                   }
             }
         });
-
-
     }
-
-    /*
-    public static String changeDateFormat(String date)
-    {
-        String res ="";
-        Date tmpDate = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            tmpDate = simpleDateFormat.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        res = simpleDateFormat.format(tmpDate);
-
-        return res;
-    } */
 
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);

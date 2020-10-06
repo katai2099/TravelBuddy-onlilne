@@ -49,8 +49,6 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         mainrecycler = new mainRecyclerAdapter(sectionList,this,this);
         rcvTripDetail.setAdapter(mainrecycler);
 
-       // ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        //itemTouchHelper.attachToRecyclerView(mainRecyclerAdapter.ViewHolder.childRecyclerView);
 
         fabEditInformation = findViewById(R.id.addNewTripDetail);
         fabEditInformation.setOnClickListener(new View.OnClickListener() {
@@ -150,18 +148,13 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
 
     }
 
+    @Override
+    public void onItemClickedToEdit(int position) {
+        Intent i = new Intent(tripDetail.this,EditTripDetailWithAdditionalData.class);
+        i.putExtra("extra",position);
+        startActivity(i);
+    }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            Toast.makeText(tripDetail.this,"You have swipe " + new StringBuilder().append(viewHolder.getAdapterPosition()).toString(),Toast.LENGTH_SHORT).show();
-        }
-    };
 
     public void deleteTripDetailFromList(int id){
         for(int i=0;i<sectionList.size();i++)

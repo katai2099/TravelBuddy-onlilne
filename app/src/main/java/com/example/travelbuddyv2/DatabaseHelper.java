@@ -22,8 +22,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTripTable = "CREATE TABLE TRIP (ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,START_DATE TEXT,END_DATE TEXT)";
-        String createTripDetailTable = "CREATE TABLE TRIP_DETAIL (ID INTEGER,TRIP_ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,CUR_DATE TEXT,START_TIME TEXT,END_TIME TEXT,DESTINATION TEXT)";
+        String createTripTable = "CREATE TABLE TRIP (ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,START_DATE DATE,END_DATE DATE)";
+        String createTripDetailTable = "CREATE TABLE TRIP_DETAIL (ID INTEGER,TRIP_ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,CUR_DATE DATE,START_TIME TIME,END_TIME TIME,DESTINATION TEXT)";
         db.execSQL(createTripTable);
         db.execSQL(createTripDetailTable);
     }
@@ -176,11 +176,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(QueryString);
     }
 
-    public void checkIfTimeOverlappingExistingTrip(String time)
+    public boolean checkIfTimeOverlappingExistingTrip(String time,int id)
     {
+        //We have to consider ID of TRIPNAME as well !!! FIX
         SQLiteDatabase db = this.getReadableDatabase();
-        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE START_TIME <= " + time + " AND END_TIME >= ";
+        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE ID = " + id + " AND START_TIME < '" + time + "' AND END_TIME > '" + time +"'";
+        Cursor cursor = db.rawQuery(QueryString,null);
+        return cursor.getCount() > 0;
     }
+
+
+    /*
+    public int getIdOfTripName(int id)
+    {
+        int res=0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT ID FROM TRIP_DETAIL WHERE TRIP_ID = " + id;
+        Cursor cursor = db.rawQuery(QueryString,null,null);
+        if (cursor.moveToFirst()) res = cursor.getInt(0);
+        cursor.close();
+        db.close();
+        return res;
+    } */
 
 
 }

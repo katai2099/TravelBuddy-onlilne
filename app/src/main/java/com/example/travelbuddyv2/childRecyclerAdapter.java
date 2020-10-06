@@ -39,6 +39,7 @@ public class childRecyclerAdapter extends RecyclerView.Adapter<childRecyclerAdap
                 public void onClick(View v) {
                     //System.out.println(getAdapterPosition());
                 //  childAdapterListener.onItemClicked(list.get(getAdapterPosition()).getId());
+                    childAdapterListener.onItemClickedToEdit(list.get(getAdapterPosition()).getId());
                 }
             });
             itemView.setOnTouchListener(new View.OnTouchListener() {
@@ -78,6 +79,7 @@ public class childRecyclerAdapter extends RecyclerView.Adapter<childRecyclerAdap
 
     public interface ChildAdapterListener{
         void onItemClicked(int position);
+        void onItemClickedToEdit(int position);
     }
 
 

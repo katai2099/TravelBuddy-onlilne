@@ -18,6 +18,7 @@
 
     <EditText
         android:id="@+id/Timepicker1"
+        android:focusableInTouchMode="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etDestination"
@@ -30,6 +31,7 @@
 
     <EditText
         android:id="@+id/Timepicker2"
+        android:focusableInTouchMode="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etDestination"
