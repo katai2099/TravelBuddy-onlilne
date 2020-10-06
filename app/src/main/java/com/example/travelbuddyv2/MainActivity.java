@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.sql.SQLOutput;
 import java.text.ParseException;
@@ -26,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
+      //  String time="23:12";
+    //    Date date = Helper.stringToTime(time);
+     //   Toast.makeText(MainActivity.this,date.toString(),Toast.LENGTH_SHORT).show();
         newTrip = findViewById(R.id.btnAddNewTrip);
         myTrip = findViewById(R.id.btnMyTrip);
 

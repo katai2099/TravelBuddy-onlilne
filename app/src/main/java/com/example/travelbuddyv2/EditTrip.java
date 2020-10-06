@@ -99,6 +99,8 @@ public class EditTrip extends AppCompatActivity {
             }
         });
 
+
+
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +116,13 @@ public class EditTrip extends AppCompatActivity {
                         datePicker.setText(new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString());
                     }
                 },year,month,date);
+              /*code to set min date
+
+                int yeartmp=2020, monthtmp=10, daytmp=5; // for min. date: 1. feb. 2017
+                Calendar cal = Calendar.getInstance();
+                cal.set( yeartmp, monthtmp, daytmp, 0, 0, 0 ); //hour=0 min=0 sec=0
+                datePickerDialog.getDatePicker().setMinDate(cal.getTimeInMillis());*/
+
                 datePickerDialog.show();
             }
         });
@@ -151,5 +160,9 @@ public class EditTrip extends AppCompatActivity {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
+
+
+
 
 }

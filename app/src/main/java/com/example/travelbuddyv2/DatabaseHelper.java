@@ -176,5 +176,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(QueryString);
     }
 
+    public void checkIfTimeOverlappingExistingTrip(String time)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE START_TIME <= " + time + " AND END_TIME >= ";
+    }
+
 
 }
