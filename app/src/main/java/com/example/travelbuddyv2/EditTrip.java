@@ -157,7 +157,7 @@ public class EditTrip extends AppCompatActivity {
             public void onClick(View v) {
                    String tmpStartTime = timePicker1.getText().toString();
                    String tmpEndTime = timePicker2.getText().toString();
-                   String tmpDate = DatabaseHelper.changeDateFormat(datePicker.getText().toString());
+                   String tmpDate = Helper.changeInputDateFormat(datePicker.getText().toString());
 
                    if(Helper.isEditTextEmpty(timePicker1))
                    {

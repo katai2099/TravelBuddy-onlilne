@@ -41,8 +41,8 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String tmpStartDate = DatabaseHelper.changeDateFormat(startDate.getText().toString());
-                String tmpEndDate = DatabaseHelper.changeDateFormat(endDate.getText().toString());
+                String tmpStartDate = Helper.changeInputDateFormat(startDate.getText().toString());
+                String tmpEndDate = Helper.changeInputDateFormat(endDate.getText().toString());
                 tripModel tmp = new tripModel(tripName.getText().toString(),tmpStartDate,tmpEndDate);
               //  System.out.println(tmp.toString());
                 databaseHelper = new DatabaseHelper(addNewTrip.this);
@@ -74,7 +74,7 @@ public class addNewTrip extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         String tmp = new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString();
-                        String res = DatabaseHelper.changeDateFormat(tmp);
+                        String res = Helper.changeInputDateFormat(tmp);
                         startDate.setText(res);
                     }
                 },year,month,date);
@@ -94,7 +94,7 @@ public class addNewTrip extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         String tmp = new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString();
-                        String res = DatabaseHelper.changeDateFormat(tmp);
+                        String res = Helper.changeInputDateFormat(tmp);
                         endDate.setText(res);
                     }
                 },year,month,date);
