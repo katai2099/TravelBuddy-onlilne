@@ -186,7 +186,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    /*
+/*
     public int getIdOfTripName(int id)
     {
         int res=0;
@@ -198,6 +198,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return res;
     } */
+
+    public tripModel getEditDetail(int id)
+    {
+        int id1=0,id2=0;
+        String cur_date="" , destination="" , start_time="" , end_time="" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT ID , TRIP_ID  ,CUR_DATE , DESTINATION , START_TIME , END_TIME FROM TRIP_DETAIL WHERE TRIP_ID = " + id;
+        Cursor cursor = db.rawQuery(QueryString,null,null);
+        if (cursor.moveToFirst())
+        {
+            id1=cursor.getInt(0);
+            id2=cursor.getInt(1);
+            cur_date=cursor.getString(2);
+            destination=cursor.getString(3);
+            start_time=cursor.getString(4);
+            end_time=cursor.getString(5);
+        }
+        tripModel tmp = new tripModel(id1,id2,cur_date,destination,start_time,end_time);
+        cursor.close();
+        db.close();
+        return tmp;
+    }
+
+
+    //Still need to handle user input with aphosthophie
+    public void updateTripDetail(tripModel tripModel){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String QueryString = "UPDATE TRIP_DETAIL SET CUR_DATE ='" + tripModel.getCurrentDate() +"', START_TIME = '" + tripModel.getStartTime() +
+                "' , END_TIME = '"+tripModel.getEndTime()+"', DESTINATION = '" + tripModel.getDestination() + "' WHERE TRIP_ID = " + tripModel.getIdforListDetail();
+        db.execSQL(QueryString);
+
+    }
 
 
 }

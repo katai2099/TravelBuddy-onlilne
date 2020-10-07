@@ -20,6 +20,16 @@ public class tripModel {
         this.endDate = endDate;
     }
 
+    public tripModel(int id,int idforListDetail,String currentDate,String destination,String startTime,String endTime)
+    {
+        this.id = id ;
+        this.idforListDetail = idforListDetail;
+        this.currentDate = currentDate;
+        this.destination = destination;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
     //To Retrieve Date from database
     public tripModel(int id, String tripName, String currentDate, String startTime, String endTime, String Destination) {
         this.id = id;
@@ -99,5 +109,21 @@ public class tripModel {
 
     public String getDestination() {
         return destination;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 }
