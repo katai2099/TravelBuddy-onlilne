@@ -7,11 +7,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -43,6 +45,18 @@ public class EditTrip extends AppCompatActivity {
             tmpID = extra.getInt("TripIDfromTripDetail");
         }
         Toast.makeText(this,new StringBuilder().append(tmpID).toString(),Toast.LENGTH_SHORT).show();
+
+        /*
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.k);
+        relativeLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideKeyboard(v);
+                return false;
+            }
+        });
+
+         */
 
         databaseHelper = new DatabaseHelper(EditTrip.this);
         btnSubmit = findViewById(R.id.btnSubmitEdit);
@@ -176,7 +190,7 @@ public class EditTrip extends AppCompatActivity {
                        //Or we could filter out time on timepicker
                        Toast.makeText(EditTrip.this,"Time cannot be the same",Toast.LENGTH_SHORT).show();
                    }
-                   else if(databaseHelper.checkIfTimeOverlappingExistingTrip(tmpStartTime,tmpID)||databaseHelper.checkIfTimeOverlappingExistingTrip(tmpEndTime,tmpID))
+                   else if(databaseHelper.checkIfTimeOverlappingExistingTrip(tmpStartTime,tmpID,tmpDate)||databaseHelper.checkIfTimeOverlappingExistingTrip(tmpEndTime,tmpID,tmpDate))
                    {
                        Toast.makeText(EditTrip.this,"You already have plan during that time",Toast.LENGTH_SHORT).show();
                    }

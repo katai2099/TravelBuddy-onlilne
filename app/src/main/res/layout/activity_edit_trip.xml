@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:padding="16dp"
+    android:id="@+id/k"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     style="@style/Theme.AppCompat.Dialog">
 
 
@@ -45,6 +48,7 @@
 
     <EditText
         android:id="@+id/currentDatePicker"
+        android:focusableInTouchMode="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/Timepicker1"

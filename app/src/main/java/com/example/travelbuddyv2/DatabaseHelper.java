@@ -64,6 +64,64 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else return true;
     }
 
+
+    public boolean updateTripDetail(tripModel tripModel){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("CUR_DATE", tripModel.getCurrentDate());
+        cv.put("START_TIME", tripModel.getStartTime());
+        cv.put("END_TIME", tripModel.getEndTime());
+        cv.put("DESTINATION", tripModel.getDestination());
+
+        String tmp = new StringBuilder().append(tripModel.getIdforListDetail()).toString();
+        String whereClause = "TRIP_ID = ?";
+        String args [] = new String [] {tmp};
+
+
+        //It is a good solution to use where argument as well
+        long insert = db.update("TRIP_DETAIL",cv,whereClause,args);
+
+
+        if (insert == -1) {
+            return false;
+        } else return true;
+
+    }
+
+    public Boolean DeleteTrip(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String tmp = new StringBuilder().append(id).toString();
+        String whereClause = "ID = ?";
+        String [] whereArgs = new String[] {tmp};
+
+        long res = db.delete("TRIP",whereClause,whereArgs);
+        long res1 = db.delete("TRIP_DETAIL",whereClause,whereArgs);
+
+        if(res == -1 || res1 == -1)return false;
+        else return true;
+    }
+
+    public void DeleteTripDetail(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        //  String QueryString = "DELETE FROM TRIP_DETAIL WHERE TRIP_ID = " + id;
+
+        String tmp = new StringBuilder().append(id).toString();
+        String whereClause = "TRIP_ID = ?";
+        String [] whereArgs = new String[] {tmp};
+
+        long res = db.delete("TRIP_DETAIL",whereClause,whereArgs);
+        //db.execSQL(QueryString);
+    }
+
+
+
+
+
+    //GETTTER MOSTLY
+
+
+
     public List<tripModel> getTripList() {
         List<tripModel> returnlist = new ArrayList<>();
 
@@ -144,41 +202,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Boolean DeleteTrip(int id){
-        SQLiteDatabase db = this.getWritableDatabase();
-      //  String QueryString1 = "DELETE FROM TRIP WHERE ID = " + id ;
-     //   String QueryString2 = "DELETE FROM TRIP_DETAIL WHERE ID = " +id;
 
-        String tmp = new StringBuilder().append(id).toString();
-        String whereClause = "ID = ?";
-        String [] whereArgs = new String[] {tmp};
 
-       long res = db.delete("TRIP",whereClause,whereArgs);
-        long res1 = db.delete("TRIP_DETAIL",whereClause,whereArgs);
-    //    db.execSQL(QueryString1);
-     //   db.execSQL(QueryString2);
-
-        if(res == -1 || res1 == -1)return false;
-        else return true;
-    }
-
-    public void DeleteTripDetail(int id){
-        SQLiteDatabase db = this.getWritableDatabase();
-      //  String QueryString = "DELETE FROM TRIP_DETAIL WHERE TRIP_ID = " + id;
-
-        String tmp = new StringBuilder().append(id).toString();
-        String whereClause = "TRIP_ID = ?";
-        String [] whereArgs = new String[] {tmp};
-
-        long res = db.delete("TRIP_DETAIL",whereClause,whereArgs);
-        //db.execSQL(QueryString);
-    }
-
-    public boolean checkIfTimeOverlappingExistingTrip(String time,int id)
+    public boolean checkIfTimeOverlappingExistingTrip(String time,int id,String curdate)
     {
         //We have to consider ID of TRIPNAME as well !!! FIX
+        //consider currentDate too
         SQLiteDatabase db = this.getReadableDatabase();
-        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE ID = " + id + " AND START_TIME < '" + time + "' AND END_TIME > '" + time +"'";
+        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE ID = " + id + " AND CUR_DATE = '"+ curdate+ "' AND START_TIME < '" + time + "' AND END_TIME > '" + time +"'";
         Cursor cursor = db.rawQuery(QueryString,null);
         return cursor.getCount() > 0;
     }
@@ -220,30 +251,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean updateTripDetail(tripModel tripModel){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("CUR_DATE", tripModel.getCurrentDate());
-        cv.put("START_TIME", tripModel.getStartTime());
-        cv.put("END_TIME", tripModel.getEndTime());
-        cv.put("DESTINATION", tripModel.getDestination());
-
-        String tmp = new StringBuilder().append(tripModel.getIdforListDetail()).toString();
-        String whereClause = "TRIP_ID = ?";
-        String args [] = new String [] {tmp};
-
-
-        //It is a good solution to use where argument as well
-        long insert = db.update("TRIP_DETAIL",cv,whereClause,args);
-
-        //This one does not use where argument
-       // long insert = db.update("TRIP_DETAIL",cv,"TRIP_ID = " + tripModel.getIdforListDetail() ,null);
-
-        if (insert == -1) {
-            return false;
-        } else return true;
-
-    }
 
 
 }
