@@ -118,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    //GETTTER MOSTLY
+    //GETTER AND CHECKING AN EXISTING INFORMATION IN DATABASE
 
 
 
@@ -203,31 +203,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-
-    public boolean checkIfTimeOverlappingExistingTrip(String time,int id,String curdate)
-    {
-        //We have to consider ID of TRIPNAME as well !!! FIX
-        //consider currentDate too
-        SQLiteDatabase db = this.getReadableDatabase();
-        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE ID = " + id + " AND CUR_DATE = '"+ curdate+ "' AND START_TIME < '" + time + "' AND END_TIME > '" + time +"'";
-        Cursor cursor = db.rawQuery(QueryString,null);
-        return cursor.getCount() > 0;
-    }
-
-
-/*
-    public int getIdOfTripName(int id)
-    {
-        int res=0;
-        SQLiteDatabase db = this.getReadableDatabase();
-        String QueryString = "SELECT ID FROM TRIP_DETAIL WHERE TRIP_ID = " + id;
-        Cursor cursor = db.rawQuery(QueryString,null,null);
-        if (cursor.moveToFirst()) res = cursor.getInt(0);
-        cursor.close();
-        db.close();
-        return res;
-    } */
-
     public tripModel getEditDetail(int id)
     {
         int id1=0,id2=0;
@@ -248,6 +223,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return tmp;
+    }
+
+    public boolean checkIfTimeOverlappingExistingTrip(String time,int id,String curdate)
+    {
+        //We have to consider ID of TRIPNAME as well !!! FIX
+        //consider currentDate too
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE ID = " + id + " AND CUR_DATE = '"+ curdate+ "' AND START_TIME < '" + time + "' AND END_TIME > '" + time +"'";
+        Cursor cursor = db.rawQuery(QueryString,null);
+        return cursor.getCount() > 0;
+    }
+
+    public boolean checkIfTimeIntervalExist(String startTime,String endTime,int id,String curdate)
+    {
+        //we consider The ID of Trip and startTime and Endtime on the currentDate
+        //Return true if there is an existing trip on that exact time
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE ID = "+ id + " AND CUR_DATE ='" + curdate+ "' AND START_TIME = '" + startTime + "' AND END_TIME = '"+ endTime +"'";
+        Cursor cursor = db.rawQuery(QueryString,null);
+        return cursor.getCount() > 0 ;
     }
 
 

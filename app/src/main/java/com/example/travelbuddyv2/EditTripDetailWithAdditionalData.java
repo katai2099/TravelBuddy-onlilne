@@ -161,7 +161,7 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
                 Calendar tmpcal2 = Calendar.getInstance();
                 tmpcal2.set(yeartmp2,monthtmp2,daytmp2,0,0,0);
                 datePickerDialog.getDatePicker().setMaxDate(tmpcal2.getTimeInMillis());
-                
+
 
                 datePickerDialog.show();
             }

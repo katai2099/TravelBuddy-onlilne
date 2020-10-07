@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
      //   Toast.makeText(MainActivity.this,date.toString(),Toast.LENGTH_SHORT).show();
         newTrip = findViewById(R.id.btnAddNewTrip);
         myTrip = findViewById(R.id.btnMyTrip);
+        //Helper.checkIfStartTimeBeforeEndTime("23:50","23:40");
 
         newTrip.setOnClickListener(new View.OnClickListener() {
             @Override

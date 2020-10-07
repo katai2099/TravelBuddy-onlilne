@@ -190,9 +190,17 @@ public class EditTrip extends AppCompatActivity {
                        //Or we could filter out time on timepicker
                        Toast.makeText(EditTrip.this,"Time cannot be the same",Toast.LENGTH_SHORT).show();
                    }
+                   else if(!Helper.checkIfStartTimeBeforeEndTime(tmpStartTime,tmpEndTime))
+                   {
+                       Toast.makeText(EditTrip.this,"EndTime should follow StartTime",Toast.LENGTH_SHORT).show();
+                   }
                    else if(databaseHelper.checkIfTimeOverlappingExistingTrip(tmpStartTime,tmpID,tmpDate)||databaseHelper.checkIfTimeOverlappingExistingTrip(tmpEndTime,tmpID,tmpDate))
                    {
-                       Toast.makeText(EditTrip.this,"You already have plan during that time",Toast.LENGTH_SHORT).show();
+                       Toast.makeText(EditTrip.this,"Your trip is in a time interval of another trip",Toast.LENGTH_SHORT).show();
+                   }
+                   else if(databaseHelper.checkIfTimeIntervalExist(tmpStartTime,tmpEndTime,tmpID,tmpDate))
+                   {
+                       Toast.makeText(EditTrip.this,"There is an Existing trip at that exact time",Toast.LENGTH_SHORT).show();
                    }
                    else {
                        tripModel tmp = new tripModel(tmpID, "Budapest", tmpDate, tmpStartTime, tmpEndTime, DestinationField.getText().toString());
