@@ -132,7 +132,9 @@ public class EditTrip extends AppCompatActivity {
                 datePickerDialog = new DatePickerDialog(EditTrip.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        datePicker.setText(new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString());
+                        String tmpDate = new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString();
+                        String end_res = Helper.changeInputDateFormat(tmpDate);
+                        datePicker.setText(end_res);
                     }
                 },year,month,date);
 

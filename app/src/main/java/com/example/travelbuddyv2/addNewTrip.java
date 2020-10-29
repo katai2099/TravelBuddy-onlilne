@@ -12,8 +12,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class addNewTrip extends AppCompatActivity {
 
@@ -43,13 +45,32 @@ public class addNewTrip extends AppCompatActivity {
 
                 String tmpStartDate = Helper.changeInputDateFormat(startDate.getText().toString());
                 String tmpEndDate = Helper.changeInputDateFormat(endDate.getText().toString());
-                tripModel tmp = new tripModel(tripName.getText().toString(),tmpStartDate,tmpEndDate);
-              //  System.out.println(tmp.toString());
-                databaseHelper = new DatabaseHelper(addNewTrip.this);
-                databaseHelper.addNewTrip(tmp);
-               // finish();
-                Intent i = new Intent(addNewTrip.this,myTrip.class);
-                startActivity(i);
+
+                if(Helper.isEditTextEmpty(tripName))
+                {
+                    Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
+                }
+                else if(Helper.isEditTextEmpty(startDate))
+                {
+                    Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
+                }
+                else if(Helper.isEditTextEmpty(endDate))
+                {
+                    Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
+                }
+                else if(!Helper.checkIfStartDateBeforeEndDate(tmpStartDate,tmpEndDate) && !Helper.checkIfStartDateSameDateAsEndDate(tmpStartDate,tmpEndDate))
+                {
+                    Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    tripModel tmp = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
+                    //  System.out.println(tmp.toString());
+                    databaseHelper = new DatabaseHelper(addNewTrip.this);
+                    databaseHelper.addNewTrip(tmp);
+                    // finish();
+                    Intent i = new Intent(addNewTrip.this, myTrip.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -78,6 +99,10 @@ public class addNewTrip extends AppCompatActivity {
                         startDate.setText(res);
                     }
                 },year,month,date);
+
+                Calendar tmpcal = Calendar.getInstance();
+                datePickerDialogStartDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
+
                 datePickerDialogStartDate.show();
             }
         });
@@ -98,7 +123,27 @@ public class addNewTrip extends AppCompatActivity {
                         endDate.setText(res);
                     }
                 },year,month,date);
+
+                if(!Helper.isEditTextEmpty(startDate))
+                {
+                    String tmpStartDate = Helper.changeInputDateFormat(startDate.getText().toString());
+                    Date tmpdate = Helper.stringToDate(tmpStartDate);
+                    int yeartmp = tmpdate.getYear()+1900;
+                    System.out.println(yeartmp);
+                    int monthtmp = tmpdate.getMonth();
+                    int daytmp = tmpdate.getDate();
+                    Calendar tmpcal = Calendar.getInstance();
+                    tmpcal.set(yeartmp,monthtmp,daytmp,0,0,0);
+                    datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
+                }
+                else{
+
+                    Calendar tmpcal = Calendar.getInstance();
+                    datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
+
+                }
                 datePickerDialogEndDate.show();
+
             }
         });
 

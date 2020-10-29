@@ -93,4 +93,34 @@ public class Helper {
         return startCal.before(endCal);
     }
 
+    public static boolean checkIfStartDateBeforeEndDate(String startDate,String endDate)
+    {
+        Calendar startCal , endCal ;
+        Date tmpStartDate = Helper.stringToDate(startDate);
+        Date tmpEndDate = Helper.stringToDate(endDate);
+
+        startCal = Calendar.getInstance();
+        startCal.setTime(tmpStartDate);
+
+        endCal = Calendar.getInstance();
+        endCal.setTime(tmpEndDate);
+
+        return startCal.before(endCal) ;
+    }
+
+    public static boolean checkIfStartDateSameDateAsEndDate(String startDate,String endDate)
+    {
+        Calendar startCal , endCal ;
+        Date tmpStartDate = Helper.stringToDate(startDate);
+        Date tmpEndDate = Helper.stringToDate(endDate);
+
+        startCal = Calendar.getInstance();
+        startCal.setTime(tmpStartDate);
+
+        endCal = Calendar.getInstance();
+        endCal.setTime(tmpEndDate);
+
+        return startCal.get(Calendar.YEAR)==endCal.get(Calendar.YEAR) && startCal.get(Calendar.MONTH) == endCal.get(Calendar.MONTH) && startCal.get(Calendar.DATE) == endCal.get(Calendar.DATE);
+    }
+
 }
