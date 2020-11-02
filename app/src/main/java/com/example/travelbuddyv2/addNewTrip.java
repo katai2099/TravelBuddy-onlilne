@@ -39,6 +39,17 @@ public class addNewTrip extends AppCompatActivity {
         endDate.setInputType(InputType.TYPE_NULL);
 
         btnSave = findViewById(R.id.btnSaveTrip);
+
+        tripName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    hideKeyboard(v);
+                }
+
+            }
+        });
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,18 +85,12 @@ public class addNewTrip extends AppCompatActivity {
             }
         });
 
-        tripName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    hideKeyboard(v);
-                }
-            }
-        });
+
 
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tripName.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -110,6 +115,7 @@ public class addNewTrip extends AppCompatActivity {
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tripName.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -155,5 +161,6 @@ public class addNewTrip extends AppCompatActivity {
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        Toast.makeText(this,"I hide keyboard",Toast.LENGTH_SHORT).show();
     }
 }

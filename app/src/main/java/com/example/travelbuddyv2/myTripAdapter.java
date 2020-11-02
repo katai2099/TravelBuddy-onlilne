@@ -52,7 +52,8 @@ public class myTripAdapter extends RecyclerView.Adapter<myTripAdapter.myViewHold
     @NonNull
     @Override
     public myViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mytripview,parent,false);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.mytripview,parent,false);
         return new myViewHolder(view,onListListener);
     }
 
@@ -67,7 +68,8 @@ public class myTripAdapter extends RecyclerView.Adapter<myTripAdapter.myViewHold
         return list.size();
     }
 
-    
+
+
 
     public interface OnListListener{
         void onListClick(int position);

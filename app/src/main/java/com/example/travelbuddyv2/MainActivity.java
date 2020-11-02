@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this,addNewTrip.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(i);
             }
         });

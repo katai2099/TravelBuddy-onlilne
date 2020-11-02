@@ -68,6 +68,7 @@ public class EditTrip extends AppCompatActivity {
         datePicker.setInputType(InputType.TYPE_NULL);
         DestinationField = findViewById(R.id.etDestination);
 
+
         DestinationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -86,7 +87,7 @@ public class EditTrip extends AppCompatActivity {
                 int hour = calendar.get(Calendar.HOUR);
                 int min = calendar.get(Calendar.MINUTE);
 
-                timePickerDialogStartTime = new TimePickerDialog(EditTrip.this, new TimePickerDialog.OnTimeSetListener() {
+                timePickerDialogStartTime = new TimePickerDialog(EditTrip.this,3, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
@@ -106,7 +107,7 @@ public class EditTrip extends AppCompatActivity {
                 int hour = calendar.get(Calendar.HOUR);
                 int min = calendar.get(Calendar.MINUTE);
 
-                timePickerDialogEndTime = new TimePickerDialog(EditTrip.this, new TimePickerDialog.OnTimeSetListener() {
+                timePickerDialogEndTime = new TimePickerDialog(EditTrip.this,3, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();

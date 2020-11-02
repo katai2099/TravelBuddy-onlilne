@@ -10,7 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EditTripDetailWithAdditionalData"
-            android:theme="@style/Theme.AppCompat.Dialog" ></activity>
+            android:theme="@style/Theme.AppCompat.Dialog"
+            ></activity>
         <activity
             android:name=".EditTrip"
             android:theme="@style/Theme.AppCompat.Dialog" />

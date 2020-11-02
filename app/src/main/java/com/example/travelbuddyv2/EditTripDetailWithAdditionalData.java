@@ -38,18 +38,6 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
         setContentView(R.layout.activity_edit_trip);
         Bundle extra = getIntent().getExtras();
 
-        /* Not a good solution to hide keyboard when click on layout
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.k);
-        relativeLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                hideKeyboard(v);
-                return false;
-            }
-        });
-
-         */
-
         if(extra!=null)
         {
             tmpID = extra.getInt("extra");

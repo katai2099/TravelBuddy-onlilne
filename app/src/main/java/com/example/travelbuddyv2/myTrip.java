@@ -36,6 +36,7 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
         rcVTripList.setAdapter(myTripadapter);
         rcVTripList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
+
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(rcVTripList);
 
