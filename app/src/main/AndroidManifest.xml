@@ -15,7 +15,8 @@
         <activity
             android:name=".EditTrip"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name=".tripDetail" />
+        <activity android:name=".tripDetail"
+            android:parentActivityName=".myTrip"/>
         <activity android:name=".myTrip"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".addNewTrip" />

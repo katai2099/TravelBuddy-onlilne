@@ -126,4 +126,8 @@ public class tripModel {
     public void setDestination(String destination) {
         this.destination = destination;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

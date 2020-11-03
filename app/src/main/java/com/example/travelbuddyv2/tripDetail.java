@@ -41,6 +41,9 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         {
             tmpID = extra.getInt("TripID");
         }
+        DatabaseHelper db = new DatabaseHelper(this);
+        String title = db.getTripName(tmpID);
+        this.setTitle(title);
        // initData();
         Toast.makeText(this,new StringBuilder().append(tmpID).toString(),Toast.LENGTH_SHORT).show();
 //        System.out.println(sectionList.get(0).getTripList().get(0).toString());

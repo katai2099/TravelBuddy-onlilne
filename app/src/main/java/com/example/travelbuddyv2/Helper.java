@@ -1,11 +1,15 @@
 package com.example.travelbuddyv2;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.widget.EditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class Helper {
@@ -132,6 +136,17 @@ public class Helper {
         Date StartDate = Helper.stringToDate(timeStartDate);
         res = StartDate.getTime() - timeNow.getTime();
         return res;
+    }
+
+    public void CheckIntentKey()
+    {
+       /* Bundle bundle = getIntent().getExtras();
+        Set<String> keys = bundle.keySet();
+        Iterator<String> it = keys.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            System.out.println( key + " : " + bundle.get(key));
+        }*/
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -7,6 +8,7 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -76,10 +78,10 @@ public class addNewTrip extends AppCompatActivity {
                     Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    tripModel tmp = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
+                    tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
 
                     databaseHelper = new DatabaseHelper(addNewTrip.this);
-                    databaseHelper.addNewTrip(tmp);
+                    databaseHelper.addNewTrip(tmpTripModel);
                   //   Calendar cal = Calendar.getInstance();
                    //  cal.set(Calendar.HOUR,0);
                    //  cal.set(Calendar.MINUTE,0);
@@ -89,8 +91,12 @@ public class addNewTrip extends AppCompatActivity {
                    // System.out.println(tmp.getStartDate());
                    //  long res = Helper.calculateDifferenceTimeInMilli(tmpDateNow,tmp.getStartDate());
                   //   Toast.makeText(addNewTrip.this,new StringBuilder().append(res).toString(),Toast.LENGTH_SHORT).show();
-                    setNotificationTime(32400000);
-                    Intent i = new Intent(addNewTrip.this, myTrip.class);
+
+                    int ID = databaseHelper.getID();
+                    Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
+                    tmpTripModel.setId(ID);
+                    setNotificationTime(10*1000,tmpTripModel);
+                     Intent i = new Intent(addNewTrip.this, myTrip.class);
                     startActivity(i);
                 }
             }
@@ -110,7 +116,7 @@ public class addNewTrip extends AppCompatActivity {
                 datePickerDialogStartDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        String tmp = new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString();
+                        String tmp = String.valueOf(year) + '-' + (month + 1) + '-' + dayOfMonth;
                         String res = Helper.changeInputDateFormat(tmp);
                         startDate.setText(res);
                     }
@@ -175,15 +181,20 @@ public class addNewTrip extends AppCompatActivity {
         Toast.makeText(this,"I hide keyboard",Toast.LENGTH_SHORT).show();
     }
 
-    public void setNotificationTime(long milli)
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void setNotificationTime(long milli, tripModel passingData)
     {
         Intent intent = new Intent(addNewTrip.this,ReminderBroadcast.class);
-       // intent.putExtra("ALARM",1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(addNewTrip.this,10,intent,0);
+        Bundle extras = new Bundle();
+        extras.putString("Extra_tripName",passingData.getTripName());
+        extras.putInt("Extra_tripID",passingData.getId());
+        intent.putExtras(extras);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(addNewTrip.this,passingData.getId(),intent,0);
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         long timeAtButtonClicked = System.currentTimeMillis();
-        alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
+        //alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
+        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
         Toast.makeText(this,"ALARM SET!",Toast.LENGTH_SHORT).show();
     }
 

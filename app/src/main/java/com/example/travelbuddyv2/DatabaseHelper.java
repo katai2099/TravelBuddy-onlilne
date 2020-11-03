@@ -225,6 +225,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return tmp;
     }
 
+    public int getID()
+    {
+        int res=0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT MAX(ID) FROM TRIP" ;
+        Cursor cursor = db.rawQuery(QueryString,null,null);
+        if(cursor.moveToFirst()) res = cursor.getInt(0);
+        cursor.close();
+        db.close();
+        return res;
+    }
+
+    public String getTripName(int id)
+    {
+        String res="";
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT TRIP_NAME FROM TRIP WHERE ID = " + id ;
+        Cursor cursor = db.rawQuery(QueryString,null,null);
+        if(cursor.moveToFirst()) res = cursor.getString(0);
+        cursor.close();
+        db.close();
+        return res;
+    }
+
     public boolean checkIfTimeOverlappingExistingTrip(String time,int id,String curdate)
     {
         //We have to consider ID of TRIPNAME as well !!! FIX
