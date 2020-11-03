@@ -130,12 +130,18 @@ public class Helper {
         return startCal.get(Calendar.YEAR)==endCal.get(Calendar.YEAR) && startCal.get(Calendar.MONTH) == endCal.get(Calendar.MONTH) && startCal.get(Calendar.DATE) == endCal.get(Calendar.DATE);
     }
 
-    public static long calculateDifferenceTimeInMilli(Date timeNow,String timeStartDate)
+    public static long getStartDateInMilli(String timeStartDate)
     {
         long res;//TimeUnit
-        Date StartDate = Helper.stringToDate(timeStartDate);
-        res = StartDate.getTime() - timeNow.getTime();
-        return res;
+        Date startDate = Helper.stringToDate(timeStartDate);
+        Calendar epoch = Calendar.getInstance();
+        epoch.setTime(startDate);
+        epoch.add(Calendar.DATE,-1);
+        epoch.set(Calendar.MINUTE, 0);
+        epoch.set(Calendar.SECOND,0);
+        epoch.set(Calendar.HOUR,7);
+        Date dateInmilli = epoch.getTime();
+        return dateInmilli.getTime();
     }
 
     public void CheckIntentKey()
@@ -147,6 +153,33 @@ public class Helper {
             String key = it.next();
             System.out.println( key + " : " + bundle.get(key));
         }*/
+    }
+
+
+    public static long milliToSecond(long milli) {
+
+        long res = TimeUnit.MILLISECONDS.toSeconds(milli) % 60; // if not modulo we will get the exact second difference of Time
+        return res;
+    }
+
+    public static long milliToMinute(long milli){
+        long res = TimeUnit.MILLISECONDS.toMinutes(milli) % 60;
+        return res;
+    }
+
+    public static long milliToHour(long milli){
+        long res = TimeUnit.MILLISECONDS.toHours(milli) ;
+        return res;
+    }
+
+    public static long milliToDay(long milli){
+        long res = TimeUnit.MILLISECONDS.toDays(milli) % 365;
+        return res;
+    }
+
+    public static long milliToyear(long milli){
+        long res = TimeUnit.MILLISECONDS.toDays(milli)/365l;
+        return res;
     }
 
 }

@@ -8,10 +8,12 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
+import android.app.admin.SystemUpdateInfo;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -185,7 +187,7 @@ public class addNewTrip extends AppCompatActivity {
 
 
 
-    public void setNotificationTime(long milli, tripModel passingData)
+    public void setNotificationTime(long milli, tripModel passingData) // milli needed just for debug
     {
         Intent intent = new Intent(addNewTrip.this,ReminderBroadcast.class);
         Bundle extras = new Bundle();
@@ -193,15 +195,28 @@ public class addNewTrip extends AppCompatActivity {
         extras.putInt("Extra_tripID",passingData.getId());
         intent.putExtras(extras);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(addNewTrip.this,passingData.getId(),intent,0);
-
+        long timeToFireAnAlarm = Helper.getStartDateInMilli(passingData.getStartDate());
+        Date tmp = new Date(timeToFireAnAlarm);
+        Log.d("ADD NEW TRIP",tmp.toString());
+        //Toast.makeText(addNewTrip.this,tmp.toString(),Toast.LENGTH_SHORT).show();
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        long timeAtButtonClicked = System.currentTimeMillis();
+      //  long timeAtButtonClicked = System.currentTimeMillis();
         //alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
+          //  alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent); for debugging purpose
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
+        } else{
+            //alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent); for debugging purpose
+            alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
         }
-        else alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
-        Toast.makeText(this,"ALARM SET!",Toast.LENGTH_SHORT).show();
+        Date alarmFiredDate = new Date(System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()));
+        Log.d("ADD NEW TRIP", "Time alarm will fired: " + alarmFiredDate.toString());
+        long whatever = timeToFireAnAlarm-System.currentTimeMillis();
+        Log.d("ADD NEW TRIP", "Time in miili "+whatever);
+        long reminder = Helper.milliToHour(timeToFireAnAlarm-System.currentTimeMillis());
+        Log.d("ADD NEW TRIP", "Time in Hour: "+reminder);
+        Toast.makeText(this,"Send Notification in " + reminder + " Hour",Toast.LENGTH_SHORT).show();
     }
+
 
 }
