@@ -28,6 +28,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
         intents[0] = new Intent(context,MainActivity.class);
         intents[0].setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intents[1] = new Intent(context,tripDetail.class);
+        intents[1].setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intents[1].putExtra("TripID",k);
        // intents[1].setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -43,7 +44,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
       //  PendingIntent pendingIntent = PendingIntent.getActivities(context,0,intents,0);
 
-        PendingIntent pendingIntent = PendingIntent.getActivities(context,k,intents,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivities(context,k,intents,PendingIntent.FLAG_CANCEL_CURRENT);
 
   //      PendingIntent DeletePendingIntent = PendingIntent.getActivities(context,k,intents,pendingIntent.FLAG_UPDATE_CURRENT);
 

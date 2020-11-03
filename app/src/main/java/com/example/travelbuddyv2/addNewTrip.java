@@ -98,7 +98,7 @@ public class addNewTrip extends AppCompatActivity {
                     int ID = databaseHelper.getID();
                     Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
                     tmpTripModel.setId(ID);
-                    setNotificationTime(10*1000,tmpTripModel);
+                    setNotificationTime(60*1000,tmpTripModel);
                      Intent i = new Intent(addNewTrip.this, myTrip.class);
                     startActivity(i);
                 }
@@ -200,13 +200,13 @@ public class addNewTrip extends AppCompatActivity {
         Log.d("ADD NEW TRIP",tmp.toString());
         //Toast.makeText(addNewTrip.this,tmp.toString(),Toast.LENGTH_SHORT).show();
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-      //  long timeAtButtonClicked = System.currentTimeMillis();
+        long timeAtButtonClicked = System.currentTimeMillis();
         //alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          //  alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent); for debugging purpose
+           // alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent); //for debugging purpose
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
         } else{
-            //alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent); for debugging purpose
+          //  alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);// for debugging purpose
             alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
         }
         Date alarmFiredDate = new Date(System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()));
