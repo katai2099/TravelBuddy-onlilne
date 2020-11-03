@@ -6,8 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Helper {
+
+    static int uniqueNotificationID = 0;
 
     public static String changeInputTimeFormat(String time)
     {
@@ -121,6 +124,14 @@ public class Helper {
         endCal.setTime(tmpEndDate);
 
         return startCal.get(Calendar.YEAR)==endCal.get(Calendar.YEAR) && startCal.get(Calendar.MONTH) == endCal.get(Calendar.MONTH) && startCal.get(Calendar.DATE) == endCal.get(Calendar.DATE);
+    }
+
+    public static long calculateDifferenceTimeInMilli(Date timeNow,String timeStartDate)
+    {
+        long res;//TimeUnit
+        Date StartDate = Helper.stringToDate(timeStartDate);
+        res = StartDate.getTime() - timeNow.getTime();
+        return res;
     }
 
 }

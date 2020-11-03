@@ -3,6 +3,8 @@ package com.example.travelbuddyv2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        createNotificationChannel();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
       //  String time="23:12";
@@ -51,7 +54,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
+
+    private void createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "Notify Trip";
+            String description = "Channel for Trip Reminder";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("NotifyTrip",name,importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+            Toast.makeText(MainActivity.this,"Function Trigger!",Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

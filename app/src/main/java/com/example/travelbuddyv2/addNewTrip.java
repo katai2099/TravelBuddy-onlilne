@@ -3,7 +3,9 @@ package com.example.travelbuddyv2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -75,10 +77,19 @@ public class addNewTrip extends AppCompatActivity {
                 }
                 else {
                     tripModel tmp = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
-                    //  System.out.println(tmp.toString());
+
                     databaseHelper = new DatabaseHelper(addNewTrip.this);
                     databaseHelper.addNewTrip(tmp);
-                    // finish();
+                  //   Calendar cal = Calendar.getInstance();
+                   //  cal.set(Calendar.HOUR,0);
+                   //  cal.set(Calendar.MINUTE,0);
+                   //  cal.set(Calendar.SECOND,0);
+                  //   Date tmpDateNow = cal.getTime();
+                  //  System.out.println(tmpDateNow);
+                   // System.out.println(tmp.getStartDate());
+                   //  long res = Helper.calculateDifferenceTimeInMilli(tmpDateNow,tmp.getStartDate());
+                  //   Toast.makeText(addNewTrip.this,new StringBuilder().append(res).toString(),Toast.LENGTH_SHORT).show();
+                    setNotificationTime(32400000);
                     Intent i = new Intent(addNewTrip.this, myTrip.class);
                     startActivity(i);
                 }
@@ -163,4 +174,17 @@ public class addNewTrip extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         Toast.makeText(this,"I hide keyboard",Toast.LENGTH_SHORT).show();
     }
+
+    public void setNotificationTime(long milli)
+    {
+        Intent intent = new Intent(addNewTrip.this,ReminderBroadcast.class);
+       // intent.putExtra("ALARM",1);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(addNewTrip.this,10,intent,0);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        long timeAtButtonClicked = System.currentTimeMillis();
+        alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
+        Toast.makeText(this,"ALARM SET!",Toast.LENGTH_SHORT).show();
+    }
+
 }
