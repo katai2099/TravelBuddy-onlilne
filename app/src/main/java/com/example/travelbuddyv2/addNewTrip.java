@@ -3,6 +3,7 @@ package com.example.travelbuddyv2;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -181,7 +182,9 @@ public class addNewTrip extends AppCompatActivity {
         Toast.makeText(this,"I hide keyboard",Toast.LENGTH_SHORT).show();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
+
+
     public void setNotificationTime(long milli, tripModel passingData)
     {
         Intent intent = new Intent(addNewTrip.this,ReminderBroadcast.class);
@@ -194,7 +197,10 @@ public class addNewTrip extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         long timeAtButtonClicked = System.currentTimeMillis();
         //alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
-        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
+        }
+        else alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
         Toast.makeText(this,"ALARM SET!",Toast.LENGTH_SHORT).show();
     }
 
