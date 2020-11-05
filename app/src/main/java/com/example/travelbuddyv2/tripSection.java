@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2;
 
+import java.util.Collections;
 import java.util.List;
 
 public class tripSection {
@@ -19,6 +20,12 @@ public class tripSection {
     public List<tripModel> getTripList() {
         return tripList;
     }
+
+    public void sortTrip()
+    {
+        Collections.sort(tripList,new tripModel.SortbystartTime());
+    }
+
 }
 
 

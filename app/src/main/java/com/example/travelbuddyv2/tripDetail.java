@@ -16,6 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.w3c.dom.Text;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
             String sectionName = dateList.get(i);
             List<tripModel> sectionItems = databaseHelper.getTripListOnACertainDate(sectionName,tmpID);
             sectionList.add(new tripSection(sectionName,sectionItems));
+            sectionList.get(i).sortTrip();
         }
 
     }
@@ -177,7 +179,6 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         sectionList.clear();
         initData();
         mainrecycler.notifyDataSetChanged();
-
         Toast.makeText(this,"Resume",Toast.LENGTH_SHORT).show();
     }
 }

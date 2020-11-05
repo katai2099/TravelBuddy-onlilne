@@ -1,5 +1,7 @@
 package com.example.travelbuddyv2;
 
+import java.util.Comparator;
+
 public class tripModel {
 
     private int id;
@@ -130,4 +132,37 @@ public class tripModel {
     public void setId(int id) {
         this.id = id;
     }
+
+    static class SortbyDestination implements Comparator<tripModel>
+    {
+        public int compare(tripModel a, tripModel b)
+        {
+            return a.destination.compareTo(b.destination);
+        }
+    }
+
+    static class SortbystartTime implements Comparator<tripModel>
+    {
+        public int compare(tripModel a, tripModel b)
+        {
+            return a.startTime.compareTo(b.startTime);
+        }
+    }
+
+    static class SortbystartDate implements Comparator<tripModel>
+    {
+        public int compare(tripModel a, tripModel b)
+        {
+            return a.startDate.compareTo(b.startDate);
+        }
+    }
+
+    static class SortbyTripName implements Comparator<tripModel>
+    {
+        public int compare(tripModel a,tripModel b)
+        {
+            return a.tripName.compareTo(b.tripName);
+        }
+    }
+
 }

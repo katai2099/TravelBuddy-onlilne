@@ -61,4 +61,18 @@
         android:hint="Save"
         />
 
+    <EditText
+        android:id="@+id/etSetAlarmTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
+        android:hint="Set Alarm in Second"
+        app:layout_constraintBottom_toTopOf="@+id/etDepartDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etTripName" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

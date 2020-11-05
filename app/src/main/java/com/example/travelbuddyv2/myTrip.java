@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -34,6 +35,8 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
         rcVTripList.setLayoutManager(new LinearLayoutManager(this));
         databaseHelper = new DatabaseHelper(myTrip.this);
         list = databaseHelper.getTripList();
+        Collections.sort(list,new tripModel.SortbystartDate());
+
         myTripadapter = new myTripAdapter(this,list,this);
         rcVTripList.setAdapter(myTripadapter);
         rcVTripList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));

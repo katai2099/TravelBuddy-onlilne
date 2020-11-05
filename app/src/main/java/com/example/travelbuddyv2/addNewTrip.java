@@ -26,7 +26,7 @@ import java.util.Date;
 
 public class addNewTrip extends AppCompatActivity {
 
-    EditText tripName , startDate , endDate;
+    EditText tripName , startDate , endDate, setAlarmTime;
     Button btnSave;
     DatePickerDialog datePickerDialogStartDate,datePickerDialogEndDate;
     Calendar calendar ;
@@ -38,6 +38,8 @@ public class addNewTrip extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_trip);
         tripName = findViewById(R.id.etTripName);
+
+        setAlarmTime = findViewById(R.id.etSetAlarmTime);
 
         startDate = findViewById(R.id.etDepartDate);
         startDate.setInputType(InputType.TYPE_NULL);
@@ -54,6 +56,15 @@ public class addNewTrip extends AppCompatActivity {
                     hideKeyboard(v);
                 }
 
+            }
+        });
+
+        setAlarmTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    hideKeyboard(v);
+                }
             }
         });
 
@@ -94,13 +105,14 @@ public class addNewTrip extends AppCompatActivity {
                    // System.out.println(tmp.getStartDate());
                    //  long res = Helper.calculateDifferenceTimeInMilli(tmpDateNow,tmp.getStartDate());
                   //   Toast.makeText(addNewTrip.this,new StringBuilder().append(res).toString(),Toast.LENGTH_SHORT).show();
-
+                    int Time = Integer.parseInt(setAlarmTime.getText().toString());
                     int ID = databaseHelper.getID();
                     Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
                     tmpTripModel.setId(ID);
-                    setNotificationTime(60*1000,tmpTripModel);
+                    setNotificationTime(Time,tmpTripModel);
                      Intent i = new Intent(addNewTrip.this, myTrip.class);
                     startActivity(i);
+                    finish();
                 }
             }
         });
@@ -111,11 +123,14 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tripName.clearFocus();
+                setAlarmTime.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int date = calendar.get(Calendar.DATE);
 
+                if(Helper.isEditTextEmpty(startDate))
+                {
                 datePickerDialogStartDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -124,6 +139,23 @@ public class addNewTrip extends AppCompatActivity {
                         startDate.setText(res);
                     }
                 },year,month,date);
+                }
+                else{
+                    Date d = Helper.stringToDate(startDate.getText().toString());
+                    calendar.setTime(d);
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    date = calendar.get(Calendar.DATE);
+                    datePickerDialogStartDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            String tmp = String.valueOf(year) + '-' + (month + 1) + '-' + dayOfMonth;
+                            String res = Helper.changeInputDateFormat(tmp);
+                            startDate.setText(res);
+                        }
+                    },year,month,date);
+
+                }
 
                 Calendar tmpcal = Calendar.getInstance();
                 datePickerDialogStartDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
@@ -136,19 +168,35 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tripName.clearFocus();
+                setAlarmTime.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int date = calendar.get(Calendar.DATE);
-
-                datePickerDialogEndDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        String tmp = new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString();
-                        String res = Helper.changeInputDateFormat(tmp);
-                        endDate.setText(res);
-                    }
-                },year,month,date);
+                if(Helper.isEditTextEmpty(endDate)) {
+                    datePickerDialogEndDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            String tmp = new StringBuilder().append(year).append('-').append(month + 1).append('-').append(dayOfMonth).toString();
+                            String res = Helper.changeInputDateFormat(tmp);
+                            endDate.setText(res);
+                        }
+                    }, year, month, date);
+                }else{
+                    Date d = Helper.stringToDate(endDate.getText().toString());
+                    calendar.setTime(d);
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    date = calendar.get(Calendar.DATE);
+                    datePickerDialogEndDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            String tmp = new StringBuilder().append(year).append('-').append(month + 1).append('-').append(dayOfMonth).toString();
+                            String res = Helper.changeInputDateFormat(tmp);
+                            endDate.setText(res);
+                        }
+                    }, year, month, date);
+                }
 
                 if(!Helper.isEditTextEmpty(startDate))
                 {
@@ -166,7 +214,6 @@ public class addNewTrip extends AppCompatActivity {
 
                     Calendar tmpcal = Calendar.getInstance();
                     datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
-
                 }
                 datePickerDialogEndDate.show();
 
@@ -203,13 +250,14 @@ public class addNewTrip extends AppCompatActivity {
         long timeAtButtonClicked = System.currentTimeMillis();
         //alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-           // alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent); //for debugging purpose
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
+           // alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
         } else{
-          //  alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);// for debugging purpose
-            alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent);// for debugging purpose
+           // alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
         }
-        Date alarmFiredDate = new Date(System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()));
+        //Date alarmFiredDate = new Date(System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()));
+        Date alarmFiredDate = new Date(System.currentTimeMillis() + milli*1000);
         Log.d("ADD NEW TRIP", "Time alarm will fired: " + alarmFiredDate.toString());
         long whatever = timeToFireAnAlarm-System.currentTimeMillis();
         Log.d("ADD NEW TRIP", "Time in miili "+whatever);

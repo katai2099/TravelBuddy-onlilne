@@ -82,19 +82,38 @@ public class EditTrip extends AppCompatActivity {
         timePicker1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DestinationField.clearFocus();
                 calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR);
                 int min = calendar.get(Calendar.MINUTE);
 
-                timePickerDialogStartTime = new TimePickerDialog(EditTrip.this,3, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
-                        String end_res = Helper.changeInputTimeFormat(tmp_time);
-                        timePicker1.setText(end_res);
-                    }
-                },hour,min,true);
+                if(Helper.isEditTextEmpty(timePicker1)) {
+
+                    timePickerDialogStartTime = new TimePickerDialog(EditTrip.this, 3, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
+                            String end_res = Helper.changeInputTimeFormat(tmp_time);
+                            timePicker1.setText(end_res);
+                        }
+                    }, hour, min, true);
+
+                }else{
+                    Date tmp = Helper.stringToTime(timePicker1.getText().toString());
+                    calendar.setTime(tmp);
+                    hour = calendar.get(Calendar.HOUR);
+                    min = calendar.get(Calendar.MINUTE);
+
+                    timePickerDialogStartTime = new TimePickerDialog(EditTrip.this, 3, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
+                            String end_res = Helper.changeInputTimeFormat(tmp_time);
+                            timePicker1.setText(end_res);
+                        }
+                    }, hour, min, true);
+
+                }
                 timePickerDialogStartTime.show();
             }
         });
@@ -102,19 +121,39 @@ public class EditTrip extends AppCompatActivity {
         timePicker2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DestinationField.clearFocus();
                 calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR);
                 int min = calendar.get(Calendar.MINUTE);
 
-                timePickerDialogEndTime = new TimePickerDialog(EditTrip.this,3, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
-                        String end_res = Helper.changeInputTimeFormat(tmp_time);
-                        timePicker2.setText(end_res);
-                    }
-                },hour,min,true);
+                if(Helper.isEditTextEmpty(timePicker2)) {
+
+                    timePickerDialogEndTime = new TimePickerDialog(EditTrip.this, 3, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
+                            String end_res = Helper.changeInputTimeFormat(tmp_time);
+                            timePicker2.setText(end_res);
+                        }
+                    }, hour, min, true);
+
+                }
+                else{
+                    Date tmp = Helper.stringToTime(timePicker2.getText().toString());
+                    calendar.setTime(tmp);
+                    hour = calendar.get(Calendar.HOUR);
+                    min = calendar.get(Calendar.MINUTE);
+
+                    timePickerDialogEndTime = new TimePickerDialog(EditTrip.this, 3, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
+                            String end_res = Helper.changeInputTimeFormat(tmp_time);
+                            timePicker2.setText(end_res);
+                        }
+                    }, hour, min, true);
+
+                }
                 timePickerDialogEndTime.show();
             }
         });
@@ -124,20 +163,38 @@ public class EditTrip extends AppCompatActivity {
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DestinationField.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int date = calendar.get(Calendar.DATE);
 
-                datePickerDialog = new DatePickerDialog(EditTrip.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        String tmpDate = new StringBuilder().append(year).append('-').append(month+1).append('-').append(dayOfMonth).toString();
-                        String end_res = Helper.changeInputDateFormat(tmpDate);
-                        datePicker.setText(end_res);
-                    }
-                },year,month,date);
+                if(Helper.isEditTextEmpty(datePicker)) {
+                    datePickerDialog = new DatePickerDialog(EditTrip.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            String tmpDate = new StringBuilder().append(year).append('-').append(month + 1).append('-').append(dayOfMonth).toString();
+                            String end_res = Helper.changeInputDateFormat(tmpDate);
+                            datePicker.setText(end_res);
+                        }
+                    }, year, month, date);
+                }else{
+                    Date tmp = Helper.stringToDate(datePicker.getText().toString());
+                    calendar.setTime(tmp);
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    date = calendar.get(Calendar.DATE);
+
+                    datePickerDialog = new DatePickerDialog(EditTrip.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            String tmpDate = new StringBuilder().append(year).append('-').append(month + 1).append('-').append(dayOfMonth).toString();
+                            String end_res = Helper.changeInputDateFormat(tmpDate);
+                            datePicker.setText(end_res);
+                        }
+                    }, year, month, date);
+
+                }
 
 
                 String startDate = databaseHelper.getStartDateOfTrip(tmpID);

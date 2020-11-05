@@ -78,8 +78,10 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
         timePicker1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DestinationField.clearFocus();
                 calendar = Calendar.getInstance();
+                Date t1 = Helper.stringToTime(timePicker1.getText().toString());
+                calendar.setTime(t1);
                 int hour = calendar.get(Calendar.HOUR);
                 int min = calendar.get(Calendar.MINUTE);
 
@@ -98,8 +100,10 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
         timePicker2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DestinationField.clearFocus();
                 calendar = Calendar.getInstance();
+                Date t2 = Helper.stringToTime(timePicker2.getText().toString());
+                calendar.setTime(t2);
                 int hour = calendar.get(Calendar.HOUR);
                 int min = calendar.get(Calendar.MINUTE);
 
@@ -118,8 +122,10 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DestinationField.clearFocus();
                 calendar = Calendar.getInstance();
+                Date show = Helper.stringToDate(datePicker.getText().toString());
+                calendar.setTime(show);
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int date = calendar.get(Calendar.DATE);
