@@ -200,27 +200,14 @@ public class EditTrip extends AppCompatActivity {
                 String startDate = databaseHelper.getStartDateOfTrip(tmpID);
                 String endDate = databaseHelper.getEndDateOfTrip(tmpID);
                 Date tmpdate = Helper.stringToDate(startDate);
-                int yeartmp = tmpdate.getYear()+1900;
-                System.out.println(yeartmp);
-                int monthtmp = tmpdate.getMonth();
-                int daytmp = tmpdate.getDate();
                 Calendar tmpcal = Calendar.getInstance();
-                tmpcal.set(yeartmp,monthtmp,daytmp,0,0,0);
+                tmpcal.setTime(tmpdate);
                 datePickerDialog.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
                 Date tmpdate2 = Helper.stringToDate(endDate);
-                int yeartmp2 = tmpdate2.getYear()+1900;
-                int monthtmp2 = tmpdate2.getMonth();
-                int daytmp2 = tmpdate2.getDate();
                 Calendar tmpcal2 = Calendar.getInstance();
-                tmpcal2.set(yeartmp2,monthtmp2,daytmp2,0,0,0);
+                tmpcal2.setTime(tmpdate2);
                 datePickerDialog.getDatePicker().setMaxDate(tmpcal2.getTimeInMillis());
 
-              /*code to set min date
-
-                int yeartmp=2020, monthtmp=10, daytmp=5; // for min. date: 1. feb. 2017
-                Calendar cal = Calendar.getInstance();
-                cal.set( yeartmp, monthtmp, daytmp, 0, 0, 0 ); //hour=0 min=0 sec=0
-                datePickerDialog.getDatePicker().setMinDate(cal.getTimeInMillis());*/
 
                 datePickerDialog.show();
             }

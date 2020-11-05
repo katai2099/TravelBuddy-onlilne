@@ -173,7 +173,15 @@ public class addNewTrip extends AppCompatActivity {
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int date = calendar.get(Calendar.DATE);
-                if(Helper.isEditTextEmpty(endDate)) {
+
+                if(!Helper.isEditTextEmpty(startDate) && Helper.isEditTextEmpty(endDate)){
+
+                    Date d = Helper.stringToDate(startDate.getText().toString());
+                    calendar.setTime(d);
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    date = calendar.get(Calendar.DATE);
+
                     datePickerDialogEndDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -182,7 +190,21 @@ public class addNewTrip extends AppCompatActivity {
                             endDate.setText(res);
                         }
                     }, year, month, date);
+
+                }
+                else if(Helper.isEditTextEmpty(endDate)) {
+
+                    datePickerDialogEndDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            String tmp = new StringBuilder().append(year).append('-').append(month + 1).append('-').append(dayOfMonth).toString();
+                            String res = Helper.changeInputDateFormat(tmp);
+                            endDate.setText(res);
+                        }
+                    }, year, month, date);
+
                 }else{
+
                     Date d = Helper.stringToDate(endDate.getText().toString());
                     calendar.setTime(d);
                     year = calendar.get(Calendar.YEAR);
@@ -196,25 +218,12 @@ public class addNewTrip extends AppCompatActivity {
                             endDate.setText(res);
                         }
                     }, year, month, date);
-                }
 
-                if(!Helper.isEditTextEmpty(startDate))
-                {
-                    String tmpStartDate = Helper.changeInputDateFormat(startDate.getText().toString());
-                    Date tmpdate = Helper.stringToDate(tmpStartDate);
-                    int yeartmp = tmpdate.getYear()+1900;
-                    System.out.println(yeartmp);
-                    int monthtmp = tmpdate.getMonth();
-                    int daytmp = tmpdate.getDate();
-                    Calendar tmpcal = Calendar.getInstance();
-                    tmpcal.set(yeartmp,monthtmp,daytmp,0,0,0);
-                    datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
                 }
-                else{
 
                     Calendar tmpcal = Calendar.getInstance();
                     datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
-                }
+
                 datePickerDialogEndDate.show();
 
             }

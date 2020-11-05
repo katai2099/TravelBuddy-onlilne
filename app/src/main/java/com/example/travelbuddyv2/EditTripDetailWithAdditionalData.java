@@ -143,19 +143,12 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
                 String startDate = databaseHelper.getStartDateOfTrip(tmp.getId());
                 String endDate = databaseHelper.getEndDateOfTrip(tmp.getId());
                 Date tmpdate = Helper.stringToDate(startDate);
-                int yeartmp = tmpdate.getYear()+1900;
-                System.out.println(yeartmp);
-                int monthtmp = tmpdate.getMonth();
-                int daytmp = tmpdate.getDate();
                 Calendar tmpcal = Calendar.getInstance();
-                tmpcal.set(yeartmp,monthtmp,daytmp,0,0,0);
+                tmpcal.setTime(tmpdate);
                 datePickerDialog.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
                 Date tmpdate2 = Helper.stringToDate(endDate);
-                int yeartmp2 = tmpdate2.getYear()+1900;
-                int monthtmp2 = tmpdate2.getMonth();
-                int daytmp2 = tmpdate2.getDate();
                 Calendar tmpcal2 = Calendar.getInstance();
-                tmpcal2.set(yeartmp2,monthtmp2,daytmp2,0,0,0);
+                tmpcal2.setTime(tmpdate2);
                 datePickerDialog.getDatePicker().setMaxDate(tmpcal2.getTimeInMillis());
 
 
