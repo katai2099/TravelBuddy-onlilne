@@ -27,6 +27,8 @@ import java.util.List;
 
 public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter.mainAdapterListener , childRecyclerAdapter.ChildAdapterListener {
 
+
+
     FloatingActionButton fabEditInformation;
     int tmpID;
     RecyclerView rcvTripDetail;

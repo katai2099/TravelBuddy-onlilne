@@ -22,6 +22,7 @@ public class tripModel {
         this.endDate = endDate;
     }
 
+
     public tripModel(int id,int idforListDetail,String currentDate,String destination,String startTime,String endTime)
     {
         this.id = id ;

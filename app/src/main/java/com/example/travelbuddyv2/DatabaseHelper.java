@@ -249,6 +249,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    //for setting the alarm after device restart
+    public List<tripModel> getTripWhereStartDateIsGreaterThanCurrentDate(String curdate)
+    {
+        List <tripModel> lists = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT ID,TRIP_NAME,START_DATE,END_DATE FROM TRIP WHERE START_DATE >=" + "'" + curdate + "'" ;
+        Cursor cursor  = db.rawQuery(QueryString,null,null);
+        if(cursor.moveToFirst()){
+            do{
+                int tmpID = cursor.getInt(0);
+                String tmpName = cursor.getString(1);
+                String tmpStartDate = cursor.getString(2);
+                String tmpEndDate = cursor.getString(3);
+
+                tripModel tmpTrip = new tripModel(tmpID,tmpName,tmpStartDate,tmpEndDate);
+                lists.add(tmpTrip);
+
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return lists;
+    }
+
     public boolean checkIfTimeOverlappingExistingTrip(String time,int id,String curdate)
     {
         //We have to consider ID of TRIPNAME as well !!! FIX

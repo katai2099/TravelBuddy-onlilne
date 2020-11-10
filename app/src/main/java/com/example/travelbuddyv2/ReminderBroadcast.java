@@ -1,25 +1,35 @@
 package com.example.travelbuddyv2;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+
+
 public class ReminderBroadcast extends BroadcastReceiver {
+
+    private static final String tag="ReminderBroadcast";
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
-
+        Log.i(tag,"I trigger set alarm");
         Bundle bundle = intent.getExtras();
-
 
         String extraTripName = bundle.getString("Extra_tripName");
         int k = bundle.getInt("Extra_tripID");
@@ -63,4 +73,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(k,builder.build());
     }
+
+
+
 }

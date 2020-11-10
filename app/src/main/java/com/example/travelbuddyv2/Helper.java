@@ -144,6 +144,13 @@ public class Helper {
         return dateInmilli.getTime();
     }
 
+    public static String dateToString(Date d)
+    {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String res = simpleDateFormat.format(d);
+        return res;
+    }
+
     public void CheckIntentKey()
     {
        /* Bundle bundle = getIntent().getExtras();

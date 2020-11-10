@@ -13,6 +13,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.icu.lang.UCharacter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("katai","firsttry");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_trip);
         rcVTripList = findViewById(R.id.rcvTripList);
