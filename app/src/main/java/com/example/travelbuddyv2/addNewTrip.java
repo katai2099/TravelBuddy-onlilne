@@ -96,15 +96,6 @@ public class addNewTrip extends AppCompatActivity {
 
                     databaseHelper = new DatabaseHelper(addNewTrip.this);
                     databaseHelper.addNewTrip(tmpTripModel);
-                  //   Calendar cal = Calendar.getInstance();
-                   //  cal.set(Calendar.HOUR,0);
-                   //  cal.set(Calendar.MINUTE,0);
-                   //  cal.set(Calendar.SECOND,0);
-                  //   Date tmpDateNow = cal.getTime();
-                  //  System.out.println(tmpDateNow);
-                   // System.out.println(tmp.getStartDate());
-                   //  long res = Helper.calculateDifferenceTimeInMilli(tmpDateNow,tmp.getStartDate());
-                  //   Toast.makeText(addNewTrip.this,new StringBuilder().append(res).toString(),Toast.LENGTH_SHORT).show();
                     int Time = Integer.parseInt(setAlarmTime.getText().toString());
                     int ID = databaseHelper.getID();
                     Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
@@ -158,7 +149,8 @@ public class addNewTrip extends AppCompatActivity {
                 }
 
                 Calendar tmpcal = Calendar.getInstance();
-                datePickerDialogStartDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
+                // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
+             //   datePickerDialogStartDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
 
                 datePickerDialogStartDate.show();
             }
@@ -222,7 +214,8 @@ public class addNewTrip extends AppCompatActivity {
                 }
 
                     Calendar tmpcal = Calendar.getInstance();
-                    datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
+                // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
+                 //   datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
 
                 datePickerDialogEndDate.show();
 
@@ -253,29 +246,27 @@ public class addNewTrip extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(addNewTrip.this,passingData.getId(),intent,0);
         long timeToFireAnAlarm = Helper.getStartDateInMilli(passingData.getStartDate());
         Date tmp = new Date(timeToFireAnAlarm);
-        Log.d("ADD NEW TRIP",tmp.toString());
-        //Toast.makeText(addNewTrip.this,tmp.toString(),Toast.LENGTH_SHORT).show();
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        long timeAtButtonClicked = System.currentTimeMillis();
-        //alarmManager.set(AlarmManager.RTC_WAKEUP,timeAtButtonClicked+milli,pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
-           // alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
+
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
+          //  alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
             Toast.makeText(getApplicationContext(),"I AM USING NEW VERSION ALARM",Toast.LENGTH_SHORT).show();
         } else{
             alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent);// for debugging purpose
            // alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
             Toast.makeText(getApplicationContext(),"I AM USING OLD VERSION ALARM",Toast.LENGTH_SHORT).show();
         }
-        //Date alarmFiredDate = new Date(System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()));
-        Date alarmFiredDate = new Date(System.currentTimeMillis() + milli*1000);
+
+        /*Date alarmFiredDate = new Date(System.currentTimeMillis() + milli*1000);
         Log.d("ADD NEW TRIP", "Time alarm will fired: " + alarmFiredDate.toString());
         long whatever = timeToFireAnAlarm-System.currentTimeMillis();
         Log.d("ADD NEW TRIP", "Time in miili "+whatever);
         long reminder = Helper.milliToHour(timeToFireAnAlarm-System.currentTimeMillis());
         Log.d("ADD NEW TRIP", "Time in Hour: "+reminder);
-        Toast.makeText(this,"Send Notification in " + reminder + " Hour",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Send Notification in " + reminder + " Hour",Toast.LENGTH_SHORT).show(); */
     }
+
 
 
 }

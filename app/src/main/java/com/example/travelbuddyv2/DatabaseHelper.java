@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTripTable = "CREATE TABLE TRIP (ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,START_DATE DATE,END_DATE DATE)";
+        String createTripTable = "CREATE TABLE TRIP (ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,START_DATE DATE,END_DATE DATE,IS_NOTIFIED INTEGER)";
         String createTripDetailTable = "CREATE TABLE TRIP_DETAIL (ID INTEGER,TRIP_ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,CUR_DATE DATE,START_TIME TIME,END_TIME TIME,DESTINATION TEXT)";
         db.execSQL(createTripTable);
         db.execSQL(createTripDetailTable);
@@ -30,6 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    //function to be called to add new trip in addNewTrip.class
     public boolean addNewTrip(tripModel trip) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -37,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put("TRIP_NAME", trip.getTripName());
         cv.put("START_DATE", trip.getStartDate());
         cv.put("END_DATE", trip.getEndDate());
+        cv.put("IS_NOTIFIED",trip.getIs_notified());
 
         long insert = db.insert("TRIP", null, cv);
 
@@ -45,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else return true;
     }
 
-
+    //function to be called to add trip detail in TripDetail.class
     public boolean addTripDetail(tripModel trip) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -85,6 +87,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (insert == -1) {
             return false;
         } else return true;
+    }
+
+    public boolean updateIsNotifiedAfterNotificationShowed(int ID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("IS_NOTIFIED",1); // better to make constant value of NOTIFIED & NOTYETNOTIFIED
+
+        String tmp = new StringBuilder().append(ID).toString();
+        String whereClause = "ID = ?";
+        String args [] = new String [] {tmp};
+
+        long insert = db.update("TRIP",cv,whereClause,args);
+
+        if(insert == -1){
+            return false;
+        }  else return  true;
 
     }
 
@@ -202,7 +220,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-
+    // to be called when user try to edit an existing trip detail in EditTripDetailWithAdditionalData.class
     public tripModel getEditDetail(int id)
     {
         int id1=0,id2=0;
@@ -250,11 +268,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //for setting the alarm after device restart
-    public List<tripModel> getTripWhereStartDateIsGreaterThanCurrentDate(String curdate)
+    public List<tripModel> getTripWhereNotificatonHasNotBeenFired()
     {
         List <tripModel> lists = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String QueryString = "SELECT ID,TRIP_NAME,START_DATE,END_DATE FROM TRIP WHERE START_DATE >=" + "'" + curdate + "'" ;
+       // String QueryString = "SELECT ID,TRIP_NAME,START_DATE,END_DATE FROM TRIP WHERE START_DATE >=" + "'" + curdate + "'" ;
+        String QueryString = "SELECT ID,TRIP_NAME,START_DATE,END_DATE FROM TRIP WHERE IS_NOTIFIED = " + 0;
         Cursor cursor  = db.rawQuery(QueryString,null,null);
         if(cursor.moveToFirst()){
             do{

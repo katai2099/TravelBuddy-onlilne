@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,8 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        DatabaseHelper db = new DatabaseHelper(context);
 
         Log.i(tag,"I trigger set alarm");
         Bundle bundle = intent.getExtras();
@@ -59,11 +62,28 @@ public class ReminderBroadcast extends BroadcastReceiver {
   //      PendingIntent DeletePendingIntent = PendingIntent.getActivities(context,k,intents,pendingIntent.FLAG_UPDATE_CURRENT);
 
 //        DeletePendingIntent.cancel();
+        String toNotified="";
+        Date d = new Date();
+        Date startDate = Helper.stringToDate(db.getStartDateOfTrip(k));
+        Date endDate = Helper.stringToDate(db.getEndDateOfTrip(k));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(endDate);
+        cal.set(Calendar.SECOND,59);
+        cal.set(Calendar.MINUTE,59);
+        cal.set(Calendar.HOUR,23);
+        Date ModifiedEndDate = cal.getTime();
+        if(startDate.before(d) && ModifiedEndDate.before(d))
+            toNotified = "You missed your " + extraTripName + " Trip !!";
+        else if(d.before(startDate))
+            toNotified = "You have " + extraTripName + " Trip Tomorrow";
+        else if(startDate.before(d))
+            toNotified = "You have " + extraTripName + " Trip Today";
+
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"NotifyTrip")
                 .setSmallIcon(R.drawable.weirdicon)
                 .setContentTitle("Trip Reminder")
-                .setContentText("You have " + extraTripName + " Trip Tomorrow!")
+                .setContentText(toNotified)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
@@ -72,7 +92,12 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(k,builder.build());
+
+
+        db.updateIsNotifiedAfterNotificationShowed(k);
+
     }
+
 
 
 

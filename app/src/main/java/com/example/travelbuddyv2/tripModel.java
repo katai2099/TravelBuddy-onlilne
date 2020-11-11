@@ -13,6 +13,7 @@ public class tripModel {
     private String startTime;
     private String endTime;
     private String destination;
+    private int is_notified;
 
     //To Retrieve Date from database
     public tripModel(int id, String tripName, String startDate, String endDate) {
@@ -47,11 +48,12 @@ public class tripModel {
 
 
 
-    //To insert into database
+    //To insert into database addNewTrip.class
     public tripModel(String tripName, String startDate, String endDate) {
         this.tripName = tripName;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.is_notified = 0;
     }
 
     //To insert into database
@@ -132,6 +134,14 @@ public class tripModel {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIs_notified() {
+        return is_notified;
+    }
+
+    public void setIs_notified(int is_notified) {
+        this.is_notified = is_notified;
     }
 
     static class SortbyDestination implements Comparator<tripModel>
