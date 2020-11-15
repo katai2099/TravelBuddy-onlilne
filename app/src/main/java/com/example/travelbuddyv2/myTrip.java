@@ -65,7 +65,7 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            Toast.makeText(myTrip.this,"You have swipe " + new StringBuilder().append(viewHolder.getAdapterPosition()).toString(),Toast.LENGTH_SHORT).show();
+        //    Toast.makeText(myTrip.this,"You have swipe " + new StringBuilder().append(viewHolder.getAdapterPosition()).toString(),Toast.LENGTH_SHORT).show();
             databaseHelper = new DatabaseHelper(myTrip.this);
             databaseHelper.DeleteTrip(list.get(viewHolder.getAdapterPosition()).getId());
             AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);

@@ -98,7 +98,7 @@ public class addNewTrip extends AppCompatActivity {
                     databaseHelper.addNewTrip(tmpTripModel);
                     int Time = Integer.parseInt(setAlarmTime.getText().toString());
                     int ID = databaseHelper.getID();
-                    Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
                     tmpTripModel.setId(ID);
                     setNotificationTime(Time,tmpTripModel);
                      Intent i = new Intent(addNewTrip.this, myTrip.class);
@@ -230,7 +230,7 @@ public class addNewTrip extends AppCompatActivity {
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        Toast.makeText(this,"I hide keyboard",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"I hide keyboard",Toast.LENGTH_SHORT).show();
     }
 
 
@@ -249,13 +249,13 @@ public class addNewTrip extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-           // alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
-            Toast.makeText(getApplicationContext(),"I AM USING NEW VERSION ALARM",Toast.LENGTH_SHORT).show();
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
+        //    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
+           // Toast.makeText(getApplicationContext(),"I AM USING NEW VERSION ALARM",Toast.LENGTH_SHORT).show();
         } else{
-            alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent);// for debugging purpose
-           // alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (timeToFireAnAlarm-System.currentTimeMillis()),pendingIntent);
-            Toast.makeText(getApplicationContext(),"I AM USING OLD VERSION ALARM",Toast.LENGTH_SHORT).show();
+            alarmManager.set(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
+          // alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent);// for debugging purpose
+           // Toast.makeText(getApplicationContext(),"I AM USING OLD VERSION ALARM",Toast.LENGTH_SHORT).show();
         }
 
         /*Date alarmFiredDate = new Date(System.currentTimeMillis() + milli*1000);

@@ -45,8 +45,8 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
         }
 
         databaseHelper = new DatabaseHelper(this);
-        Toast.makeText(this,"ID of TRIP is "+String.valueOf(tmpTripID),Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"ID of TRIP_DETAIL is "+String.valueOf(tmpTripDetailID),Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this,"ID of TRIP is "+String.valueOf(tmpTripID),Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this,"ID of TRIP_DETAIL is "+String.valueOf(tmpTripDetailID),Toast.LENGTH_SHORT).show();
 
 
         btnSubmit = findViewById(R.id.btnSubmitEdit);
@@ -217,13 +217,7 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
             }
         });
 
-
-
-
-
     }
-
-
 
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);

@@ -48,7 +48,7 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         String title = db.getTripName(tmpID);
         this.setTitle(title);
 
-        Toast.makeText(this,"ID of TRIP is "+ String.valueOf(tmpID),Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this,"ID of TRIP is "+ String.valueOf(tmpID),Toast.LENGTH_SHORT).show();
 
         rcvTripDetail = findViewById(R.id.rcvTripDetailList);
         rcvTripDetail.setLayoutManager(new LinearLayoutManager(this));
@@ -131,7 +131,7 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
 
     @Override
     public void onTitleClicked(int position) {
-        Toast.makeText(this,new StringBuilder().append(position).append(" Parent Clicked").toString(),Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this,new StringBuilder().append(position).append(" Parent Clicked").toString(),Toast.LENGTH_SHORT).show();
     }
 
     @Override
