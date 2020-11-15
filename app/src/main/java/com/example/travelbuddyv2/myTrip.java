@@ -30,7 +30,6 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("katai","firsttry");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_trip);
         rcVTripList = findViewById(R.id.rcvTripList);

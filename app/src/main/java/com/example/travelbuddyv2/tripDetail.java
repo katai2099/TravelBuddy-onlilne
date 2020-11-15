@@ -47,9 +47,9 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         DatabaseHelper db = new DatabaseHelper(this);
         String title = db.getTripName(tmpID);
         this.setTitle(title);
-       // initData();
-        Toast.makeText(this,new StringBuilder().append(tmpID).toString(),Toast.LENGTH_SHORT).show();
-//        System.out.println(sectionList.get(0).getTripList().get(0).toString());
+
+        Toast.makeText(this,"ID of TRIP is "+ String.valueOf(tmpID),Toast.LENGTH_SHORT).show();
+
         rcvTripDetail = findViewById(R.id.rcvTripDetailList);
         rcvTripDetail.setLayoutManager(new LinearLayoutManager(this));
         mainrecycler = new mainRecyclerAdapter(sectionList,this,this);
@@ -158,7 +158,11 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
     @Override
     public void onItemClickedToEdit(int position) {
         Intent i = new Intent(tripDetail.this,EditTripDetailWithAdditionalData.class);
-        i.putExtra("extra",position);
+        Bundle extras = new Bundle();
+        extras.putInt("extra_tripDetail_ID",position);
+        extras.putInt("extra_trip_ID",tmpID);
+       // i.putExtra("extra",position);
+        i.putExtras(extras);
         startActivity(i);
     }
 
@@ -181,6 +185,6 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         sectionList.clear();
         initData();
         mainrecycler.notifyDataSetChanged();
-        Toast.makeText(this,"Resume",Toast.LENGTH_SHORT).show();
+
     }
 }

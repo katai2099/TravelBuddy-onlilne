@@ -57,7 +57,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
       //  PendingIntent pendingIntent = PendingIntent.getActivities(context,0,intents,0);
 
-        PendingIntent pendingIntent = PendingIntent.getActivities(context,k,intents,PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivities(context,k,intents,0);
 
   //      PendingIntent DeletePendingIntent = PendingIntent.getActivities(context,k,intents,pendingIntent.FLAG_UPDATE_CURRENT);
 

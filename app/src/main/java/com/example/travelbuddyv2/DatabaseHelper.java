@@ -313,6 +313,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor.getCount() > 0 ;
     }
 
+    /* The following functions is meant for EditTripDetailWithAdditionalData
+        we have to consider both TripID and TripDetailID
+     */
+
+    //Check if existing trips exist on the given interval but not itself
+    public boolean checkIfTimeIntervalExistInEditWithAdditionalData(String startTime,String endTime,int TripID,int tripDetailID,String curdate)
+    {
+        //we consider The ID of Trip and startTime and Endtime on the currentDate
+        //Return true if there is an existing trip on that exact time
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE ID = "+ TripID + " AND CUR_DATE ='" + curdate+ "' AND START_TIME = '" + startTime + "' AND END_TIME = '"+ endTime +"' AND TRIP_ID <> "+ tripDetailID;
+        Cursor cursor = db.rawQuery(QueryString,null);
+        return cursor.getCount() > 0 ;
+    }
+
+    //Check if input time overlapping an existing trip time but not itself
+    public boolean checkIfTimeOverlappingExistingTripInEditWithAdditionalData(String time,int TripID,int tripDetailID,String curdate)
+    {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT * FROM TRIP_DETAIL WHERE ID = " + TripID + " AND CUR_DATE = '"+ curdate+ "' AND START_TIME < '" + time + "' AND END_TIME > '" + time +"' AND TRIP_ID <> " + tripDetailID;
+        Cursor cursor = db.rawQuery(QueryString,null);
+        return cursor.getCount() > 0;
+    }
+
+
 
 
 

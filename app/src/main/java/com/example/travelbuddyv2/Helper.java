@@ -77,6 +77,10 @@ public class Helper {
         return true;
     }
 
+    public static void clearEdittext(EditText editText){
+        editText.getText().clear();
+    }
+
     public static boolean checkIfStartTimeBeforeEndTime(String startTime,String endTime)
     {
         Calendar startCal , endCal ;

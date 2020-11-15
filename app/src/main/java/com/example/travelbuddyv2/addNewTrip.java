@@ -249,8 +249,8 @@ public class addNewTrip extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
-          //  alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
+           // alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
             Toast.makeText(getApplicationContext(),"I AM USING NEW VERSION ALARM",Toast.LENGTH_SHORT).show();
         } else{
             alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent);// for debugging purpose

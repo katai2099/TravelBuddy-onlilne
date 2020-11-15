@@ -29,7 +29,7 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
     EditText timePicker1 , timePicker2 , datePicker , DestinationField;
     Calendar calendar;
     Button btnSubmit;
-    int tmpID;
+    int tmpTripID,tmpTripDetailID;
     tripModel tmp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +40,13 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
 
         if(extra!=null)
         {
-            tmpID = extra.getInt("extra");
+            tmpTripID = extra.getInt("extra_trip_ID");
+            tmpTripDetailID = extra.getInt("extra_tripDetail_ID");
         }
 
         databaseHelper = new DatabaseHelper(this);
-        Toast.makeText(this,new StringBuilder().append(tmpID).toString(),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"ID of TRIP is "+String.valueOf(tmpTripID),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"ID of TRIP_DETAIL is "+String.valueOf(tmpTripDetailID),Toast.LENGTH_SHORT).show();
 
 
         btnSubmit = findViewById(R.id.btnSubmitEdit);
@@ -68,7 +70,7 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
 
 
 
-        tmp = databaseHelper.getEditDetail(tmpID);
+        tmp = databaseHelper.getEditDetail(tmpTripDetailID);
         timePicker1.setText(tmp.getStartTime());
         timePicker2.setText(tmp.getEndTime());
         datePicker.setText(tmp.getCurrentDate());
@@ -85,7 +87,7 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
                 int hour = calendar.get(Calendar.HOUR);
                 int min = calendar.get(Calendar.MINUTE);
 
-                timePickerDialogStartTime = new TimePickerDialog(EditTripDetailWithAdditionalData.this, new TimePickerDialog.OnTimeSetListener() {
+                timePickerDialogStartTime = new TimePickerDialog(EditTripDetailWithAdditionalData.this,3, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
@@ -107,7 +109,7 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
                 int hour = calendar.get(Calendar.HOUR);
                 int min = calendar.get(Calendar.MINUTE);
 
-                timePickerDialogEndTime = new TimePickerDialog(EditTripDetailWithAdditionalData.this, new TimePickerDialog.OnTimeSetListener() {
+                timePickerDialogEndTime = new TimePickerDialog(EditTripDetailWithAdditionalData.this,3, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         String tmp_time = new StringBuilder().append(hourOfDay).append(":").append(minute).toString();
@@ -161,11 +163,57 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 tmp.setDestination(DestinationField.getText().toString());
                 tmp.setCurrentDate(datePicker.getText().toString());
                 tmp.setStartTime(timePicker1.getText().toString());
                 tmp.setEndTime(timePicker2.getText().toString());
-                databaseHelper.updateTripDetail(tmp);
+
+                String tmpStartTime = timePicker1.getText().toString();
+                String tmpEndTime = timePicker2.getText().toString();
+                String tmpDate = Helper.changeInputDateFormat(datePicker.getText().toString());
+
+                if(Helper.isEditTextEmpty(DestinationField))
+                {
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"Please fill all information",Toast.LENGTH_SHORT).show();
+                }
+                else if(Helper.isEditTextEmpty(datePicker))
+                {
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"Please fill all information",Toast.LENGTH_SHORT).show();
+                }
+                else if(Helper.isEditTextEmpty(timePicker1))
+                {
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"Please fill all information",Toast.LENGTH_SHORT).show();
+                }
+                else if(Helper.isEditTextEmpty(timePicker2))
+                {
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"Please fill all information",Toast.LENGTH_SHORT).show();
+                }
+                else if(tmpStartTime.equals(tmpEndTime))
+                {
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"Time cannot be the same",Toast.LENGTH_SHORT).show();
+                }
+                else if(!Helper.checkIfStartTimeBeforeEndTime(tmpStartTime,tmpEndTime))
+                {
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"Start time before End time",Toast.LENGTH_SHORT).show();
+                }
+                else if(databaseHelper.checkIfTimeOverlappingExistingTripInEditWithAdditionalData(tmpStartTime,tmpTripID,tmpTripDetailID,tmpDate)||
+                        databaseHelper.checkIfTimeOverlappingExistingTripInEditWithAdditionalData(tmpEndTime,tmpTripID,tmpTripDetailID,tmpDate))
+                {
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"Your trip is in a time interval of another trip",Toast.LENGTH_SHORT).show();
+                }
+                else if(databaseHelper.checkIfTimeIntervalExistInEditWithAdditionalData(tmp.getStartTime(),tmp.getEndTime(),tmpTripID,tmpTripDetailID,tmp.getCurrentDate()))
+                {
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"There is an Existing trip at that exact time",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    databaseHelper.updateTripDetail(tmp);
+                    DestinationField.getText().clear();
+                    datePicker.getText().clear();
+                    timePicker1.getText().clear();
+                    timePicker2.getText().clear();
+                    Toast.makeText(EditTripDetailWithAdditionalData.this,"Edit success",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

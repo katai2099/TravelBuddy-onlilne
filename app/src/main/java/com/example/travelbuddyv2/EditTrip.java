@@ -44,19 +44,8 @@ public class EditTrip extends AppCompatActivity {
         {
             tmpID = extra.getInt("TripIDfromTripDetail");
         }
-        Toast.makeText(this,new StringBuilder().append(tmpID).toString(),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ID of Trip is "+ String.valueOf(tmpID),Toast.LENGTH_SHORT).show();
 
-        /*
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.k);
-        relativeLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                hideKeyboard(v);
-                return false;
-            }
-        });
-
-         */
 
         databaseHelper = new DatabaseHelper(EditTrip.this);
         btnSubmit = findViewById(R.id.btnSubmitEdit);
@@ -216,30 +205,34 @@ public class EditTrip extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                    DestinationField.clearFocus();
                    String tmpStartTime = timePicker1.getText().toString();
                    String tmpEndTime = timePicker2.getText().toString();
                    String tmpDate = Helper.changeInputDateFormat(datePicker.getText().toString());
 
                    if(Helper.isEditTextEmpty(timePicker1))
                    {
-                       Toast.makeText(EditTrip.this,"Please fill all Detail",Toast.LENGTH_SHORT).show();
+                       Toast.makeText(EditTrip.this,"Please fill all information",Toast.LENGTH_SHORT).show();
                    }
                    else if(Helper.isEditTextEmpty(timePicker2))
                    {
-                       Toast.makeText(EditTrip.this,"Please fill all Detail",Toast.LENGTH_SHORT).show();
+                       Toast.makeText(EditTrip.this,"Please fill all information",Toast.LENGTH_SHORT).show();
                    }
                    else if(Helper.isEditTextEmpty(DestinationField))
                    {
-                       Toast.makeText(EditTrip.this,"Please fill all Detail",Toast.LENGTH_SHORT).show();
+                       Toast.makeText(EditTrip.this,"Please fill all information",Toast.LENGTH_SHORT).show();
+                   }
+                   else if(Helper.isEditTextEmpty(datePicker))
+                   {
+                       Toast.makeText(EditTrip.this,"Please fill all information",Toast.LENGTH_SHORT).show();
                    }
                    else if(tmpStartTime.equals(tmpEndTime))
                    {
-                       //Or we could filter out time on timepicker
                        Toast.makeText(EditTrip.this,"Time cannot be the same",Toast.LENGTH_SHORT).show();
                    }
                    else if(!Helper.checkIfStartTimeBeforeEndTime(tmpStartTime,tmpEndTime))
                    {
-                       Toast.makeText(EditTrip.this,"EndTime should follow StartTime",Toast.LENGTH_SHORT).show();
+                       Toast.makeText(EditTrip.this,"Start time before End time",Toast.LENGTH_SHORT).show();
                    }
                    else if(databaseHelper.checkIfTimeOverlappingExistingTrip(tmpStartTime,tmpID,tmpDate)||databaseHelper.checkIfTimeOverlappingExistingTrip(tmpEndTime,tmpID,tmpDate))
                    {
@@ -250,8 +243,14 @@ public class EditTrip extends AppCompatActivity {
                        Toast.makeText(EditTrip.this,"There is an Existing trip at that exact time",Toast.LENGTH_SHORT).show();
                    }
                    else {
-                       tripModel tmp = new tripModel(tmpID, "Budapest", tmpDate, tmpStartTime, tmpEndTime, DestinationField.getText().toString());
+                       String tripName = databaseHelper.getTripName(tmpID);
+                       tripModel tmp = new tripModel(tmpID, tripName, tmpDate, tmpStartTime, tmpEndTime, DestinationField.getText().toString());
                        databaseHelper.addTripDetail(tmp);
+                       Toast.makeText(EditTrip.this,"Add Success",Toast.LENGTH_SHORT).show();
+                       Helper.clearEdittext(timePicker1);
+                       Helper.clearEdittext(timePicker2);
+                       Helper.clearEdittext(datePicker);
+                       Helper.clearEdittext(DestinationField);
                    }
             }
         });
@@ -261,6 +260,7 @@ public class EditTrip extends AppCompatActivity {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
 
 
 
