@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +28,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter.mainAdapterListener , childRecyclerAdapter.ChildAdapterListener {
-
-
 
     FloatingActionButton fabEditInformation;
     int tmpID;
@@ -48,8 +48,8 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
         String title = db.getTripName(tmpID);
         this.setTitle(title);
 
-       // Toast.makeText(this,"ID of TRIP is "+ String.valueOf(tmpID),Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(this,"ID of TRIP is "+ String.valueOf(tmpID),Toast.LENGTH_SHORT).show();
+        DismissNotificationWhenUserClickOnTrip();
         rcvTripDetail = findViewById(R.id.rcvTripDetailList);
         rcvTripDetail.setLayoutManager(new LinearLayoutManager(this));
         mainrecycler = new mainRecyclerAdapter(sectionList,this,this);
@@ -174,6 +174,20 @@ public class tripDetail extends AppCompatActivity implements mainRecyclerAdapter
             {
                 if(id==sectionList.get(i).getTripList().get(j).getId())
                     sectionList.get(i).getTripList().remove(j);
+            }
+        }
+    }
+
+    public void DismissNotificationWhenUserClickOnTrip(){
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            StatusBarNotification k [];
+            k = notificationManager.getActiveNotifications();
+            for (StatusBarNotification s:
+                 k) {
+                if(tmpID == s.getId())
+                    notificationManager.cancel(tmpID);
             }
         }
     }

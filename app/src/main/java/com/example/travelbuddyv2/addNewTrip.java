@@ -39,7 +39,7 @@ public class addNewTrip extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_trip);
         tripName = findViewById(R.id.etTripName);
 
-        setAlarmTime = findViewById(R.id.etSetAlarmTime);
+       // setAlarmTime = findViewById(R.id.etSetAlarmTime);
 
         startDate = findViewById(R.id.etDepartDate);
         startDate.setInputType(InputType.TYPE_NULL);
@@ -59,6 +59,7 @@ public class addNewTrip extends AppCompatActivity {
             }
         });
 
+        /*
         setAlarmTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -66,7 +67,7 @@ public class addNewTrip extends AppCompatActivity {
                     hideKeyboard(v);
                 }
             }
-        });
+        }); */
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,11 +97,11 @@ public class addNewTrip extends AppCompatActivity {
 
                     databaseHelper = new DatabaseHelper(addNewTrip.this);
                     databaseHelper.addNewTrip(tmpTripModel);
-                    int Time = Integer.parseInt(setAlarmTime.getText().toString());
+                   // int Time = Integer.parseInt(setAlarmTime.getText().toString());
                     int ID = databaseHelper.getID();
-                //    Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
                     tmpTripModel.setId(ID);
-                    setNotificationTime(Time,tmpTripModel);
+                    setNotificationTime(0,tmpTripModel);
                      Intent i = new Intent(addNewTrip.this, myTrip.class);
                     startActivity(i);
                     finish();
@@ -114,7 +115,7 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tripName.clearFocus();
-                setAlarmTime.clearFocus();
+             //   setAlarmTime.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -160,7 +161,7 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tripName.clearFocus();
-                setAlarmTime.clearFocus();
+             //   setAlarmTime.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -250,7 +251,7 @@ public class addNewTrip extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
-        //    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
+          // alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
            // Toast.makeText(getApplicationContext(),"I AM USING NEW VERSION ALARM",Toast.LENGTH_SHORT).show();
         } else{
             alarmManager.set(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);

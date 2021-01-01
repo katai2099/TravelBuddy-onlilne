@@ -87,20 +87,12 @@ public class Helper {
         Date startDateTime = Helper.stringToTime(startTime);
         Date endDateTime = Helper.stringToTime(endTime);
         startCal = Calendar.getInstance();
-       // startCal.set(Calendar.YEAR,2000);
-       // startCal.set(Calendar.MONTH,12);
-      //  startCal.set(Calendar.DATE,28);
+
         startCal.setTime(startDateTime);
         endCal = Calendar.getInstance();
-        //endCal.set(Calendar.YEAR,3000);
-        //endCal.set(Calendar.MONTH,12);
-        //endCal.set(Calendar.DATE,28);
+
          endCal.setTime(endDateTime);
-       // String msg=(startCal.get(Calendar.AM_PM)==Calendar.AM) ? "am" : "pm";
-        //String msg2=(endCal.get(Calendar.AM_PM)==Calendar.AM) ? "am" : "pm";
-        //System.out.println(startCal.get(Calendar.HOUR)+" "+startCal.get(Calendar.MINUTE)+" "+msg);
-       // System.out.println(endCal.get(Calendar.HOUR) +" "+endCal.get(Calendar.MINUTE)+" "+  msg2  );
-       // System.out.println(startCal.before(endCal) ? "true" : "false");
+
         return startCal.before(endCal);
     }
 
@@ -134,6 +126,8 @@ public class Helper {
         return startCal.get(Calendar.YEAR)==endCal.get(Calendar.YEAR) && startCal.get(Calendar.MONTH) == endCal.get(Calendar.MONTH) && startCal.get(Calendar.DATE) == endCal.get(Calendar.DATE);
     }
 
+
+    //to set notification alarm fired at 7 . minus one day and set hour to 7
     public static long getStartDateInMilli(String timeStartDate)
     {
         long res;//TimeUnit
@@ -148,23 +142,7 @@ public class Helper {
         return dateInmilli.getTime();
     }
 
-    public static String dateToString(Date d)
-    {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String res = simpleDateFormat.format(d);
-        return res;
-    }
 
-    public void CheckIntentKey()
-    {
-       /* Bundle bundle = getIntent().getExtras();
-        Set<String> keys = bundle.keySet();
-        Iterator<String> it = keys.iterator();
-        while (it.hasNext()) {
-            String key = it.next();
-            System.out.println( key + " : " + bundle.get(key));
-        }*/
-    }
 
 
     public static long milliToSecond(long milli) {

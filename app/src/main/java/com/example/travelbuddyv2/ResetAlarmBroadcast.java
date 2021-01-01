@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
@@ -24,12 +25,16 @@ public class ResetAlarmBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String ja = intent.getAction();
+        if(ja!=null){
         if(ja.equals(BOOT_COMPLETED) || ja.equals(UPDATE_COMPLETED)){
             Log.d(tag,"I trigger reset alarm from device restart");
-
-
             resetAlarmWhenDeviceReboot(context);
-            System.out.println("It does work tho");
+        }
+        }
+        else{
+            Toast.makeText(context,"Just to try",Toast.LENGTH_SHORT).show();
+            Log.d(tag,"I trigger reset daily alarm by alarmHandler");
+            resetAlarmWhenDeviceReboot(context);
         }
     }
 

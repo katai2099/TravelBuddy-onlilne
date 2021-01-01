@@ -44,7 +44,7 @@ public class EditTrip extends AppCompatActivity {
         {
             tmpID = extra.getInt("TripIDfromTripDetail");
         }
-      //  Toast.makeText(this, "ID of Trip is "+ String.valueOf(tmpID),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ID of Trip is "+ String.valueOf(tmpID),Toast.LENGTH_SHORT).show();
 
 
         databaseHelper = new DatabaseHelper(EditTrip.this);

@@ -28,14 +28,15 @@
         android:id="@+id/etDepartDate"
         android:layout_width="132dp"
         android:layout_height="55dp"
+        android:focusableInTouchMode="false"
         android:hint="Depart"
         android:imeOptions="actionDone"
-        android:focusableInTouchMode="false"
         app:layout_constraintBottom_toTopOf="@+id/etArrivalDate"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etTripName" />
+        app:layout_constraintTop_toBottomOf="@id/etTripName"
+        tools:text="@tools:sample/date/ddmmyy" />
 
     <EditText
         android:id="@+id/etArrivalDate"
@@ -61,18 +62,5 @@
         android:hint="Save"
         />
 
-    <EditText
-        android:id="@+id/etSetAlarmTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:hint="Set Alarm in Second"
-        app:layout_constraintBottom_toTopOf="@+id/etDepartDate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etTripName" />
-
+   
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -292,6 +292,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return lists;
     }
 
+    public boolean isAllHasBeenNotified()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT ID,TRIP_NAME,START_DATE,END_DATE FROM TRIP WHERE IS_NOTIFIED = " + 0;
+        Cursor cursor  = db.rawQuery(QueryString,null,null);
+        return cursor.getCount() == 0;
+    }
+
     public boolean checkIfTimeOverlappingExistingTrip(String time,int id,String curdate)
     {
         //We have to consider ID of TRIPNAME as well !!! FIX

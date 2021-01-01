@@ -30,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        alarmHandler alarm = new alarmHandler(this);
+
+       // String time = Helper.changeInputDateFormat("2020-12-1");
+      //  System.out.println(time);
+
       //  String time="23:12";
     //    Date date = Helper.stringToTime(time);
      //   Toast.makeText(MainActivity.this,date.toString(),Toast.LENGTH_SHORT).show();

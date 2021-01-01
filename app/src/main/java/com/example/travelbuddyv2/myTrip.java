@@ -15,7 +15,11 @@ import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +31,7 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
     DatabaseHelper databaseHelper;
     myTripAdapter myTripadapter;
     List<tripModel> list;
+    FloatingActionButton addNewTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,7 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
         setContentView(R.layout.activity_my_trip);
         rcVTripList = findViewById(R.id.rcvTripList);
         rcVTripList.setLayoutManager(new LinearLayoutManager(this));
+        addNewTrip = findViewById(R.id.fbtAddNewTrip);
         databaseHelper = new DatabaseHelper(myTrip.this);
         list = databaseHelper.getTripList();
         Collections.sort(list,new tripModel.SortbystartDate());
@@ -45,6 +51,15 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(rcVTripList);
+
+        addNewTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(myTrip.this,addNewTrip.class);
+                startActivity(i);
+                finish();
+            }
+        });
 
     }
 
