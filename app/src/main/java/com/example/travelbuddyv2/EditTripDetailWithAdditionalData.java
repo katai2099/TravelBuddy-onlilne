@@ -36,6 +36,7 @@ public class EditTripDetailWithAdditionalData extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_edit_trip_detail_with_additional_data);
         setContentView(R.layout.activity_edit_trip);
+        this.setTitle("Edit Trip");
         Bundle extra = getIntent().getExtras();
 
         if(extra!=null)

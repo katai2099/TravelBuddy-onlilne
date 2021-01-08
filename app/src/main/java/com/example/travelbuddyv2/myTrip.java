@@ -37,6 +37,7 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_trip);
+        this.setTitle("Trip List");
         rcVTripList = findViewById(R.id.rcvTripList);
         rcVTripList.setLayoutManager(new LinearLayoutManager(this));
         addNewTrip = findViewById(R.id.fbtAddNewTrip);

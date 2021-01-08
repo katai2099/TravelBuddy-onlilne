@@ -37,6 +37,7 @@ public class addNewTrip extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_trip);
+        this.setTitle("New Trip");
         tripName = findViewById(R.id.etTripName);
 
        // setAlarmTime = findViewById(R.id.etSetAlarmTime);
@@ -151,7 +152,7 @@ public class addNewTrip extends AppCompatActivity {
 
                 Calendar tmpcal = Calendar.getInstance();
                 // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
-             //   datePickerDialogStartDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
+                datePickerDialogStartDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
 
                 datePickerDialogStartDate.show();
             }
@@ -216,7 +217,7 @@ public class addNewTrip extends AppCompatActivity {
 
                     Calendar tmpcal = Calendar.getInstance();
                 // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
-                 //   datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
+                    datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
 
                 datePickerDialogEndDate.show();
 

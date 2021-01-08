@@ -20,7 +20,8 @@
             android:parentActivityName=".myTrip"/>
         <activity android:name=".myTrip"
             android:parentActivityName=".MainActivity"/>
-        <activity android:name=".addNewTrip" />
+        <activity android:name=".addNewTrip"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
