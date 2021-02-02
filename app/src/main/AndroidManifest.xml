@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.travelbuddyv2">
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -10,36 +11,41 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditTripDetailWithAdditionalData"
-            android:theme="@style/Theme.AppCompat.Dialog"
-            ></activity>
+        <activity android:name=".registerActivity"></activity>
+        <activity android:name=".loginActivity" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+        <activity
+            android:name=".EditTripDetailWithAdditionalData"
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".EditTrip"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name=".tripDetail"
-            android:parentActivityName=".myTrip"/>
-        <activity android:name=".myTrip"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".addNewTrip"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity
+            android:name=".tripDetail"
+            android:parentActivityName=".myTrip" />
+        <activity
+            android:name=".myTrip"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".addNewTrip"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".MainActivity"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
-        <receiver android:name=".ReminderBroadcast">
-        </receiver>
-        <receiver android:name=".ResetAlarmBroadcast"
+        <receiver android:name=".ReminderBroadcast" />
+        <receiver
+            android:name=".ResetAlarmBroadcast"
             android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
