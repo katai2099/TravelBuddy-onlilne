@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,7 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +24,7 @@ public class loginActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +35,7 @@ public class loginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etLoginEmail);
         etPassword = findViewById(R.id.etLoginPassword);
         auth = FirebaseAuth.getInstance();
+
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,8 +50,41 @@ public class loginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String txtEmail = etEmail.getText().toString();
                 String txtPassword = etPassword.getText().toString();
-
+                auth = FirebaseAuth.getInstance();
                 loginUser(txtEmail,txtPassword);
+
+                FirebaseUser user = auth.getCurrentUser();
+
+
+                if( user!=null&&!user.isEmailVerified() ){
+                    Toast.makeText(loginActivity.this,"Please validate your email first",Toast.LENGTH_SHORT).show();
+                    sendValidationEmail();
+                    auth.signOut();
+
+                }
+
+
+
+            }
+        });
+
+        btnPasswordReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+                if(user!=null) {
+                    Boolean check = user.isEmailVerified();
+                    Toast.makeText(loginActivity.this, check.toString(), Toast.LENGTH_SHORT).show();
+                    auth.signOut();
+                    user.reload();
+                }
+
+
             }
         });
 
@@ -54,13 +92,38 @@ public class loginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String email,String password){
-        auth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+
+
+        auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onSuccess(AuthResult authResult) {
-                Toast.makeText(loginActivity.this,"Log in successful",Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(loginActivity.this,MainActivity.class);
-                startActivity(i);
-                finish();
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(loginActivity.this,"Log in successful",Toast.LENGTH_SHORT).show();
+                  //  Intent i = new Intent(loginActivity.this,MainActivity.class);
+                   // startActivity(i);
+                   // finish();
+                }
+                else{
+                    Toast.makeText(loginActivity.this,"Authentication failed",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private void sendValidationEmail(){
+
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(loginActivity.this,"Verification email sent to " + user.getEmail(),Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(loginActivity.this,"Fail to send verification email",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
