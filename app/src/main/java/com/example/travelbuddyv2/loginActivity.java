@@ -24,6 +24,8 @@ public class loginActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
 
+    private FirebaseAuth.AuthStateListener authStateListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class loginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etLoginPassword);
         auth = FirebaseAuth.getInstance();
 
+        authentication();
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,9 +102,9 @@ public class loginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(loginActivity.this,"Log in successful",Toast.LENGTH_SHORT).show();
-                  //  Intent i = new Intent(loginActivity.this,MainActivity.class);
-                   // startActivity(i);
-                   // finish();
+                    Intent i = new Intent(loginActivity.this,myTrip.class);
+                    startActivity(i);
+                    finish();
                 }
                 else{
                     Toast.makeText(loginActivity.this,"Authentication failed",Toast.LENGTH_SHORT).show();
@@ -126,6 +129,50 @@ public class loginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private  void authentication(){
+        Toast.makeText(loginActivity.this,"This is called",Toast.LENGTH_SHORT).show();
+       authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    //user registered, check if user is verified
+                    if (user.isEmailVerified()) {
+
+
+                        Intent intent = new Intent(loginActivity.this, myTrip.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        // user is registered, but not verified yet through email
+
+                        FirebaseAuth.getInstance().signOut();
+                    }
+                } else {
+                    // User is signed out
+
+                }
+            }
+        };
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (authStateListener != null) {
+            FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
+        }
     }
 
 

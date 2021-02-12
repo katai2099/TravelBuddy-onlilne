@@ -14,11 +14,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class registerActivity extends AppCompatActivity {
 
     EditText etEmail, etPassword , etConfirmPassword;
     Button btnSignUp;
+
+    private static final String email_regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+    private static final String password_regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
 
     FirebaseAuth auth;
 
@@ -31,6 +38,7 @@ public class registerActivity extends AppCompatActivity {
         etConfirmPassword = findViewById(R.id.etRegisterConfirmPassword);
         btnSignUp = findViewById(R.id.btnRegisterSignUp);
 
+
         auth = FirebaseAuth.getInstance();
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
@@ -38,8 +46,44 @@ public class registerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String txtEmail = etEmail.getText().toString();
                 String txtPassword = etPassword.getText().toString();
+                String txtConfirmPassword = etConfirmPassword.getText().toString();
 
-                registerUser(txtEmail,txtPassword);
+                //check if any field is empty
+                if(!isEmptyString(txtEmail)
+                && !isEmptyString(txtPassword)
+                && !isEmptyString(txtConfirmPassword)){
+
+                    if(isEmailCorrect(txtEmail)){
+
+                        if(isPasswordStrongEnough(txtPassword)){
+
+                            if(stringCheckEqual(txtPassword,txtConfirmPassword)){
+                                registerUser(txtEmail,txtPassword);
+                            }else{
+                                Toast.makeText(registerActivity.this,"Password does not match",Toast.LENGTH_SHORT).show();
+                                etConfirmPassword.setError("Password does not match");
+                            }
+
+                        }else{
+
+                            Toast.makeText(registerActivity.this,"Password is not strong enough",Toast.LENGTH_SHORT).show();
+                            etPassword.setError("Password is not strong enough@");
+
+                        }
+
+
+                    }else{
+                        Toast.makeText(registerActivity.this,"Please register with correct address",Toast.LENGTH_SHORT).show();
+                        etEmail.setError("Please register with correct address");
+                    }
+
+
+
+                }else{
+                    Toast.makeText(registerActivity.this,"Please fill all the field",Toast.LENGTH_SHORT).show();
+                }
+
+
 
 
 
@@ -48,22 +92,72 @@ public class registerActivity extends AppCompatActivity {
 
     }
 
-    private void registerUser(String email,String password){
+    private void sendValidationEmail(){
+
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(registerActivity.this,"Verification email sent to " + user.getEmail(),Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(registerActivity.this,"Fail to send verification email",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void registerUser(final String email, String password){
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful())
                 {
-                    Toast.makeText(registerActivity.this,"Register Successful",Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(registerActivity.this,loginActivity.class);
-                    startActivity(i);
-                    finish();
+                    sendValidationEmail();
+                    toConfirmEmailScreen();
                 }
                 else{
                     Toast.makeText(registerActivity.this,"Incomplete Registration",Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    // Returns True if the user's email format is correct
+    private boolean isEmailCorrect(String email) {
+        Pattern pattern = Pattern.compile(email_regex);
+
+        Matcher matcher = pattern.matcher(email);
+
+        return ((Matcher) matcher).matches();
+    }
+
+    private boolean isPasswordStrongEnough(String password) {
+        Pattern pattern = Pattern.compile(password_regex);
+
+        Matcher matcher = pattern.matcher(password);
+
+        return matcher.matches();
+    }
+
+    //Redirects the user to the login screen
+    private void toConfirmEmailScreen() {
+        Toast.makeText(registerActivity.this,"Register Successful",Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(registerActivity.this,confirmEmailActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    // return true if strings match
+    private boolean stringCheckEqual(String s1, String s2) {
+        return s1.equals(s2);
+    }
+
+    // return true if the string is null
+    private boolean isEmptyString(String string) {
+        return string.equals("");
     }
 
 }

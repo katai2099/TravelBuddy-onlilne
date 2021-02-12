@@ -11,13 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".registerActivity"></activity>
-        <activity android:name=".loginActivity" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".confirmEmailActivity"></activity>
+        <activity android:name=".registerActivity" />
+        <activity android:name=".loginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".EditTripDetailWithAdditionalData"
@@ -34,8 +35,7 @@
         <activity
             android:name=".addNewTrip"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity"/>
-
+        <activity android:name=".MainActivity" />
 
         <receiver android:name=".ReminderBroadcast" />
         <receiver

@@ -20,6 +20,8 @@
         android:textStyle="bold"
         />
 
+
+
     <EditText
         android:id="@+id/etRegisterEmail"
         android:layout_width="match_parent"
@@ -27,7 +29,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvRegisterText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/etRegisterPassword"
+        app:layout_constraintBottom_toTopOf="@id/registerPassword_toggle"
         android:layout_marginTop="10dp"
         android:hint="Email"
         android:textAlignment="gravity"
@@ -35,40 +37,81 @@
         android:layout_marginStart="10dp"
         />
 
-    <EditText
-        android:id="@+id/etRegisterPassword"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerPassword_toggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/etRegisterEmail"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/etRegisterConfirmPassword"
-        android:layout_marginTop="10dp"
-        android:hint="Password"
-        android:textAlignment="gravity"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        />
 
-    <EditText
-        android:id="@+id/etRegisterConfirmPassword"
+        app:passwordToggleEnabled="true"
+
+        app:passwordToggleTint="@color/colorPrimary"
+
+        android:scrollbarSize="25dp"
+        app:layout_constraintBottom_toTopOf="@id/registerPassword_toggle2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etRegisterEmail" >
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etRegisterPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/etRegisterEmail"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/etRegisterConfirmPassword"
+            android:layout_marginTop="10dp"
+            android:hint="Password"
+            android:textAlignment="gravity"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:ems="15"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerPassword_toggle2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/etRegisterPassword"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btnRegisterSignUp"
-        android:layout_marginTop="10dp"
-        android:hint="Confirm Password"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        />
+
+        app:passwordToggleEnabled="true"
+
+        app:passwordToggleTint="@color/colorPrimary"
+
+        android:scrollbarSize="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginSignIn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerPassword_toggle" >
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etRegisterConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/etRegisterPassword"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnRegisterSignUp"
+            android:layout_marginTop="10dp"
+            android:hint="Confirm Password"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:ems="15"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/btnRegisterSignUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/etRegisterConfirmPassword"
+        app:layout_constraintTop_toBottomOf="@id/registerPassword_toggle2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
