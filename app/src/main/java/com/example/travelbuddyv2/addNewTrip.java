@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +21,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -96,16 +102,28 @@ public class addNewTrip extends AppCompatActivity {
                 else {
                     tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
 
-                    databaseHelper = new DatabaseHelper(addNewTrip.this);
-                    databaseHelper.addNewTrip(tmpTripModel);
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("Trips")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child("Trip id " + 2)
+                            .setValue(tmpTripModel)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(addNewTrip.this,"Adding complete",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                   // databaseHelper = new DatabaseHelper(addNewTrip.this);
+                   // databaseHelper.addNewTrip(tmpTripModel);
                    // int Time = Integer.parseInt(setAlarmTime.getText().toString());
-                    int ID = databaseHelper.getID();
-                    Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
-                    tmpTripModel.setId(ID);
-                    setNotificationTime(0,tmpTripModel);
-                     Intent i = new Intent(addNewTrip.this, myTrip.class);
-                    startActivity(i);
-                    finish();
+                   // int ID = databaseHelper.getID();
+                   // Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
+                   // tmpTripModel.setId(ID);
+                   // setNotificationTime(0,tmpTripModel);
+                   //  Intent i = new Intent(addNewTrip.this, myTrip.class);
+                   // startActivity(i);
+                   // finish();
                 }
             }
         });

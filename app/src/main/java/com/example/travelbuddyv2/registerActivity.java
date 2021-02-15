@@ -10,11 +10,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,7 +119,25 @@ public class registerActivity extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     sendValidationEmail();
-                    toConfirmEmailScreen();
+                    User user = new User();
+                    user.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("User")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(user)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    toConfirmEmailScreen();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            FirebaseAuth.getInstance().signOut();
+                            Toast.makeText(registerActivity.this,"Something went wrong",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
                 else{
                     Toast.makeText(registerActivity.this,"Incomplete Registration",Toast.LENGTH_SHORT).show();

@@ -1,25 +1,17 @@
 package com.example.travelbuddyv2;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 
 
 public class ReminderBroadcast extends BroadcastReceiver {
@@ -38,7 +30,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
         int k = bundle.getInt("Extra_tripID");
 
         Intent [] intents = new Intent[2];
-        intents[0] = new Intent(context,MainActivity.class);
+        intents[0] = new Intent(context, MainActivityOld.class);
         intents[0].setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intents[1] = new Intent(context,tripDetail.class);
         intents[1].setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

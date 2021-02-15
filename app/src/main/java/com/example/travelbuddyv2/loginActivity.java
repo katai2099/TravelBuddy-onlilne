@@ -102,7 +102,7 @@ public class loginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(loginActivity.this,"Log in successful",Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(loginActivity.this,myTrip.class);
+                    Intent i = new Intent(loginActivity.this,Main2Activity.class);
                     startActivity(i);
                     finish();
                 }
@@ -142,7 +142,7 @@ public class loginActivity extends AppCompatActivity {
                     if (user.isEmailVerified()) {
 
 
-                        Intent intent = new Intent(loginActivity.this, myTrip.class);
+                        Intent intent = new Intent(loginActivity.this, Main2Activity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();

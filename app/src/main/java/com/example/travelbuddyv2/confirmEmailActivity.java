@@ -3,6 +3,7 @@ package com.example.travelbuddyv2;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class confirmEmailActivity extends AppCompatActivity {
 
     TextView tvUserEmail;
-    Button btnResendConfirmationEmail;
+    Button btnResendConfirmationEmail , btnDone;
     String userEmail;
 
     FirebaseAuth auth;
@@ -28,6 +29,7 @@ public class confirmEmailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirm_email);
         tvUserEmail = findViewById(R.id.tvUserEmail);
         btnResendConfirmationEmail = findViewById(R.id.btnResendConfirmationEMail);
+        btnDone = findViewById(R.id.btnDone);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -41,6 +43,15 @@ public class confirmEmailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendValidationEmail();
+            }
+        });
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(confirmEmailActivity.this,loginActivity.class);
+                startActivity(i);
+                finish();
             }
         });
 
