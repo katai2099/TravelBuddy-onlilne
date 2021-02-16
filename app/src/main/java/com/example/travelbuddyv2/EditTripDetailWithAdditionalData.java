@@ -1,6 +1,5 @@
 package com.example.travelbuddyv2;
 
-import androidx.annotation.ContentView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -8,15 +7,15 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.travelbuddyv2.model.tripModel;
 
 import java.util.Calendar;
 import java.util.Date;

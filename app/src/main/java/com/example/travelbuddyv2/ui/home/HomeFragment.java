@@ -9,8 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,16 +16,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.R;
+import com.example.travelbuddyv2.TripDetail;
+import com.example.travelbuddyv2.adapter.TripAdapter;
 import com.example.travelbuddyv2.addNewTrip;
 import com.example.travelbuddyv2.loginActivity;
-import com.example.travelbuddyv2.myTrip;
-import com.example.travelbuddyv2.tripModel;
+import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +40,11 @@ public class HomeFragment extends Fragment {
 
     FloatingActionButton fbtnAddNewTrip;
 
-    ListView lvTrip;
+    RecyclerView rcvTriplist;
 
-    List<tripModel> trips  ;
+    TripAdapter tripAdapter;
+
+    List<tripModel> tripLists  = new ArrayList<tripModel>();
 
     private HomeViewModel homeViewModel;
 
@@ -58,14 +64,37 @@ public class HomeFragment extends Fragment {
 
         fbtnAddNewTrip = root.findViewById(R.id.fbtnFragmentHomeAddNewTrip);
 
-        lvTrip = root.findViewById(R.id.lvFragmentHomeTriplist);
+        rcvTriplist = root.findViewById(R.id.rcvFragmentHomeTriplist);
+        rcvTriplist.setLayoutManager(new LinearLayoutManager(getActivity()));
+        tripAdapter = new TripAdapter(tripLists);
 
-        
+        rcvTriplist.setAdapter(tripAdapter);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trips").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tripLists.clear();
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    tripModel trip = dataSnapshot.getValue(tripModel.class);
+                    tripLists.add(trip);
+                }
+                tripAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         fbtnAddNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent (getActivity(),addNewTrip.class);
+               // Intent i = new Intent (getActivity(),addNewTrip.class);
+                //startActivity(i);
+                Intent i = new Intent(getActivity(), TripDetail.class);
                 startActivity(i);
             }
         });

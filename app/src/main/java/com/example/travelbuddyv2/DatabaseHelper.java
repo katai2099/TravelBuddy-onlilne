@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.travelbuddyv2.model.tripModel;
+
 import java.util.ArrayList;
 import java.util.List;
 

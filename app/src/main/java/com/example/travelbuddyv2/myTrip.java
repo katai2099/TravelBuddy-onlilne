@@ -10,19 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.ClipData;
 import android.content.Intent;
-import android.icu.lang.UCharacter;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
+import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -48,7 +43,7 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
         addNewTrip = findViewById(R.id.fbtAddNewTrip);
         databaseHelper = new DatabaseHelper(myTrip.this);
         list = databaseHelper.getTripList();
-        Collections.sort(list,new tripModel.SortbystartDate());
+       // Collections.sort(list,new tripModel.SortbystartDate());
 
         myTripadapter = new myTripAdapter(this,list,this);
         rcVTripList.setAdapter(myTripadapter);

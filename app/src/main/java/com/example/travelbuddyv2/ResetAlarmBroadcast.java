@@ -10,7 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.Date;
+import com.example.travelbuddyv2.model.tripModel;
+
 import java.util.List;
 
 import static android.content.Context.ALARM_SERVICE;
