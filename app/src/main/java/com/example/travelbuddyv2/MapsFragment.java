@@ -24,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.model.Destination;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -56,6 +57,9 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
@@ -66,6 +70,8 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment {
+
+
 
     private GoogleApi googleApi;
 
@@ -184,7 +190,33 @@ public class MapsFragment extends Fragment {
                 @Override
                 public void onPoiClick(PointOfInterest pointOfInterest) {
                     String placeId = pointOfInterest.name;
+                    LatLng placeLatLng = pointOfInterest.latLng;
                     Toast.makeText(getActivity(), placeId, Toast.LENGTH_SHORT).show();
+
+
+                    //generate unique push_id
+                    String key = FirebaseDatabase.getInstance().getReference()
+                            .child("Trip_detail")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
+                    Destination tmp = new Destination();
+                    tmp.setName(placeId);
+                    tmp.setStartDate("today");
+                    tmp.setEndDate("tomorrow");
+                    tmp.setLatitude(placeLatLng.latitude);
+                    tmp.setLongtitude(placeLatLng.longitude);
+
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("Trip_detail")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child("t" + 1)
+                            .child("td" + 2)
+                            .setValue(tmp).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getContext(),"Add success",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
             });
 

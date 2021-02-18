@@ -1,8 +1,10 @@
 package com.example.travelbuddyv2.ui.home;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +28,7 @@ import com.example.travelbuddyv2.adapter.TripAdapter;
 import com.example.travelbuddyv2.addNewTrip;
 import com.example.travelbuddyv2.loginActivity;
 import com.example.travelbuddyv2.model.tripModel;
+import com.example.travelbuddyv2.myTripAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +40,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements myTripAdapter.OnListListener {
+
+    int ID = 0;
+
+
+
+    final String tag = "HOME_FRAGMENT";
 
     FloatingActionButton fbtnAddNewTrip;
 
@@ -76,6 +86,8 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tripLists.clear();
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    String key = dataSnapshot.getKey();
+                    Log.d(tag,key);
                     tripModel trip = dataSnapshot.getValue(tripModel.class);
                     tripLists.add(trip);
                 }
@@ -88,14 +100,21 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        rcvTriplist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
         fbtnAddNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Intent i = new Intent (getActivity(),addNewTrip.class);
-                //startActivity(i);
-                Intent i = new Intent(getActivity(), TripDetail.class);
+                Intent i = new Intent (getActivity(),addNewTrip.class);
                 startActivity(i);
+                /*Intent i = new Intent(getActivity(), TripDetail.class);
+                startActivity(i);*/
             }
         });
 
@@ -127,5 +146,17 @@ public class HomeFragment extends Fragment {
         activity.finishAffinity();
         FirebaseAuth.getInstance().signOut();
 
-    }}
+    }
+
+
+
+    @Override
+    public void onListClick(int position) {
+
+      //  Toast.makeText(getContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
+    }
+
+
+
+}
 

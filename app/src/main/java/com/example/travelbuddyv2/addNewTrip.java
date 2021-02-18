@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,12 +23,24 @@ import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class addNewTrip extends AppCompatActivity {
+
+    private final String tag = "ADD_NEW_TRIP";
+
+    private int ID = 0;
+
+    List<String> tmp;
 
     EditText tripName , startDate , endDate, setAlarmTime;
     Button btnSave;
@@ -41,6 +54,7 @@ public class addNewTrip extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_trip);
         this.setTitle("New Trip");
+        getCurrentIdFromFirebaseDatabase();
         tripName = findViewById(R.id.etTripName);
 
        // setAlarmTime = findViewById(R.id.etSetAlarmTime);
@@ -102,12 +116,13 @@ public class addNewTrip extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference()
                             .child("Trips")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child("Trip id " + 2)
+                            .child("t" + ID)
                             .setValue(tmpTripModel)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     Toast.makeText(addNewTrip.this,"Adding complete",Toast.LENGTH_SHORT).show();
+                                    idIncrement();
                                 }
                             });
 
@@ -284,6 +299,52 @@ public class addNewTrip extends AppCompatActivity {
         Toast.makeText(this,"Send Notification in " + reminder + " Hour",Toast.LENGTH_SHORT).show(); */
     }
 
+
+    private void idIncrement(){
+        ID++;
+    }
+
+    private void getCurrentIdFromFirebaseDatabase(){
+
+        tmp = new ArrayList<>();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Trips")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot data: snapshot.getChildren()){
+                    tmp.add(data.getKey());
+                    Log.d(tag,"KEY FROM FIREBASE " + data.getKey());
+                }
+                String size = tmp.get(tmp.size()-1);
+                Log.d(tag,"tmp size in string " + size);
+                Log.d(tag,"tmp size in integer " + StringToInt(size));
+                ID = StringToInt(size)+1;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    private int StringToInt(String ID){
+
+        StringBuilder tmp = new StringBuilder();
+
+        for(int i=1;i<ID.length();i++){
+            tmp.append(ID.charAt(i));
+        }
+
+        return Integer.parseInt(tmp.toString());
+
+    }
 
 
 }
