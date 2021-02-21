@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,13 +59,17 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -72,8 +77,11 @@ import static android.app.Activity.RESULT_OK;
 public class MapsFragment extends Fragment {
 
 
+    private final String tag = "MAP_FRAGMENT";
 
+    List <String> tmp;
 
+    List <Integer> tmpInt;
 
     int tripDetailID = 0;
 
@@ -211,11 +219,12 @@ public class MapsFragment extends Fragment {
                             .child("Trip_detail")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .child("t" + 1)
-                            .child("td" + 2)
+                            .child("td" + tripDetailID)
                             .setValue(tmp).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getContext(),"Add success",Toast.LENGTH_SHORT).show();
+                          //  tripDetailIDIncrement();
                         }
                     });
 
@@ -235,6 +244,8 @@ public class MapsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_maps, container, false);
 
         materialSearchBar = root.findViewById(R.id.searchBar);
+
+        getCurrentTripDetailIdFromFirebaseDatabase();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -436,7 +447,66 @@ public class MapsFragment extends Fragment {
         });
     }
 
-    
+    private void tripDetailIDIncrement(){
+        tripDetailID++;
+    }
+
+    private void getCurrentTripDetailIdFromFirebaseDatabase(){
+
+        tmp = new ArrayList<>();
+        tmpInt = new ArrayList<>();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Trip_detail")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("t1");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot data: snapshot.getChildren()){
+                 //   tmp.add(data.getKey());
+                    tmpInt.add(StringToInt(data.getKey()));
+                    Log.d(tag,"KEY FROM FIREBASE " + data.getKey());
+                }
+              //  Collections.sort(tmp);
+                Collections.sort(tmpInt);
+              /*  for(String k:tmp){
+                    Log.d(tag,"as String " +  k);
+                }*/
+               /* for(Integer i:tmpInt){
+                    Log.d(tag,"as Integer " + i );
+                }*/
+                if(tmpInt.size()!=0){
+                    int size = tmpInt.get(tmpInt.size()-1);
+                  Log.d(tag,"latest tripDetail ID " + size);
+
+                    tripDetailID = size+1;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    private int StringToInt(String ID){
+
+        StringBuilder tmp = new StringBuilder();
+
+        for(int i=2;i<ID.length();i++){
+            tmp.append(ID.charAt(i));
+        }
+
+        return Integer.parseInt(tmp.toString());
+
+    }
+
+
 
 
 

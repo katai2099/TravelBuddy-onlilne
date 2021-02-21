@@ -40,7 +40,7 @@ public class addNewTrip extends AppCompatActivity {
 
     private int ID = 0;
 
-    List<String> tmp;
+    List<Integer> tmp;
 
     EditText tripName , startDate , endDate, setAlarmTime;
     Button btnSave;
@@ -122,7 +122,7 @@ public class addNewTrip extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     Toast.makeText(addNewTrip.this,"Adding complete",Toast.LENGTH_SHORT).show();
-                                    idIncrement();
+                                  //  idIncrement();
                                 }
                             });
 
@@ -316,14 +316,13 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot data: snapshot.getChildren()){
-                    tmp.add(data.getKey());
+                    tmp.add(StringToInt(data.getKey()));
                     Log.d(tag,"KEY FROM FIREBASE " + data.getKey());
                 }
                 if(tmp.size()!=0){
-                String size = tmp.get(tmp.size()-1);
-                Log.d(tag,"tmp size in string " + size);
-                Log.d(tag,"tmp size in integer " + StringToInt(size));
-                ID = StringToInt(size)+1;}
+                int size = tmp.get(tmp.size()-1);
+                Log.d(tag,"latest trip ID " + size);
+                ID = size+1;}
             }
 
             @Override
