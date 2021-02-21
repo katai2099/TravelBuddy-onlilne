@@ -73,7 +73,9 @@ public class MapsFragment extends Fragment {
 
 
 
-    private GoogleApi googleApi;
+
+
+    int tripDetailID = 0;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -433,6 +435,8 @@ public class MapsFragment extends Fragment {
             }
         });
     }
+
+    
 
 
 

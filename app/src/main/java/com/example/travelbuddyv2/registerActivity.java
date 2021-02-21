@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.autofill.FieldClassification;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +31,7 @@ public class registerActivity extends AppCompatActivity {
 
     private static final String email_regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     private static final String password_regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+    private static final String userName_Regex = "^[\\w-\\.]+";
 
     FirebaseAuth auth;
 
@@ -121,6 +124,8 @@ public class registerActivity extends AppCompatActivity {
                     sendValidationEmail();
                     User user = new User();
                     user.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    user.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    user.setName(getLocalPartOfEmail(email));
                     FirebaseDatabase.getInstance().getReference()
                             .child("User")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -163,6 +168,18 @@ public class registerActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
+    private String getLocalPartOfEmail(String email){
+        Pattern pattern = Pattern.compile(userName_Regex);
+
+        Matcher matcher = pattern.matcher(email);
+
+        if(matcher.find()){
+            return matcher.group(0);
+        }
+        return "";
+
+    }
+
     //Redirects the user to the login screen
     private void toConfirmEmailScreen() {
         Toast.makeText(registerActivity.this,"Register Successful",Toast.LENGTH_SHORT).show();
@@ -178,7 +195,7 @@ public class registerActivity extends AppCompatActivity {
 
     // return true if the string is null
     private boolean isEmptyString(String string) {
-        return string.equals("");
+        return TextUtils.isEmpty(string);
     }
 
 }

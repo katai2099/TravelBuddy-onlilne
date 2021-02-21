@@ -4,15 +4,18 @@ public class User {
 
 
     private String name;
+    private String email;
     private String phone;
     private String profile_image;
     private String user_id;
 
-    public User(String name, String phone, String profile_image, String user_id) {
+    public User(String name,String email, String phone, String profile_image, String user_id) {
         this.name = name;
+        this.email = email;
         this.phone = phone;
         this.profile_image = profile_image;
         this.user_id = user_id;
+
     }
 
     public User() {
@@ -47,6 +50,14 @@ public class User {
         return profile_image;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setProfile_image(String profile_image) {
         this.profile_image = profile_image;
     }
@@ -55,6 +66,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "name='" + name + '\'' +
+                "email= " + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", profile_image='" + profile_image + '\'' +
                 ", user_id='" + user_id + '\'' +
