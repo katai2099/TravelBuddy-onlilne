@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelbuddyv2.InviteFriendActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.TripDetail;
 import com.example.travelbuddyv2.model.tripModel;
@@ -59,17 +61,26 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
     class tripHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
         private TextView tripname , tripdate ;
+        private Button btnInviteFriend;
 
 
 
 
-        public tripHolder(@NonNull View itemView) {
+        public tripHolder(@NonNull final View itemView) {
             super(itemView);
             tripname = itemView.findViewById(R.id.tripNameListAdapter);
             tripdate = itemView.findViewById(R.id.tripDateListAdapter);
-
+            btnInviteFriend = itemView.findViewById(R.id.tripInviteFriend);
 
             itemView.setOnClickListener(this);
+
+            btnInviteFriend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(itemView.getContext(), InviteFriendActivity.class);
+                    itemView.getContext().startActivity(i);
+                }
+            });
 
         }
 

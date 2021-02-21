@@ -319,10 +319,11 @@ public class addNewTrip extends AppCompatActivity {
                     tmp.add(data.getKey());
                     Log.d(tag,"KEY FROM FIREBASE " + data.getKey());
                 }
+                if(tmp.size()!=0){
                 String size = tmp.get(tmp.size()-1);
                 Log.d(tag,"tmp size in string " + size);
                 Log.d(tag,"tmp size in integer " + StringToInt(size));
-                ID = StringToInt(size)+1;
+                ID = StringToInt(size)+1;}
             }
 
             @Override
