@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Request;
 import com.example.travelbuddyv2.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,12 +27,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
+    private final String tag="USER_ADAPTER";
+
+    int requestID =0;
+
     List<User> users;
     String name, id ;
+
 
     public UserAdapter(List<User> users,String name,String id) {
         this.users = users;
@@ -51,6 +60,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     @Override
     public void onBindViewHolder(@NonNull final UserHolder holder, int position) {
 
+
+
         final User user = users.get(position);
 
         holder.tvFriendName.setText(user.getName());
@@ -61,26 +72,106 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         requester.setRequestType("sent");
         requester.setTripID(holder.id);
         requester.setTripName(holder.name);
+        requester.setInviter(FirebaseAuth.getInstance().getCurrentUser().getUid());
         final Request receiver = new Request();
         receiver.setRequestType("received");
         receiver.setTripID(holder.id);
         receiver.setTripName(holder.name);
+        receiver.setInviter(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                Log.d(tag,"onClick called");
+                requestID = 0 ;
+
+
+                final List<Integer> idList = new ArrayList<>();
+                int tmp;
+
+                FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child(user.getUser_id()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            Request request= snapshot.getValue(Request.class);
+                            idList.add(StringToInt(snapshot.getKey()));
+                        }
+                        if(idList.size()!=0){
+                            Collections.sort(idList);
+                            requestID = idList.get(idList.size()-1)+1;
+
+                        }else{
+                            Log.d(tag,"LIST EMPTY");
+                        }
+
+                        Log.d(tag, String.valueOf(requestID));
+
+                        FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child(user.getUser_id())
+                                .child("r"+requestID)
+                                .setValue(requester).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                requestID = 0 ;
+                                idList.clear();
+
+                                FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                                        .child(user.getUser_id())
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                                            Request request= snapshot.getValue(Request.class);
+                                            idList.add(StringToInt(snapshot.getKey()));
+                                        }
+                                        if(idList.size()!=0){
+                                            Collections.sort(idList);
+                                            requestID = idList.get(idList.size()-1)+1;
+
+                                        }else{
+                                            Log.d(tag,"LIST EMPTY");
+                                        }
+
+                                        Log.d(tag, String.valueOf(requestID));
+
+                                        FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                                                .child(user.getUser_id())
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child("r"+requestID)
+                                                .setValue(receiver).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(holder.itemView.getContext(),"Sent success",Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                                    }
+                                });
+
+                            }
+                        });
+
+                    }
+                });
+
+              /*   FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child(user.getUser_id())
-                         .child(holder.id)
+                         .child("r"+requestID)
                         .setValue(requester)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                requestID = 0 ;
+                                 getRequestID(user.getUser_id(),FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                Log.d(tag,"ID BEFORE RECEIVER SENT " + requestID);
                                 FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                                         .child(user.getUser_id())
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child(holder.id)
+                                        .child("r"+requestID)
                                         .setValue(receiver)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -89,7 +180,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                                             }
                                         });
                             }
-                        });
+                        });*/
 
             }
         });
@@ -107,7 +198,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         private final TextView tvFriendEmail,tvFriendName;
         private final Button btnInviteFriend;
 
-        private final String name , id;
+        private final String name , id; // tripname , tripStringID
 
         public UserHolder(@NonNull View itemView,String name,String id) {
            super(itemView);
@@ -119,6 +210,27 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
            btnInviteFriend = itemView.findViewById(R.id.btnInviteFriend);
 
         }
+    }
+
+    public void getRequestID(String requesterID,String receiverID){
+
+
+
+
+
+
+    }
+
+    private int StringToInt(String ID){
+
+        StringBuilder tmp = new StringBuilder();
+
+        for(int i=1;i<ID.length();i++){
+            tmp.append(ID.charAt(i));
+        }
+
+        return Integer.parseInt(tmp.toString());
+
     }
 
 }

@@ -14,7 +14,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.UserAdapter;
+import com.example.travelbuddyv2.model.Request;
 import com.example.travelbuddyv2.model.User;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,6 +49,7 @@ public class InviteFriendActivity extends AppCompatActivity {
         String tripStringID = extra.getString("TripStringID");
 
         Log.d(tag,"Information pass by Intent " + tripName + " " + tripStringID);
+
 
         users = new ArrayList<>();
         etInviteFriend = findViewById(R.id.etFindFriendByEmail);
@@ -83,7 +87,7 @@ public class InviteFriendActivity extends AppCompatActivity {
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
                    User user = dataSnapshot.getValue(User.class);
                     Log.d(tag,user.getName() + " " + user.getEmail());
-                    if(user.getEmail().equals(email)){
+                    if(user.getEmail().equals(email) &&  !(FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(email) ) ){
                         users.add(user);
                     }
                 }
@@ -96,5 +100,7 @@ public class InviteFriendActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
 }
