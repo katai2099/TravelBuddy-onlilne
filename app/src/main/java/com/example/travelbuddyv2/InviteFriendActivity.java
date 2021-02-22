@@ -38,6 +38,15 @@ public class InviteFriendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friend);
+
+        Bundle extra = getIntent().getExtras();
+
+
+        String tripName = extra.getString("TripName");
+        String tripStringID = extra.getString("TripStringID");
+
+        Log.d(tag,"Information pass by Intent " + tripName + " " + tripStringID);
+
         users = new ArrayList<>();
         etInviteFriend = findViewById(R.id.etFindFriendByEmail);
         rcvFriendList = findViewById(R.id.rcvInviteFriend);
@@ -45,7 +54,7 @@ public class InviteFriendActivity extends AppCompatActivity {
 
         rcvFriendList.setLayoutManager(new LinearLayoutManager(this));
 
-        userAdapter = new UserAdapter(users);
+        userAdapter = new UserAdapter(users,tripName,tripStringID);
 
 
 

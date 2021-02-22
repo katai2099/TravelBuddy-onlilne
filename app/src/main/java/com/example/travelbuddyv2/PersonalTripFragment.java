@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.TripAdapter;
 import com.example.travelbuddyv2.model.tripModel;
@@ -106,4 +107,6 @@ public class PersonalTripFragment extends Fragment {
         return root;
 
     }
+
+
 }

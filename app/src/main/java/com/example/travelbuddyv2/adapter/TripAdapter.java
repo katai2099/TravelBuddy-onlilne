@@ -37,12 +37,24 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull tripHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final tripHolder holder, final int position) {
 
-        tripModel currentTrip = list.get(position);
+        final tripModel currentTrip = list.get(position);
 
         holder.tripname.setText(currentTrip.getTripName());
         holder.tripdate.setText(currentTrip.getStartDate() + " " + currentTrip.getEndDate());
+
+        holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(holder.itemView.getContext(),InviteFriendActivity.class);
+                i.putExtra("TripName",currentTrip.getTripName());
+                i.putExtra("TripStringID",currentTrip.getStringID());
+                holder.itemView.getContext().startActivity(i);
+               // Toast.makeText(holder.itemView.getContext(),currentTrip.getTripName() + " " + currentTrip.getStringID(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
     }
 
@@ -60,8 +72,9 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
 
     class tripHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
-        private TextView tripname , tripdate ;
-        private Button btnInviteFriend;
+        private final TextView tripname;
+        private final TextView tripdate ;
+        private final Button btnInviteFriend;
 
 
 
@@ -74,13 +87,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
 
             itemView.setOnClickListener(this);
 
-            btnInviteFriend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(itemView.getContext(), InviteFriendActivity.class);
-                    itemView.getContext().startActivity(i);
-                }
-            });
+
 
         }
 

@@ -28,5 +28,8 @@ public class Main2Activity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
     }
 
+    public interface MyInterface{
+        public void onClick(int position);
+    }
 
 }

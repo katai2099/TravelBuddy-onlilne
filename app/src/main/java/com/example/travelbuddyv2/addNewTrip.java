@@ -112,6 +112,7 @@ public class addNewTrip extends AppCompatActivity {
                 }
                 else {
                     tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
+                    tmpTripModel.setStringID("t" + ID);
 
                     FirebaseDatabase.getInstance().getReference()
                             .child("Trips")

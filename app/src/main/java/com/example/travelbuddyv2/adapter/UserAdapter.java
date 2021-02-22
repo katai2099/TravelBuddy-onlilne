@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.R;
+import com.example.travelbuddyv2.model.Request;
 import com.example.travelbuddyv2.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,9 +30,12 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
     List<User> users;
+    String name, id ;
 
-    public UserAdapter(List<User> users) {
+    public UserAdapter(List<User> users,String name,String id) {
         this.users = users;
+        this.name  = name;
+        this.id = id;
     }
 
     @NonNull
@@ -40,7 +44,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.friend_list_row,parent,false);
 
-        return new UserHolder(itemView);
+        return new UserHolder(itemView,name,id);
 
     }
 
@@ -53,20 +57,31 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         holder.tvFriendEmail.setText(user.getEmail());
         holder.img.setImageResource(holder.itemView.getResources().getIdentifier("@drawable/email_confirmmation",null,holder.itemView.getContext().getPackageName()));
 
+        final Request requester = new Request();
+        requester.setRequestType("sent");
+        requester.setTripID(holder.id);
+        requester.setTripName(holder.name);
+        final Request receiver = new Request();
+        receiver.setRequestType("received");
+        receiver.setTripID(holder.id);
+        receiver.setTripName(holder.name);
+
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                  FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child(user.getUser_id())
-                        .child("request_type").setValue("sent")
+                         .child(holder.id)
+                        .setValue(requester)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                                         .child(user.getUser_id())
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child("request_type").setValue("received")
+                                        .child(holder.id)
+                                        .setValue(receiver)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
@@ -92,10 +107,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         private final TextView tvFriendEmail,tvFriendName;
         private final Button btnInviteFriend;
 
+        private final String name , id;
 
-        public UserHolder(@NonNull View itemView) {
+        public UserHolder(@NonNull View itemView,String name,String id) {
            super(itemView);
-
+            this.name = name;
+            this.id = id ;
            img = itemView.findViewById(R.id.friendProfile);
            tvFriendEmail = itemView.findViewById(R.id.friendEmail);
            tvFriendName = itemView.findViewById(R.id.friendName);

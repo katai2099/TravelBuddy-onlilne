@@ -5,6 +5,7 @@ import java.util.Comparator;
 public class tripModel {
 
     private int id;
+    private String StringID;
     private int idforListDetail;
     private String tripName;
     private String startDate;
@@ -142,6 +143,14 @@ public class tripModel {
 
     public int getIs_notified() {
         return is_notified;
+    }
+
+    public String getStringID() {
+        return StringID;
+    }
+
+    public void setStringID(String StringID) {
+        this.StringID = StringID;
     }
 
     public void setIs_notified(int is_notified) {
