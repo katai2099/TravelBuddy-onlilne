@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.travelbuddyv2.GroupTripFragment;
 import com.example.travelbuddyv2.InventoryFragment;
 import com.example.travelbuddyv2.PersonalTripFragment;
 import com.example.travelbuddyv2.R;
@@ -18,7 +19,7 @@ import com.example.travelbuddyv2.ui.home.HomeFragment;
 
 public class PagerAdapter extends FragmentPagerAdapter {
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_4, R.string.tab_text_3};
     private final Context mContext;
 
     public PagerAdapter(Context mContext, FragmentManager fm) {
@@ -35,7 +36,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 fragment = new PersonalTripFragment();
                 break;
             case 1:
-                fragment = new InventoryFragment();
+                fragment = new GroupTripFragment();
                 break;
         }
         return fragment;
