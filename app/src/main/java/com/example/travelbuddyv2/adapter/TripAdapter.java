@@ -56,6 +56,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
         });
 
 
+
     }
 
     @Override
@@ -94,8 +95,9 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
         @Override
         public void onClick(View v) {
             tripModel tmp = list.get(getAdapterPosition());
-            Toast.makeText(itemView.getContext(),tmp.getTripName(),Toast.LENGTH_SHORT).show();
+         //   Toast.makeText(itemView.getContext(),tmp.getTripName(),Toast.LENGTH_SHORT).show();
             Intent i = new Intent(itemView.getContext(), TripDetail.class);
+            i.putExtra("TRIP_STRING_ID",tmp.getStringID());
             itemView.getContext().startActivity(i);
         }
     }

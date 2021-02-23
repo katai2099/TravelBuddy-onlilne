@@ -34,6 +34,10 @@ public class TripDetailFragment extends Fragment {
     RecyclerView rcvTripDetail;
     TripDetailAdapter tripDetailAdapter;
 
+    String tripID ;
+
+
+
 
 
 
@@ -42,7 +46,18 @@ public class TripDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+
         View root = inflater.inflate(R.layout.fragment_trip_detail, container, false);
+
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            tripID = bundle.getString("TRIP_STRING_ID");
+           //  Toast.makeText(getContext(),bundle.getString("TRIP_STRING_ID"),Toast.LENGTH_SHORT).show();
+        }else{
+             Toast.makeText(getContext(),"NULL",Toast.LENGTH_SHORT).show();
+        }
+
+
 
         destinationList = new ArrayList<>();
         fillList();
@@ -58,7 +73,9 @@ public class TripDetailFragment extends Fragment {
 
 
     private void fillList(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("t1");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(tripID);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

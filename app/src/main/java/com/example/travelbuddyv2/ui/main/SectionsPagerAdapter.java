@@ -1,6 +1,7 @@
 package com.example.travelbuddyv2.ui.main;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -21,10 +22,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
     private final Context mContext;
+    private final Bundle bundle;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm,Bundle bundle) {
         super(fm);
         mContext = context;
+        this.bundle = bundle;
     }
 
     @Override
@@ -37,9 +40,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position){
             case 0 :
                 fragment = new TripDetailFragment();
+                fragment.setArguments(bundle);
                 break;
             case 1:
                 fragment = new InventoryFragment();
+                fragment.setArguments(bundle);
                 break;
         }
         return fragment;
