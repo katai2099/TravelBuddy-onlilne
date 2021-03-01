@@ -1,5 +1,7 @@
 package com.example.travelbuddyv2.model;
 
+import androidx.annotation.Nullable;
+
 public class User {
 
 
@@ -73,4 +75,16 @@ public class User {
                 '}';
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj == this)
+            return true;
+        if(!(obj instanceof User))
+            return false;
+
+        User c = (User) obj;
+
+        return user_id.equals(c.user_id) && email.equals(c.email);
+
+    }
 }

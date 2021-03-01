@@ -1,6 +1,7 @@
 package com.example.travelbuddyv2.model;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Request {
 
@@ -57,5 +58,18 @@ public class Request {
     @Override
     public String toString() {
         return requestType + " " + tripName + " " + tripID ;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj == this)
+            return true;
+        if(!(obj instanceof Request))
+            return false;
+
+        Request c = (Request) obj;
+
+        return inviter.equals(c.getInviter()) && tripID.equals(c.getTripID()) && tripName.equals(c.getTripName()) && requestType.equals(c.getRequestType()) ;
+
     }
 }

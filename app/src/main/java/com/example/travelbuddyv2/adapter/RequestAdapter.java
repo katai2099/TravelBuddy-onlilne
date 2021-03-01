@@ -49,6 +49,13 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
         final Request request = requestList.get(position);
         holder.tvFriendRequestNotification.setText("You got an invitation from "+ request.getInviter() + " to join " + request.getTripName() +"  trip");
 
+        holder.btnReject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         holder.btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,8 +120,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
                                });
 
 
-
-
                             }
                         });
                     }
@@ -147,5 +152,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
         }
     }
+
+
 
 }

@@ -77,10 +77,17 @@ public class InviteFriendActivity extends AppCompatActivity {
         });
     }
 
+    public void fillKnownList(){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Known_lists")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+    }
+
     public void fillList(final String email){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User");
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();

@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EventListener;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
@@ -80,16 +81,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         receiver.setInviter(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Log.d(tag,"onClick called");
-                requestID = 0 ;
+
+                addRequest(user,requester,receiver,holder);
+
+               /* requestID = 0 ;
 
 
-                final List<Integer> idList = new ArrayList<>();
-                int tmp;
+                final List<Integer> idList = new ArrayList<>();*/
 
-                FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+               /* FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child(user.getUser_id()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
@@ -149,6 +152,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 Toast.makeText(holder.itemView.getContext(),"Sent success",Toast.LENGTH_SHORT).show();
+                                                //add to knownlist
+
+                                                addToKnownList(user);
                                             }
                                         });
 
@@ -159,32 +165,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                         });
 
                     }
-                });
+                });*/
 
-              /*   FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child(user.getUser_id())
-                         .child("r"+requestID)
-                        .setValue(requester)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                requestID = 0 ;
-                                 getRequestID(user.getUser_id(),FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                Log.d(tag,"ID BEFORE RECEIVER SENT " + requestID);
-                                FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
-                                        .child(user.getUser_id())
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child("r"+requestID)
-                                        .setValue(receiver)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(holder.itemView.getContext(),"Sent success",Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                            }
-                        });*/
+
 
             }
         });
@@ -219,9 +202,159 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     public void getRequestID(String requesterID,String receiverID){
 
 
+    }
+
+    private void addToKnownList(final User user){
+
+        List<User> users = new ArrayList<>();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Known_lists")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean exist = false;
+                for(DataSnapshot data:snapshot.getChildren()){
+                    User tmp = data.getValue(User.class);
+                    if(tmp.equals(user))
+                    {
+                        exist = true;
+                        break;
+                    }
+                }
+                Log.d(tag,String.valueOf(exist));
+                if(!exist){
+                    String key = FirebaseDatabase.getInstance().getReference().child("Known_lists")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
+                    FirebaseDatabase.getInstance().getReference().child("Known_lists")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(key).setValue(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
+    }
 
+    private void addRequest(final User user, final Request requester, final Request receiver, final UserHolder holder){
+      //  List<Request> requests = new ArrayList<>();
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(user.getUser_id());
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            boolean exist = false;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot data : snapshot.getChildren()){
+                    Request tmp = data.getValue(Request.class);
+                    if(tmp.equals(requester))
+                    {
+                        exist = true ;
+                        break;
+                    }
+                }
+                Log.d(tag,String.valueOf(exist));
+                if(!exist)
+                {
+
+                    requestID = 0 ;
+                    final List<Integer> idList = new ArrayList<>();
+
+                    FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(user.getUser_id()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                                Request request= snapshot.getValue(Request.class);
+                                idList.add(StringToInt(snapshot.getKey()));
+                            }
+                            if(idList.size()!=0){
+                                Collections.sort(idList);
+                                requestID = idList.get(idList.size()-1)+1;
+                                requester.setRequestID("r"+requestID);
+
+                            }else{
+                                Log.d(tag,"LIST EMPTY");
+                                requester.setRequestID("r"+requestID);
+                            }
+
+                            Log.d(tag, String.valueOf(requestID));
+
+                            FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(user.getUser_id())
+                                    .child("r"+requestID)
+                                    .setValue(requester).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    requestID = 0 ;
+                                    idList.clear();
+
+                                    FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                                            .child(user.getUser_id())
+                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DataSnapshot dataSnapshot) {
+                                            for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                                                Request request= snapshot.getValue(Request.class);
+                                                idList.add(StringToInt(snapshot.getKey()));
+                                            }
+                                            if(idList.size()!=0){
+                                                Collections.sort(idList);
+                                                requestID = idList.get(idList.size()-1)+1;
+                                                receiver.setRequestID("r"+requestID);
+
+                                            }else{
+                                                Log.d(tag,"LIST EMPTY");
+                                                receiver.setRequestID("r"+requestID);
+                                            }
+
+                                            Log.d(tag, String.valueOf(requestID));
+
+                                            FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                                                    .child(user.getUser_id())
+                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    .child("r"+requestID)
+                                                    .setValue(receiver).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(holder.itemView.getContext(),"Sent success",Toast.LENGTH_SHORT).show();
+                                                    //add to knownlist
+
+                                                    addToKnownList(user);
+                                                }
+                                            });
+
+                                        }
+                                    });
+
+                                }
+                            });
+
+                        }
+                    });
+
+                }else{
+                   // holder.btnInviteFriend.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
