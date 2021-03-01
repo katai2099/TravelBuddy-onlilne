@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestHolder> {
 
+    private final String tag = "REQUEST_ADAPTER";
     List<Request> requestList;
 
     public RequestAdapter(List<Request>requestList) {
@@ -49,10 +52,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
         holder.btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference inviterReference = FirebaseDatabase.getInstance().getReference().child("Trip_detail").child(request.getInviter());
+                //get inviter node
+                DatabaseReference inviterReference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                        .child(request.getInviter());
+                //get firebase Group current_user node
                 final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Group")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child(request.getInviter());
+
                 inviterReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -60,6 +67,54 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(holder.itemView.getContext(),"Add to group",Toast.LENGTH_SHORT).show();
+
+                                DatabaseReference receiverRequest = FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(request.getInviter())
+                                        .child(request.getRequestID());
+
+                               receiverRequest.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                   public void onSuccess(Void aVoid) {
+                                       Log.d(tag,request.getRequestID() );
+
+                                       DatabaseReference inviterRequest = FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
+                                               .child(request.getInviter())
+                                               .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
+                                       inviterRequest.addListenerForSingleValueEvent(new ValueEventListener() {
+                                           @Override
+                                           public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                               Iterator<DataSnapshot> items = snapshot.getChildren().iterator();
+                                               while(items.hasNext()){
+                                                   DataSnapshot item = items.next();
+                                                   Request tmp = item.getValue(Request.class);
+                                                   if(tmp.getInviter().equals(request.getInviter()) && tmp.getRequestType().equals("sent")
+                                                           && tmp.getTripID().equals(request.getTripID()) && tmp.getTripName().equals(request.getTripName()))
+                                                   {
+                                                       Log.d(tag,"FIND EQUAL ONE");
+                                                       item.getRef().removeValue();
+                                                       break;
+                                                   }
+                                                   Log.d(tag,item.getRef().toString());
+
+                                               }
+
+                                           }
+
+                                           @Override
+                                           public void onCancelled(@NonNull DatabaseError error) {
+
+                                           }
+                                       });
+
+                                   }
+                               });
+
+
+
+
                             }
                         });
                     }

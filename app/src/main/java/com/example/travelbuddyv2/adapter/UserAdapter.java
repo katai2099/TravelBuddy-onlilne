@@ -101,9 +101,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                         if(idList.size()!=0){
                             Collections.sort(idList);
                             requestID = idList.get(idList.size()-1)+1;
+                            requester.setRequestID("r"+requestID);
 
                         }else{
                             Log.d(tag,"LIST EMPTY");
+                            requester.setRequestID("r"+requestID);
                         }
 
                         Log.d(tag, String.valueOf(requestID));
@@ -130,9 +132,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                                         if(idList.size()!=0){
                                             Collections.sort(idList);
                                             requestID = idList.get(idList.size()-1)+1;
+                                            receiver.setRequestID("r"+requestID);
 
                                         }else{
                                             Log.d(tag,"LIST EMPTY");
+                                            receiver.setRequestID("r"+requestID);
                                         }
 
                                         Log.d(tag, String.valueOf(requestID));

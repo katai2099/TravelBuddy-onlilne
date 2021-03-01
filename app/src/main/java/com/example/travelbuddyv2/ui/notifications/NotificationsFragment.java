@@ -3,6 +3,7 @@ package com.example.travelbuddyv2.ui.notifications;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -52,6 +53,8 @@ public class NotificationsFragment extends Fragment {
         requestAdapter = new RequestAdapter(requestList);
 
         rcvNotification.setAdapter(requestAdapter);
+
+
 
 
         return root;

@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class UserProfileFragment extends Fragment {
 
-    TextView tvUserName;
+    TextView tvUserName,  tvUserEmail;
     Button btnLogOut;
     ImageView imgUserProfileImage;
 
@@ -33,10 +33,13 @@ public class UserProfileFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
         tvUserName = root.findViewById(R.id.tvProfileName);
+        tvUserEmail = root.findViewById(R.id.tvProfileEmail);
         btnLogOut = root.findViewById(R.id.btnUserLogOut);
         imgUserProfileImage = root.findViewById(R.id.imgProfilePic);
 
         imgUserProfileImage.setImageResource(getResources().getIdentifier("@drawable/ic_baseline_person_24",null,getContext().getPackageName()));
+
+        tvUserEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         btnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override

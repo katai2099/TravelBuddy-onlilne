@@ -8,6 +8,7 @@ public class Request {
     private String tripName;
     private String tripID;
     private String inviter;
+    private String requestID;
 
     public Request() {
     }
@@ -42,6 +43,14 @@ public class Request {
 
     public void setInviter(String inviter) {
         this.inviter = inviter;
+    }
+
+    public String getRequestID() {
+        return requestID;
+    }
+
+    public void setRequestID(String requestNumber) {
+        this.requestID = requestNumber;
     }
 
     @NonNull
