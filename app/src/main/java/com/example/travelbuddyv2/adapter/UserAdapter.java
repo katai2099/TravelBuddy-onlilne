@@ -68,6 +68,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         holder.tvFriendName.setText(user.getName());
         holder.tvFriendEmail.setText(user.getEmail());
         holder.img.setImageResource(holder.itemView.getResources().getIdentifier("@drawable/email_confirmmation",null,holder.itemView.getContext().getPackageName()));
+        holder.tvPending.setVisibility(View.GONE);
+        holder.btnInviteFriend.setVisibility(View.VISIBLE);
 
         final Request requester = new Request();
         requester.setRequestType("sent");
@@ -87,87 +89,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
                 addRequest(user,requester,receiver,holder);
 
-               /* requestID = 0 ;
-
-
-                final List<Integer> idList = new ArrayList<>();*/
-
-               /* FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child(user.getUser_id()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-                            Request request= snapshot.getValue(Request.class);
-                            idList.add(StringToInt(snapshot.getKey()));
-                        }
-                        if(idList.size()!=0){
-                            Collections.sort(idList);
-                            requestID = idList.get(idList.size()-1)+1;
-                            requester.setRequestID("r"+requestID);
-
-                        }else{
-                            Log.d(tag,"LIST EMPTY");
-                            requester.setRequestID("r"+requestID);
-                        }
-
-                        Log.d(tag, String.valueOf(requestID));
-
-                        FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .child(user.getUser_id())
-                                .child("r"+requestID)
-                                .setValue(requester).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                requestID = 0 ;
-                                idList.clear();
-
-                                FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
-                                        .child(user.getUser_id())
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-                                            Request request= snapshot.getValue(Request.class);
-                                            idList.add(StringToInt(snapshot.getKey()));
-                                        }
-                                        if(idList.size()!=0){
-                                            Collections.sort(idList);
-                                            requestID = idList.get(idList.size()-1)+1;
-                                            receiver.setRequestID("r"+requestID);
-
-                                        }else{
-                                            Log.d(tag,"LIST EMPTY");
-                                            receiver.setRequestID("r"+requestID);
-                                        }
-
-                                        Log.d(tag, String.valueOf(requestID));
-
-                                        FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
-                                                .child(user.getUser_id())
-                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("r"+requestID)
-                                                .setValue(receiver).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(holder.itemView.getContext(),"Sent success",Toast.LENGTH_SHORT).show();
-                                                //add to knownlist
-
-                                                addToKnownList(user);
-                                            }
-                                        });
-
-                                    }
-                                });
-
-                            }
-                        });
-
-                    }
-                });*/
-
-
 
             }
         });
@@ -182,7 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     class UserHolder extends RecyclerView.ViewHolder {
 
         private final ImageView img;
-        private final TextView tvFriendEmail,tvFriendName;
+        private final TextView tvFriendEmail,tvFriendName , tvPending;
         private final Button btnInviteFriend;
 
         private final String name , id; // tripname , tripStringID
@@ -195,6 +116,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
            tvFriendEmail = itemView.findViewById(R.id.friendEmail);
            tvFriendName = itemView.findViewById(R.id.friendName);
            btnInviteFriend = itemView.findViewById(R.id.btnInviteFriend);
+           tvPending = itemView.findViewById(R.id.tvPending);
 
         }
     }
@@ -345,7 +267,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                     });
 
                 }else{
-                   // holder.btnInviteFriend.setVisibility(View.GONE);
+                   holder.btnInviteFriend.setVisibility(View.GONE);
+                   holder.tvPending.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -369,5 +292,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         return Integer.parseInt(tmp.toString());
 
     }
+
 
 }

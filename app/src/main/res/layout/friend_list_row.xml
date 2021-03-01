@@ -43,6 +43,25 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="end"
+        >
+
+        <TextView
+            android:id="@+id/tvPending"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Pending"
+            android:gravity="center"
+            />
+
+
+    </LinearLayout>
+
+
 
 </androidx.cardview.widget.CardView>
 
