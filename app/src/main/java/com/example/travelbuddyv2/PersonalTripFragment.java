@@ -42,7 +42,7 @@ public class PersonalTripFragment extends Fragment {
 
     TripAdapter tripAdapter;
 
-    List<tripModel> tripLists  = new ArrayList<tripModel>();
+    List<tripModel> tripLists  = new ArrayList<>();
 
     public PersonalTripFragment() {
         // Required empty public constructor

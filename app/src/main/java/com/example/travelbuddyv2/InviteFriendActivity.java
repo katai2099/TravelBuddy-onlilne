@@ -125,7 +125,7 @@ public class InviteFriendActivity extends AppCompatActivity {
                    // users.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         User user = dataSnapshot.getValue(User.class);
-                        Log.d(tag, user.getName() + " " + user.getEmail());
+                        Log.d(tag, user.toString());
                         if (user.getEmail().equals(email) && !(FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(email))) {
                             users.clear();
                             users.add(user);
@@ -151,10 +151,11 @@ public class InviteFriendActivity extends AppCompatActivity {
 
         for(int i=0;i<suggestedUsers.size();i++) {
             if (suggestedUsers.get(i).getEmail().equals(email)){
+                Log.d(tag,"There exist user in knownlist");
                 return true;
             }
         }
-
+        Log.d(tag,"THERE IS NO USER IN KNOWNLIST");
         return existInList;
 
     }

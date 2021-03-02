@@ -29,9 +29,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class addNewTrip extends AppCompatActivity {
@@ -111,8 +116,18 @@ public class addNewTrip extends AppCompatActivity {
                     Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
+                   tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
                     tmpTripModel.setStringID("t" + ID);
+
+
+                    //Still need to get it cleaned
+                    final List<String> dateList = getDateInterval(tmpStartDate,tmpEndDate);
+                    final HashMap<String,String> res = new HashMap<>();
+                    for(int i=0;i<dateList.size();i++){
+                        res.put(dateList.get(i),"");
+                    }
+
+                    final int lastInsertedID = ID;
 
                     FirebaseDatabase.getInstance().getReference()
                             .child("Trips")
@@ -122,10 +137,17 @@ public class addNewTrip extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(addNewTrip.this,"Adding complete",Toast.LENGTH_SHORT).show();
-                                  //  idIncrement();
+                                    FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            .child("t" + lastInsertedID)
+                                            .setValue(res);
+                                    Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
                                 }
                             });
+
+
+
+
 
                    // databaseHelper = new DatabaseHelper(addNewTrip.this);
                    // databaseHelper.addNewTrip(tmpTripModel);
@@ -321,9 +343,12 @@ public class addNewTrip extends AppCompatActivity {
                     Log.d(tag,"KEY FROM FIREBASE " + data.getKey());
                 }
                 if(tmp.size()!=0){
+                    Collections.sort(tmp);
                 int size = tmp.get(tmp.size()-1);
                 Log.d(tag,"latest trip ID " + size);
-                ID = size+1;}
+                ID = size+1;
+                }
+                //need to sort here !!!!!!!!!!
             }
 
             @Override
@@ -345,6 +370,44 @@ public class addNewTrip extends AppCompatActivity {
 
         return Integer.parseInt(tmp.toString());
 
+    }
+
+    private List<String> getDateInterval(String startDate , String endDate)  {
+        SimpleDateFormat simpleDateFormat;
+        Date start , end ;
+        Calendar calendar;
+
+        start = new Date();
+        end = new Date();
+        calendar = new GregorianCalendar();
+        List<String> listOfdate = new ArrayList<>();
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            start = simpleDateFormat.parse(startDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            end = simpleDateFormat.parse(endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        calendar.setTime(start);
+        // while (calendar.getTime().before(endDate))
+        while(calendar.getTime().before(end))
+        {
+            Date result = calendar.getTime();
+            String tmp = simpleDateFormat.format(result);
+            listOfdate.add(tmp);
+            calendar.add(Calendar.DATE, 1);
+        }
+        String tmp = simpleDateFormat.format(calendar.getTime());
+        //System.out.println(calendar.getTime().toString());
+        listOfdate.add(tmp);
+
+        return listOfdate;
     }
 
 
