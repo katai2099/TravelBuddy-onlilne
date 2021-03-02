@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -75,14 +76,17 @@ public class TripDetailFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Destination destination = new Destination();
+              /*  Destination destination = new Destination();
                 destination.setName("Hosok tere");
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child(tripID)
                         .child("2021-03-02")
                         .child("td" + 0);
-                reference.setValue(destination);
+                reference.setValue(destination);*/
+
+                Intent i = new Intent(getContext(),MapsActivity.class);
+                startActivity(i);
 
             }
         });
