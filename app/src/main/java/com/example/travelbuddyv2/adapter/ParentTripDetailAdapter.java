@@ -1,13 +1,16 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelbuddyv2.MapsActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.TripSection;
@@ -18,8 +21,10 @@ import java.util.List;
 public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDetailAdapter.ParentTripDetailHolder> {
 
     List<TripSection> tripSectionList;
-    public ParentTripDetailAdapter(List<TripSection> tripSectionsList) {
+    String tripStringId ;
+    public ParentTripDetailAdapter(List<TripSection> tripSectionsList,String tripStringId) {
         this.tripSectionList = tripSectionsList;
+        this.tripStringId = tripStringId;
     }
 
     @NonNull
@@ -32,15 +37,26 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ParentTripDetailHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ParentTripDetailHolder holder, int position) {
 
         TripSection tripSection = tripSectionList.get(position);
-        String date = tripSection.getDate();
+        final String date = tripSection.getDate();
         holder.sectionTextview.setText(date);
 
         List<Destination> destinationList = tripSection.getDestinations();
         ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList);
         holder.childRecyclerView.setAdapter(childTripDetailAdapter);
+
+        holder.btnAddTripDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(holder.itemView.getContext(), MapsActivity.class);
+                i.putExtra("tripStringID",tripStringId);
+                i.putExtra("dateOfTrip",date);
+                holder.itemView.getContext().startActivity(i);
+            }
+        });
+
 
     }
 
@@ -53,11 +69,13 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
 
         TextView sectionTextview;
         RecyclerView childRecyclerView;
+        Button btnAddTripDetail;
 
         public ParentTripDetailHolder(@NonNull View itemView) {
             super(itemView);
             sectionTextview = itemView.findViewById(R.id.sectionNameTextView);
             childRecyclerView = itemView.findViewById(R.id.childRecyclerView);
+            btnAddTripDetail = itemView.findViewById(R.id.section_row_btnAddTripDetail);
         }
     }
 

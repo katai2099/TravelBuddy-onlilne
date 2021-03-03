@@ -69,7 +69,7 @@ public class TripDetailFragment extends Fragment {
         floatingActionButton = root.findViewById(R.id.katai);
         rcvTripDetail.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        parentTripDetailAdapter = new ParentTripDetailAdapter(tripSectionList);
+        parentTripDetailAdapter = new ParentTripDetailAdapter(tripSectionList,tripID);
 
         rcvTripDetail.setAdapter(parentTripDetailAdapter);
 

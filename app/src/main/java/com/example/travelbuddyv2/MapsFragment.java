@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -11,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -22,9 +25,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.adapter.GoogleMapPictureAdapter;
 import com.example.travelbuddyv2.model.Destination;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApi;
@@ -51,8 +57,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPhotoResponse;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
@@ -100,6 +109,16 @@ public class MapsFragment extends Fragment {
     private View mapView;
 
     private GoogleMap map;
+
+    private View googleMapInformationLayout;
+
+    private GoogleMapPictureAdapter googleMapPictureAdapter;
+
+    private RecyclerView rcvGoogleMapPics;
+
+    private Button btnAddTrip;
+
+    private List<Bitmap> bitmapList;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -199,34 +218,78 @@ public class MapsFragment extends Fragment {
             googleMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
                 @Override
                 public void onPoiClick(PointOfInterest pointOfInterest) {
-                    String placeId = pointOfInterest.name;
-                    LatLng placeLatLng = pointOfInterest.latLng;
-                    Toast.makeText(getActivity(), placeId, Toast.LENGTH_SHORT).show();
+                    final String placeName = pointOfInterest.name;
+                    final String placeId = pointOfInterest.placeId;
+                    final LatLng placeLatLng = pointOfInterest.latLng;
+                    Toast.makeText(getActivity(), placeName, Toast.LENGTH_SHORT).show();
 
+                    //clear list to display new image every time user click on POI
+                    bitmapList.clear();
 
-                    //generate unique push_id
-                    String key = FirebaseDatabase.getInstance().getReference()
-                            .child("Trip_detail")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
-                    Destination tmp = new Destination();
-                    tmp.setName(placeId);
-                    tmp.setStartDate("today");
-                    tmp.setEndDate("tomorrow");
-                    tmp.setLatitude(placeLatLng.latitude);
-                    tmp.setLongtitude(placeLatLng.longitude);
+                    // Specify fields. Requests for photos must always have the PHOTO_METADATAS field.
+                    final List<Place.Field> fields = Collections.singletonList(Place.Field.PHOTO_METADATAS);
 
-                    FirebaseDatabase.getInstance().getReference()
-                            .child("Trip_detail")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child("t" + 1)
-                            .child("td" + tripDetailID)
-                            .setValue(tmp).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    // Get a Place object (this example uses fetchPlace(), but you can also use findCurrentPlace())
+                    final FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeId, fields);
+
+                    placesClient.fetchPlace(placeRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
                         @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getContext(),"Add success",Toast.LENGTH_SHORT).show();
-                          //  tripDetailIDIncrement();
+                        public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
+                            final Place place= fetchPlaceResponse.getPlace();
+                            // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
+
+                            final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+                            if(metadata==null || metadata.isEmpty()){
+                                Toast.makeText(getContext(),"No metadata",Toast.LENGTH_SHORT).show();
+                            }
+
+                            for(int i=0;i<metadata.size();i++){
+                                if(i==5)
+                                    break;
+                                final PhotoMetadata photoMetadata = metadata.get(i);
+                                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                                        .setMaxWidth(300)
+                                        .setMaxHeight(300)
+                                        .build();
+
+                                placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
+                                    @Override
+                                    public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
+                                        Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                                        bitmapList.add(bitmap);
+                                        googleMapPictureAdapter.notifyDataSetChanged();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        if(e instanceof ApiException){
+                                            final ApiException apiException = (ApiException) e;
+                                            Log.e(tag, "Place not found: " + e.getMessage());
+                                            final int statusCode = apiException.getStatusCode();
+                                            Log.e(tag,String.valueOf(statusCode));
+
+                                        }
+                                    }
+                                });
+
+
+                            }
                         }
                     });
+
+
+                    googleMapInformationLayout.setVisibility(View.VISIBLE);
+                    TextView tv = googleMapInformationLayout.findViewById(R.id.tvPlaceName);
+                    tv.setText(placeName);
+
+                    btnAddTrip.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(getContext(),TripSelectionActivity.class);
+                            startActivity(i);
+                        }
+                    });
+
 
                 }
             });
@@ -245,7 +308,17 @@ public class MapsFragment extends Fragment {
 
         materialSearchBar = root.findViewById(R.id.searchBar);
 
-        getCurrentTripDetailIdFromFirebaseDatabase();
+//        getCurrentTripDetailIdFromFirebaseDatabase();
+
+        googleMapInformationLayout = root.findViewById(R.id.googleMapInformationLayout);
+        googleMapInformationLayout.setVisibility(View.GONE);
+        bitmapList = new ArrayList<>();
+        googleMapPictureAdapter = new GoogleMapPictureAdapter(bitmapList);
+        rcvGoogleMapPics = googleMapInformationLayout.findViewById(R.id.googleMapPicturesRecyclerView);
+        rcvGoogleMapPics.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.HORIZONTAL,false));
+        rcvGoogleMapPics.setAdapter(googleMapPictureAdapter);
+
+        btnAddTrip = googleMapInformationLayout.findViewById(R.id.mapFragmentBtnAddTripDetail);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 

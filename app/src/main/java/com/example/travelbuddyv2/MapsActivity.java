@@ -8,12 +8,15 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.GoogleMapPictureAdapter;
+import com.example.travelbuddyv2.model.Destination;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,6 +35,9 @@ import com.google.android.libraries.places.api.net.FetchPhotoResponse;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +55,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     PlacesClient placesClient;
     GoogleMapPictureAdapter googleMapPictureAdapter;
     RecyclerView rcvGoogleMapPictures;
+    String dateFromTripDetail,tripStringID;
+    Button btnAddTripToDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Bundle bundle = getIntent().getExtras();
+        if(bundle!=null){
+            tripStringID = bundle.getString("tripStringID");
+            dateFromTripDetail = bundle.getString("dateOfTrip");
+            Log.d(tag,"date of Trip " + dateFromTripDetail);
+            Log.d(tag,"trip String ID " + tripStringID);
+        }
+
+        btnAddTripToDatabase = findViewById(R.id.mapActivityBtnAddTripDetail);
         bitmapList = new ArrayList<>();
         rcvGoogleMapPictures = findViewById(R.id.googleMapPicturesRecyclerView);
 
@@ -104,8 +121,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override
             public void onPoiClick(PointOfInterest pointOfInterest) {
-                String placeId = pointOfInterest.placeId;
-                String name = pointOfInterest.name;
+                final String placeId = pointOfInterest.placeId;
+                final String placeName = pointOfInterest.name;
+                final LatLng placeLatLng = pointOfInterest.latLng;
 
                 //clear list to display new image every time user click on POI
                 bitmapList.clear();
@@ -128,7 +146,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
 
                         for(PhotoMetadata meta:metadata){
-                            Log.d(tag,meta.toString());
+                          //  Log.d(tag,meta.toString());
                         }
 
                      //   final PhotoMetadata photoMetadata = metadata.get(0);
@@ -149,7 +167,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
                                 @Override
                                 public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
-                                    Toast.makeText(getBaseContext(),"FETCH PHOTO COMPLETED",Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getBaseContext(),"FETCH PHOTO COMPLETED",Toast.LENGTH_SHORT).show();
                                     Bitmap bitmap = fetchPhotoResponse.getBitmap();
                                     bitmapList.add(bitmap);
                                     googleMapPictureAdapter.notifyDataSetChanged();
@@ -214,7 +232,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 info.setVisibility(View.VISIBLE);
                 TextView tv = info.findViewById(R.id.tvPlaceName);
-                tv.setText(name);
+                tv.setText(placeName);
+
+                btnAddTripToDatabase.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child(tripStringID)
+                                .child(dateFromTripDetail)
+                                .child("td"+1);
+
+                        Destination destination = new Destination();
+                        destination.setPlaceId(placeId);
+                        destination.setName(placeName);
+                        destination.setLongtitude(placeLatLng.longitude);
+                        destination.setLatitude(placeLatLng.latitude);
+
+                        reference.setValue(destination);
+
+
+                    }
+                });
+
             }
         });
 

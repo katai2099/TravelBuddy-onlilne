@@ -10,6 +10,7 @@ public class Destination {
     private String endDate;
     private double longtitude;
     private double latitude;
+    private String placeId;
 
     public Destination() {
     }
@@ -76,5 +77,13 @@ public class Destination {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 }
