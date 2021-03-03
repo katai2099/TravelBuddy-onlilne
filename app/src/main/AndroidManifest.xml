@@ -17,7 +17,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DateSelectionActivity"></activity>
+        <activity
+            android:name=".GroupTripDetailActivity"
+            android:label="@string/title_activity_group_trip_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".DateSelectionActivity" />
         <activity android:name=".TripSelectionActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -36,7 +40,7 @@
             android:label="@string/title_activity_maps" />
         <activity android:name=".InviteFriendActivity" />
         <activity
-            android:name=".TripDetail"
+            android:name=".TripDetailActivity"
             android:label="@string/title_activity_trip_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

@@ -9,24 +9,26 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class GroupTripFragment extends Fragment {
 
-    public GroupTripFragment() {
+public class GroupTripDetailFragment extends Fragment {
+
+
+    public GroupTripDetailFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_group_trip, container, false);
-        return root ;
+        // Inflate the layout for this fragment
+        View root = inflater.inflate(R.layout.fragment_group_trip_detail, container, false);
+        return root;
     }
-
-
-
 }

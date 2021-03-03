@@ -6,14 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.InviteFriendActivity;
 import com.example.travelbuddyv2.R;
-import com.example.travelbuddyv2.TripDetail;
+import com.example.travelbuddyv2.TripDetailActivity;
 import com.example.travelbuddyv2.model.tripModel;
 
 import java.util.List;
@@ -55,8 +54,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
             }
         });
 
-
-
     }
 
     @Override
@@ -96,7 +93,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
         public void onClick(View v) {
             tripModel tmp = list.get(getAdapterPosition());
          //   Toast.makeText(itemView.getContext(),tmp.getTripName(),Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(itemView.getContext(), TripDetail.class);
+            Intent i = new Intent(itemView.getContext(), TripDetailActivity.class);
             i.putExtra("TRIP_STRING_ID",tmp.getStringID());
             itemView.getContext().startActivity(i);
         }
