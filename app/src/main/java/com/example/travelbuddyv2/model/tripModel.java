@@ -15,6 +15,7 @@ public class tripModel {
     private String endTime;
     private String destination;
     private int is_notified;
+    private String owner;
 
     public tripModel(){
 
@@ -155,6 +156,14 @@ public class tripModel {
 
     public void setIs_notified(int is_notified) {
         this.is_notified = is_notified;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     static class SortbyDestination implements Comparator<tripModel>

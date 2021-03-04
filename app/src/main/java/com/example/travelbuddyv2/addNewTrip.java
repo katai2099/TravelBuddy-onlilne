@@ -118,9 +118,12 @@ public class addNewTrip extends AppCompatActivity {
                 else {
                    tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
                     tmpTripModel.setStringID("t" + ID);
+                    tmpTripModel.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
+                    //adding date to TripDetail NODE
                     //Still need to get it cleaned
+
                     final List<String> dateList = getDateInterval(tmpStartDate,tmpEndDate);
                     final HashMap<String,String> res = new HashMap<>();
                     for(int i=0;i<dateList.size();i++){
