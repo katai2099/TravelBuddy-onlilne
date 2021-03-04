@@ -1,16 +1,21 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.InviteFriendActivity;
+import com.example.travelbuddyv2.MemberActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.TripDetailActivity;
 import com.example.travelbuddyv2.model.tripModel;
@@ -46,10 +51,41 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(holder.itemView.getContext(),InviteFriendActivity.class);
+
+                Intent i = new Intent(holder.itemView.getContext(), MemberActivity.class);
                 i.putExtra("TripName",currentTrip.getTripName());
                 i.putExtra("TripStringID",currentTrip.getStringID());
+                i.putExtra("fromWho","personalTrip");
                 holder.itemView.getContext().startActivity(i);
+
+              /*  Intent i = new Intent(holder.itemView.getContext(),InviteFriendActivity.class);
+                i.putExtra("TripName",currentTrip.getTripName());
+                i.putExtra("TripStringID",currentTrip.getStringID());
+                holder.itemView.getContext().startActivity(i);*/
+
+            }
+        });
+
+        holder.btnDeleteTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setMessage("Are you sure you want to delete this trip?");
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(holder.itemView.getContext(),"I am leaving",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(holder.itemView.getContext(),"Nah, I am not leaving",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
             }
         });
@@ -73,7 +109,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
 
         private final TextView tripname;
         private final TextView tripdate ;
-        private final Button btnInviteFriend;
+        private final Button btnInviteFriend , btnDeleteTrip;
 
 
 
@@ -83,6 +119,8 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
             tripname = itemView.findViewById(R.id.tripNameListAdapter);
             tripdate = itemView.findViewById(R.id.tripDateListAdapter);
             btnInviteFriend = itemView.findViewById(R.id.tripInviteFriend);
+            btnDeleteTrip = itemView.findViewById(R.id.tripRemove);
+            btnDeleteTrip.setBackgroundResource(R.drawable.ic_baseline_delete_forever_24);
 
             itemView.setOnClickListener(this);
 

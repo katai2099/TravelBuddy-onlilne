@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MemberActivity">
+
+    <LinearLayout
+        android:id="@+id/layoutForOwner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_baseline_add_24"
+            android:clickable="false"/>
+        <TextView
+            android:id="@+id/tvInviteFriend"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Invite friends to join the travel group"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            />
+
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separatorDividerline"
+        android:layout_below="@+id/layoutForOwner"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@android:color/darker_gray" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@+id/separatorDividerline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="3dp"/>
+
+
+
+</RelativeLayout>

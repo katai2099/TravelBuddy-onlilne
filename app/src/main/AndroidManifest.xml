@@ -17,10 +17,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".MemberActivity"></activity>
         <activity
             android:name=".GroupTripDetailActivity"
             android:label="@string/title_activity_group_trip_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".DateSelectionActivity" />
         <activity android:name=".TripSelectionActivity" />
         <!--

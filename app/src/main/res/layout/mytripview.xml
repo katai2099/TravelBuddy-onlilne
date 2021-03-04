@@ -38,11 +38,19 @@
 
         <Button
             android:id="@+id/tripInviteFriend"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:hint="Invite"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/ic_baseline_person_add_alt_1_24"
             />
+        <Button
+            android:id="@+id/tripRemove"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/tripInviteFriend"
+            android:layout_alignParentEnd="true"
+            />
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

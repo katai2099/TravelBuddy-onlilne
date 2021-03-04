@@ -1,11 +1,14 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,13 +44,35 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupTripHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final GroupTripHolder holder, int position) {
 
         tripModel tmp = groupTripList.get(position);
 
         holder.tripname.setText(tmp.getTripName());
         holder.tripdate.setText(tmp.getStartDate() + " " + tmp.getEndDate());
 
+        holder.btnLeaveGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setMessage("Are you sure you want to leave this group?");
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(holder.itemView.getContext(),"I am leaving",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(holder.itemView.getContext(),"Nah, I am not leaving",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
 
     }
 
@@ -60,13 +85,15 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
 
         private final TextView tripname;
         private final TextView tripdate ;
-        private final Button btnInviteFriend;
+        private final Button btnInviteFriend, btnLeaveGroup;
 
         public GroupTripHolder(@NonNull View itemView) {
             super(itemView);
             tripname = itemView.findViewById(R.id.tripNameListAdapter);
             tripdate = itemView.findViewById(R.id.tripDateListAdapter);
             btnInviteFriend = itemView.findViewById(R.id.tripInviteFriend);
+            btnLeaveGroup = itemView.findViewById(R.id.tripRemove);
+            btnLeaveGroup.setBackgroundResource(R.drawable.ic_baseline_directions_run_24);
             itemView.setOnClickListener(this);
         }
 
