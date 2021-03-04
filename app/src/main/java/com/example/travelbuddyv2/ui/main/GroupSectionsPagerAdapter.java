@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.travelbuddyv2.GroupTripDetailFragment;
+import com.example.travelbuddyv2.InventoryFragment;
 import com.example.travelbuddyv2.R;
 
 public class GroupSectionsPagerAdapter extends FragmentPagerAdapter {
@@ -33,6 +34,7 @@ public class GroupSectionsPagerAdapter extends FragmentPagerAdapter {
                 fragment = new GroupTripDetailFragment();
                 break;
             case 1:
+                fragment = new InventoryFragment();
                 break;
         }
 

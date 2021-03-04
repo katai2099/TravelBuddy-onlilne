@@ -60,9 +60,16 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
             @Override
             public void onClick(View v) {
                 //get inviter node
-                DatabaseReference inviterReference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                //This is older version
+               /* DatabaseReference inviterReference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                        .child(request.getInviter())
+                        .child(request.getTripID());*/
+
+                //get inviter node
+                DatabaseReference inviterReference = FirebaseDatabase.getInstance().getReference().child("Trips")
                         .child(request.getInviter())
                         .child(request.getTripID());
+
                 //get firebase Group current_user node
                 final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Group")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())

@@ -68,6 +68,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
 
 
 
+
     class tripHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
         private final TextView tripname;
