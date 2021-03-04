@@ -50,7 +50,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
                 i.putExtra("TripName",currentTrip.getTripName());
                 i.putExtra("TripStringID",currentTrip.getStringID());
                 holder.itemView.getContext().startActivity(i);
-               // Toast.makeText(holder.itemView.getContext(),currentTrip.getTripName() + " " + currentTrip.getStringID(),Toast.LENGTH_SHORT).show();
+
             }
         });
 

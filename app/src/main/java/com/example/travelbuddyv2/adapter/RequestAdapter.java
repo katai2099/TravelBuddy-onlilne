@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.R;
+import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.Request;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,7 +86,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
                                 Toast.makeText(holder.itemView.getContext(),"Add to group",Toast.LENGTH_SHORT).show();
 
                                 removeInvitationRequest(request);
-
+                                addToMemberNode(request);
                             }
                         });
                     }
@@ -120,7 +121,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
     }
 
 
-    //remove InvitationRequest from firebase after user click on reject button
+    //remove InvitationRequest from firebase after user click on reject or accept button
     private void removeInvitationRequest(final Request request){
 
         // get receiver Request Node
@@ -161,11 +162,32 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
             }
         });
 
+    }
 
+    private void addToMemberNode(Request request){
+
+        //get Inviter Member Node
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(request.getInviter())
+                .child(request.getTripID())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+       // String uniqueKey = reference.push().getKey();
+
+        Member tmp = new Member();
+        tmp.setID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        tmp.setPermission("edit");
+
+        reference.setValue(tmp).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(tag,"ADD TO MEMBER NODE SUCCESS");
+            }
+        });
 
 
     }
-
 
 
 }

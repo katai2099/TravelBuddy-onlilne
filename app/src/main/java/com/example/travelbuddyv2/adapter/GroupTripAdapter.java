@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelbuddyv2.GroupTripDetailActivity;
 import com.example.travelbuddyv2.R;
+import com.example.travelbuddyv2.TripDetailActivity;
 import com.example.travelbuddyv2.model.tripModel;
 
 import java.util.List;
@@ -18,9 +21,13 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
 
 
     List<tripModel> groupTripList;
+    AdapterCallback adapterCallback;
 
-    public GroupTripAdapter(List<tripModel> lists) {
+
+    public GroupTripAdapter(List<tripModel> lists,AdapterCallback adapterCallback) {
         this.groupTripList = lists;
+        this.adapterCallback = adapterCallback;
+
     }
 
     @NonNull
@@ -49,7 +56,7 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
         return groupTripList.size();
     }
 
-    class GroupTripHolder extends RecyclerView.ViewHolder {
+    class GroupTripHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private final TextView tripname;
         private final TextView tripdate ;
@@ -60,7 +67,29 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
             tripname = itemView.findViewById(R.id.tripNameListAdapter);
             tripdate = itemView.findViewById(R.id.tripDateListAdapter);
             btnInviteFriend = itemView.findViewById(R.id.tripInviteFriend);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            tripModel tmp = groupTripList.get(getAdapterPosition());
+
+            Intent i = new Intent(itemView.getContext(), GroupTripDetailActivity.class);
+            i.putExtra("TRIP_STRING_ID",tmp.getStringID());
+            i.putExtra("TRIP_OWNER",tmp.getOwner());
+            itemView.getContext().startActivity(i);
+
+         //   adapterCallback.onMethodCallback(getAdapterPosition());
+
+
         }
     }
+
+    public interface AdapterCallback{
+        void onMethodCallback(int position);
+    }
+
+
 
 }

@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.GroupTripAdapter;
 import com.example.travelbuddyv2.model.tripModel;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GroupTripFragment extends Fragment {
+public class GroupTripFragment extends Fragment implements GroupTripAdapter.AdapterCallback {
 
     List<tripModel> groupTripList;
     RecyclerView rcvGroupTripView;
@@ -39,7 +41,7 @@ public class GroupTripFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_group_trip, container, false);
 
         groupTripList = new ArrayList<>();
-        groupTripAdapter = new GroupTripAdapter(groupTripList);
+        groupTripAdapter = new GroupTripAdapter(groupTripList,this);
         rcvGroupTripView = root.findViewById(R.id.rcvFragmentGroupTrip);
         rcvGroupTripView.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvGroupTripView.setAdapter(groupTripAdapter);
@@ -75,5 +77,8 @@ public class GroupTripFragment extends Fragment {
     }
 
 
-
+    @Override
+    public void onMethodCallback(int position) {
+        Toast.makeText(getContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
+    }
 }
