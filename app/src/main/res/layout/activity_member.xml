@@ -40,6 +40,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvMemberActivity"
         android:layout_below="@+id/separatorDividerline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

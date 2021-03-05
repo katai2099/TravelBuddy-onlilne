@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
-INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
-INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
-INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
+INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
+INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
+INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
 MERGED from [androidx.navigation:navigation-ui:2.2.2] /home/kataizz/.gradle/caches/transforms-2/files-2.1/4c697d28d8330b9c438c6b6847fca9e7/navigation-ui-2.2.2/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.material:material:1.3.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/cd6f2caba378d66250797e09d6bb24e0/material-1.3.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.github.mancj:MaterialSearchBar:0.8.5] /home/kataizz/.gradle/caches/transforms-2/files-2.1/798f0e0c992c3ccb3849d8a110726554/jetified-MaterialSearchBar-0.8.5/AndroidManifest.xml:2:1-17:12
@@ -87,20 +87,20 @@ MERGED from [com.google.firebase:firebase-encoders-json:16.1.0] /home/kataizz/.g
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/1f6b045666a31134b82a56c243bf4255/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.volley:volley:1.1.1] /home/kataizz/.gradle/caches/transforms-2/files-2.1/9f3b61f57a0c33da6ffdaa5554f4ebec/jetified-volley-1.1.1/AndroidManifest.xml:2:1-11:12
 MERGED from [com.google.android.datatransport:transport-api:2.2.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/ec847d18678f1b27196f387b8017cafe/jetified-transport-api-2.2.0/AndroidManifest.xml:15:1-22:12
-INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
-INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
-INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
+INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
+INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
+INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
 	package
 		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:3:5-40
 		INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml
 		INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
 		INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml
 	android:versionCode
 		INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-87:12
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:1-88:12
 		INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:2:11-69
@@ -119,7 +119,7 @@ ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManife
 	android:name
 		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:11:22-78
 application
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:13:5-85:19
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:13:5-86:19
 MERGED from [com.google.android.material:material:1.3.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/cd6f2caba378d66250797e09d6bb24e0/material-1.3.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.3.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/cd6f2caba378d66250797e09d6bb24e0/material-1.3.0/AndroidManifest.xml:22:5-20
 MERGED from [com.github.mancj:MaterialSearchBar:0.8.5] /home/kataizz/.gradle/caches/transforms-2/files-2.1/798f0e0c992c3ccb3849d8a110726554/jetified-MaterialSearchBar-0.8.5/AndroidManifest.xml:11:5-15:19
@@ -198,132 +198,136 @@ MERGED from [com.android.volley:volley:1.1.1] /home/kataizz/.gradle/caches/trans
 		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:14:9-35
 	android:theme
 		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:19:9-40
+activity#com.example.travelbuddyv2.PermissionModifyActivity
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:20:9-71
+	android:name
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:20:19-59
 activity#com.example.travelbuddyv2.MemberActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:20:9-61
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:21:9-52
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:20:19-49
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:21:19-49
 activity#com.example.travelbuddyv2.GroupTripDetailActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:21:9-24:59
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:22:9-25:59
 	android:label
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:23:13-69
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:24:13-69
 	android:theme
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:24:13-56
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:25:13-56
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:22:13-52
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:23:13-52
 activity#com.example.travelbuddyv2.DateSelectionActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:25:9-59
-	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:25:19-56
-activity#com.example.travelbuddyv2.TripSelectionActivity
 ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:26:9-59
 	android:name
 		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:26:19-56
+activity#com.example.travelbuddyv2.TripSelectionActivity
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:27:9-59
+	android:name
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:27:19-56
 meta-data#com.google.android.geo.API_KEY
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:35:9-37:55
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:36:9-38:55
 	android:value
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:37:13-52
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:38:13-52
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:36:13-58
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:37:13-58
 activity#com.example.travelbuddyv2.MapsActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:39:9-41:59
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:40:9-42:59
 	android:label
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:41:13-56
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:42:13-56
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:40:13-41
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:41:13-41
 activity#com.example.travelbuddyv2.InviteFriendActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:42:9-58
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:43:9-58
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:42:19-55
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:43:19-55
 activity#com.example.travelbuddyv2.TripDetailActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:43:9-46:59
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:44:9-47:59
 	android:label
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:45:13-63
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:46:13-63
 	android:theme
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:46:13-56
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:47:13-56
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:44:13-47
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:45:13-47
 activity#com.example.travelbuddyv2.Main2Activity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:47:9-49:60
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:48:9-50:60
 	android:label
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:49:13-57
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:50:13-57
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:48:13-42
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:49:13-42
 activity#com.example.travelbuddyv2.confirmEmailActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:50:9-58
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:51:9-58
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:50:19-55
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:51:19-55
 activity#com.example.travelbuddyv2.registerActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:51:9-54
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:52:9-54
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:51:19-51
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:52:19-51
 activity#com.example.travelbuddyv2.loginActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:52:9-58:20
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:53:9-59:20
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:52:19-48
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:53:19-48
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:53:13-57:29
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:54:13-58:29
 action#android.intent.action.MAIN
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:54:17-69
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:55:17-69
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:54:25-66
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:55:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:56:17-77
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:57:17-77
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:56:27-74
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:57:27-74
 activity#com.example.travelbuddyv2.EditTripDetailWithAdditionalData
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:59:9-61:61
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:60:9-62:61
 	android:theme
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:61:13-58
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:62:13-58
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:60:13-61
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:61:13-61
 activity#com.example.travelbuddyv2.EditTrip
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:62:9-64:61
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:63:9-65:61
 	android:theme
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:64:13-58
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:65:13-58
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:63:13-37
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:64:13-37
 activity#com.example.travelbuddyv2.tripDetail
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:65:9-67:52
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:66:9-68:52
 	android:parentActivityName
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:67:13-49
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:68:13-49
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:66:13-39
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:67:13-39
 activity#com.example.travelbuddyv2.myTrip
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:68:9-70:61
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:69:9-71:61
 	android:parentActivityName
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:70:13-58
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:71:13-58
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:69:13-35
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:70:13-35
 activity#com.example.travelbuddyv2.addNewTrip
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:71:9-73:61
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:72:9-74:61
 	android:parentActivityName
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:73:13-58
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:74:13-58
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:72:13-39
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:73:13-39
 activity#com.example.travelbuddyv2.MainActivityOld
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:74:9-53
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:75:9-53
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:74:19-50
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:75:19-50
 receiver#com.example.travelbuddyv2.ReminderBroadcast
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:76:9-55
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:77:9-55
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:76:19-52
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:77:19-52
 receiver#com.example.travelbuddyv2.ResetAlarmBroadcast
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:77:9-84:20
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:78:9-85:20
 	android:enabled
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:79:13-35
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:80:13-35
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:78:13-48
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:79:13-48
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.MY_PACKAGE_REPLACED
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:80:13-83:29
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:81:13-84:29
 action#android.intent.action.BOOT_COMPLETED
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:81:17-79
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:82:17-79
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:81:25-76
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:82:25-76
 action#android.intent.action.MY_PACKAGE_REPLACED
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:82:17-84
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:83:17-84
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:82:25-81
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:83:25-81
 uses-sdk
 INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml

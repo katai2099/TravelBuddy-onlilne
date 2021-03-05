@@ -3,6 +3,8 @@ package com.example.travelbuddyv2.model;
 public class Member {
     String ID;
     String permission;
+    String name;
+    String email;
 
     public Member() {
     }
@@ -21,5 +23,21 @@ public class Member {
 
     public void setPermission(String permission) {
         this.permission = permission;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

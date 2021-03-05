@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.Request;
+import com.example.travelbuddyv2.model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -168,23 +169,43 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
         //get Inviter Member Node
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
                 .child(request.getInviter())
                 .child(request.getTripID())
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
        // String uniqueKey = reference.push().getKey();
 
-        Member tmp = new Member();
+        final Member tmp = new Member();
         tmp.setID(FirebaseAuth.getInstance().getCurrentUser().getUid());
         tmp.setPermission("edit");
 
-        reference.setValue(tmp).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        DatabaseReference userNameReference = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        userNameReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(tag,"ADD TO MEMBER NODE SUCCESS");
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user =  snapshot.getValue(User.class);
+                tmp.setName(user.getName());
+                tmp.setEmail(user.getEmail());
+                reference.setValue(tmp).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(tag,"ADD TO MEMBER NODE SUCCESS");
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
+
+
+
 
 
     }
