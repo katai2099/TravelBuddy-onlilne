@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.GroupTripDetailActivity;
+import com.example.travelbuddyv2.MemberActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.TripDetailActivity;
 import com.example.travelbuddyv2.model.tripModel;
@@ -46,10 +47,22 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
     @Override
     public void onBindViewHolder(@NonNull final GroupTripHolder holder, int position) {
 
-        tripModel tmp = groupTripList.get(position);
+        final tripModel currentTrip = groupTripList.get(position);
 
-        holder.tripname.setText(tmp.getTripName());
-        holder.tripdate.setText(tmp.getStartDate() + " " + tmp.getEndDate());
+        holder.tripname.setText(currentTrip.getTripName());
+        holder.tripdate.setText(currentTrip.getStartDate() + " " + currentTrip.getEndDate());
+
+        holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(holder.itemView.getContext(), MemberActivity.class);
+                i.putExtra("TripName",currentTrip.getTripName());
+                i.putExtra("TripStringID",currentTrip.getStringID());
+                i.putExtra("fromWho","groupTrip");
+                i.putExtra("TripOwnerID",currentTrip.getOwner());
+                holder.itemView.getContext().startActivity(i);
+            }
+        });
 
         holder.btnLeaveGroup.setOnClickListener(new View.OnClickListener() {
             @Override

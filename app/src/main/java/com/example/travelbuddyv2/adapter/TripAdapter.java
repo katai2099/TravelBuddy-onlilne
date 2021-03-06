@@ -56,6 +56,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
                 i.putExtra("TripName",currentTrip.getTripName());
                 i.putExtra("TripStringID",currentTrip.getStringID());
                 i.putExtra("fromWho","personalTrip");
+                i.putExtra("TripOwnerID",currentTrip.getOwner());
                 holder.itemView.getContext().startActivity(i);
 
               /*  Intent i = new Intent(holder.itemView.getContext(),InviteFriendActivity.class);

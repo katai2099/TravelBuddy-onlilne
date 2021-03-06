@@ -177,7 +177,6 @@ public class registerActivity extends AppCompatActivity {
             return matcher.group(0);
         }
         return "";
-
     }
 
     //Redirects the user to the login screen

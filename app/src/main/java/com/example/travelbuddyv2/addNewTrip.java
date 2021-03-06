@@ -19,8 +19,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -143,8 +145,14 @@ public class addNewTrip extends AppCompatActivity {
                                     FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                             .child("t" + lastInsertedID)
-                                            .setValue(res);
-                                    Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
+                                            .setValue(res).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            addOwnerToMemberNode(lastInsertedID);
+                                            Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
                                 }
                             });
 
@@ -413,5 +421,20 @@ public class addNewTrip extends AppCompatActivity {
         return listOfdate;
     }
 
+    private void addOwnerToMemberNode(final int id){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("t"+id)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        Member member = new Member();
+        member.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        member.setID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        member.setName("kataix2");
+        member.setPermission("owner");
+
+        reference.setValue(member);
+
+    }
 
 }

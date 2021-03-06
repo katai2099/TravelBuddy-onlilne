@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.travelbuddyv2.PermissionModifyActivity;
+import com.example.travelbuddyv2.PermissionModificationActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Member;
 
@@ -18,9 +18,11 @@ import java.util.List;
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHolder> {
 
     List<Member> memberList;
+    MemberAdapterCallBack memberAdapterCallBack;
 
-    public MemberAdapter(List<Member> memberList) {
+    public MemberAdapter(List<Member> memberList,MemberAdapterCallBack memberAdapterCallBack) {
         this.memberList = memberList;
+        this.memberAdapterCallBack = memberAdapterCallBack;
     }
 
     @NonNull
@@ -37,7 +39,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
         Member member = memberList.get(position);
         holder.tvMemberName.setText(member.getName());
         holder.tvMemberEmail.setText(member.getEmail());
-        holder.tvMemberPermission.setText(member.getPermission());
+        if(member.getPermission().equals("owner")){
+            holder.tvMemberPermission.setText("Edit");
+            holder.tvMemberOwnership.setText(member.getPermission());
+        }
+        else{
+            holder.tvMemberPermission.setText(member.getPermission());
+        }
 
     }
 
@@ -48,7 +56,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
 
     class MemberHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final TextView tvMemberName, tvMemberEmail , tvMemberPermission;
+        final TextView tvMemberName, tvMemberEmail , tvMemberPermission, tvMemberOwnership;
 
         public MemberHolder(@NonNull View itemView) {
             super(itemView);
@@ -56,15 +64,19 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
             tvMemberName = itemView.findViewById(R.id.tvMemberName);
             tvMemberEmail = itemView.findViewById(R.id.tvMemberEmail);
             tvMemberPermission = itemView.findViewById(R.id.tvMemberPermission);
+            tvMemberOwnership = itemView.findViewById(R.id.tvMemberOwnership);
             itemView.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
-            Intent i = new Intent(v.getContext(), PermissionModifyActivity.class);
-            v.getContext().startActivity(i);
+          memberAdapterCallBack.onMemberListClicked(getAdapterPosition());
         }
+    }
+
+    public interface MemberAdapterCallBack{
+        void onMemberListClicked(int position);
     }
 
 }

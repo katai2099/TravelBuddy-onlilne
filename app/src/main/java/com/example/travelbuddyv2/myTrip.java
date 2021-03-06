@@ -107,7 +107,7 @@ public class myTrip extends AppCompatActivity implements myTripAdapter.OnListLis
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.optionSignout:
+            case R.id.optionLeaveGroup:
                 signOut(this);
                 return true;
             default:

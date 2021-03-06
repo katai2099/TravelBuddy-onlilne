@@ -40,4 +40,14 @@ public class Member {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "ID='" + ID + '\'' +
+                ", permission='" + permission + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

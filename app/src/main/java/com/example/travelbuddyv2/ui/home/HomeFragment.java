@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment implements myTripAdapter.OnListListen
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.optionSignout:
+            case R.id.optionLeaveGroup:
                 signOut(getActivity());
                 return true;
             default:

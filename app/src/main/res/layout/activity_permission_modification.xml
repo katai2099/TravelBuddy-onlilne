@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PermissionModificationActivity">
+
+    <TextView
+        android:id="@+id/tvCanEdit"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_toEndOf="@id/imgTick1"
+        android:text="Can Edit"
+        android:gravity="bottom"
+        android:paddingLeft="10dp"
+        />
+
+    <ImageView
+        android:id="@+id/imgTick1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_baseline_check_24" />
+
+    <TextView
+        android:id="@+id/tvCanView"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_toEndOf="@id/imgTick2"
+        android:layout_below="@id/tvCanEdit"
+        android:text="Can View"
+        android:gravity="bottom"
+        android:paddingLeft="10dp"/>
+
+    <ImageView
+        android:id="@+id/imgTick2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/imgTick1"
+        android:background="@drawable/ic_baseline_check_24"/>
+
+    <TextView
+        android:id="@+id/tvOptionDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imgTick2"/>
+
+</RelativeLayout>

@@ -198,10 +198,10 @@ MERGED from [com.android.volley:volley:1.1.1] /home/kataizz/.gradle/caches/trans
 		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:14:9-35
 	android:theme
 		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:19:9-40
-activity#com.example.travelbuddyv2.PermissionModifyActivity
-ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:20:9-71
+activity#com.example.travelbuddyv2.PermissionModificationActivity
+ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:20:9-77
 	android:name
-		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:20:19-59
+		ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:20:19-65
 activity#com.example.travelbuddyv2.MemberActivity
 ADDED from /home/kataizz/Documents/travelbuddy-online/app/src/main/AndroidManifest.xml:21:9-52
 	android:name
