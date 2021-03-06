@@ -9,16 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.R;
+import com.example.travelbuddyv2.model.Destination;
 
 import java.util.List;
 
 public class DateSelectionAdapter extends  RecyclerView.Adapter<DateSelectionAdapter.DateSelectionHolder>{
 
     List<String> dates ;
+    DateSelectionAdapterCallBack dateSelectionAdapterCallBack;
 
-    public DateSelectionAdapter(List<String> dates) {
+    public DateSelectionAdapter(List<String> dates, DateSelectionAdapterCallBack dateSelectionAdapterCallBack) {
         this.dates = dates;
+        this.dateSelectionAdapterCallBack = dateSelectionAdapterCallBack;
     }
+
 
     @NonNull
     @Override
@@ -36,6 +40,7 @@ public class DateSelectionAdapter extends  RecyclerView.Adapter<DateSelectionAda
         String date = dates.get(position);
         holder.textView.setText(date);
 
+
     }
 
     @Override
@@ -43,14 +48,26 @@ public class DateSelectionAdapter extends  RecyclerView.Adapter<DateSelectionAda
         return dates.size();
     }
 
-    class DateSelectionHolder extends RecyclerView.ViewHolder {
+    class DateSelectionHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView textView;
 
         public DateSelectionHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.tvBasicRow);
+
+            itemView.setOnClickListener(this);
+
         }
+
+        @Override
+        public void onClick(View v) {
+            dateSelectionAdapterCallBack.onListClicked(getAdapterPosition());
+        }
+    }
+
+    public interface DateSelectionAdapterCallBack{
+        void onListClicked(int position);
     }
 
 }

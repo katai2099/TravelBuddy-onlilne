@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.DateSelectionActivity;
 import com.example.travelbuddyv2.R;
+import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.tripModel;
 
 import java.util.List;
@@ -20,9 +21,11 @@ import java.util.List;
 public class TripSelectionAdapter extends RecyclerView.Adapter<TripSelectionAdapter.TripListHolder>{
 
     List<tripModel> tripModelList;
+    Destination destination;
 
-    public TripSelectionAdapter(List<tripModel> tripModelList) {
+    public TripSelectionAdapter(List<tripModel> tripModelList, Destination destination) {
         this.tripModelList = tripModelList;
+        this.destination = destination;
     }
 
     @NonNull
@@ -47,6 +50,10 @@ public class TripSelectionAdapter extends RecyclerView.Adapter<TripSelectionAdap
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), DateSelectionActivity.class);
                 i.putExtra("tripStringId",trip.getStringID());
+                i.putExtra("googleMapPlaceName",destination.getName());
+                i.putExtra("googleMapPlaceID",destination.getPlaceId());
+                i.putExtra("googleMapPlaceLat",destination.getLatitude());
+                i.putExtra("googleMapPlaceLong",destination.getLongtitude());
                 v.getContext().startActivity(i);
             }
         });

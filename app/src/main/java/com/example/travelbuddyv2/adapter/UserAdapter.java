@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.R;
+import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.Request;
 import com.example.travelbuddyv2.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,12 +41,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
     List<User> users;
     String name, id ;
+    boolean isAlreadyAMember;
 
 
     public UserAdapter(List<User> users,String name,String id) {
         this.users = users;
         this.name  = name;
         this.id = id;
+        isAlreadyAMember = false;
     }
 
     @NonNull
@@ -82,13 +85,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         receiver.setTripName(holder.name);
         receiver.setInviter(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+        checkIfAlreadyAMember(user);
+
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
-                addRequest(user,requester,receiver,holder);
-
+                Log.d(tag,String.valueOf(isAlreadyAMember));
+             if(!isAlreadyAMember)
+                 addRequest(user,requester,receiver,holder);
+             else{
+                 holder.tvPending.setVisibility(View.VISIBLE);
+                 holder.btnInviteFriend.setVisibility(View.GONE);
+             }
 
             }
         });
@@ -121,11 +130,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         }
     }
 
-    public void getRequestID(String requesterID,String receiverID){
-
-
-    }
-
     private void addToKnownList(final User user){
 
         List<User> users = new ArrayList<>();
@@ -145,7 +149,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                         break;
                     }
                 }
-                Log.d(tag,String.valueOf(exist));
+              //  Log.d(tag,String.valueOf(exist));
                 if(!exist){
                     String key = FirebaseDatabase.getInstance().getReference().child("Known_lists")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
@@ -184,7 +188,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                         break;
                     }
                 }
-                Log.d(tag,String.valueOf(exist));
+          //      Log.d(tag,String.valueOf(exist));
                 if(!exist)
                 {
 
@@ -206,11 +210,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                                 requester.setRequestID("r"+requestID);
 
                             }else{
-                                Log.d(tag,"LIST EMPTY");
+                       //         Log.d(tag,"LIST EMPTY");
                                 requester.setRequestID("r"+requestID);
                             }
 
-                            Log.d(tag, String.valueOf(requestID));
+                        //    Log.d(tag, String.valueOf(requestID));
 
                             FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -237,11 +241,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                                                 receiver.setRequestID("r"+requestID);
 
                                             }else{
-                                                Log.d(tag,"LIST EMPTY");
+                                        //        Log.d(tag,"LIST EMPTY");
                                                 receiver.setRequestID("r"+requestID);
                                             }
 
-                                            Log.d(tag, String.valueOf(requestID));
+                                       //     Log.d(tag, String.valueOf(requestID));
 
                                             FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                                                     .child(user.getUser_id())
@@ -254,6 +258,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                                                     //add to knownlist
 
                                                     addToKnownList(user);
+                                                    holder.tvPending.setVisibility(View.VISIBLE);
+                                                    holder.btnInviteFriend.setVisibility(View.GONE);
                                                 }
                                             });
 
@@ -290,6 +296,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         }
 
         return Integer.parseInt(tmp.toString());
+
+    }
+
+    private void checkIfAlreadyAMember(final User receiver){
+        DatabaseReference memberNodeReference = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(id);
+
+
+        memberNodeReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot memberNode: snapshot.getChildren()){
+                    Member member = memberNode.getValue(Member.class);
+                    if(member.getID().equals(receiver.getUser_id()))
+                    {
+                        isAlreadyAMember = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 

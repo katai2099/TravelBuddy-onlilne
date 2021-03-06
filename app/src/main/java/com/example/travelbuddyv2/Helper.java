@@ -171,4 +171,28 @@ public class Helper {
         return res;
     }
 
+    public static int tripStringIDToInt(String ID){
+
+        StringBuilder tmp = new StringBuilder();
+
+        for(int i=1;i<ID.length();i++){
+            tmp.append(ID.charAt(i));
+        }
+
+        return Integer.parseInt(tmp.toString());
+
+    }
+
+    public static int tripDetailStringIDToInt(String ID){
+
+        StringBuilder tmp = new StringBuilder();
+
+        for(int i=2;i<ID.length();i++){
+            tmp.append(ID.charAt(i));
+        }
+
+        return Integer.parseInt(tmp.toString());
+
+    }
+
 }

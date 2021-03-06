@@ -235,45 +235,50 @@ public class MapsFragment extends Fragment {
                     placesClient.fetchPlace(placeRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
                         @Override
                         public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
-                            final Place place= fetchPlaceResponse.getPlace();
+                            final Place place = fetchPlaceResponse.getPlace();
                             // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
 
                             final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-                            if(metadata==null || metadata.isEmpty()){
-                                Toast.makeText(getContext(),"No metadata",Toast.LENGTH_SHORT).show();
+                            if (metadata == null || metadata.isEmpty()) {
+                                Toast.makeText(getContext(), "No metadata", Toast.LENGTH_SHORT).show();
                             }
+                            if (metadata!=null && metadata.size() != 0) {
 
-                            for(int i=0;i<metadata.size();i++){
-                                if(i==5)
-                                    break;
-                                final PhotoMetadata photoMetadata = metadata.get(i);
-                                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                                        .setMaxWidth(300)
-                                        .setMaxHeight(300)
-                                        .build();
+                                for (int i = 0; i < metadata.size(); i++) {
+                                    if (i == 5)
+                                        break;
+                                    final PhotoMetadata photoMetadata = metadata.get(i);
+                                    final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                                            .setMaxWidth(300)
+                                            .setMaxHeight(300)
+                                            .build();
 
-                                placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
-                                    @Override
-                                    public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
-                                        Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                                        bitmapList.add(bitmap);
-                                        googleMapPictureAdapter.notifyDataSetChanged();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        if(e instanceof ApiException){
-                                            final ApiException apiException = (ApiException) e;
-                                            Log.e(tag, "Place not found: " + e.getMessage());
-                                            final int statusCode = apiException.getStatusCode();
-                                            Log.e(tag,String.valueOf(statusCode));
-
+                                    placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
+                                        @Override
+                                        public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
+                                            Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                                            bitmapList.add(bitmap);
+                                            googleMapPictureAdapter.notifyDataSetChanged();
                                         }
-                                    }
-                                });
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            if (e instanceof ApiException) {
+                                                final ApiException apiException = (ApiException) e;
+                                                Log.e(tag, "Place not found: " + e.getMessage());
+                                                final int statusCode = apiException.getStatusCode();
+                                                Log.e(tag, String.valueOf(statusCode));
+
+                                            }
+                                        }
+                                    });
+
+
+                                }
 
 
                             }
+
                         }
                     });
 
@@ -286,6 +291,10 @@ public class MapsFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(getContext(),TripSelectionActivity.class);
+                            i.putExtra("googleMapPlaceName",placeName);
+                            i.putExtra("googleMapPlaceID",placeId);
+                            i.putExtra("googleMapPlaceLat",placeLatLng.latitude);
+                            i.putExtra("googleMapPlaceLong",placeLatLng.longitude);
                             startActivity(i);
                         }
                     });

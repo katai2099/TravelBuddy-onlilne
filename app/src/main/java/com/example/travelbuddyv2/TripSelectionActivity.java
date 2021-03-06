@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.travelbuddyv2.adapter.TripSelectionAdapter;
+import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,14 +26,27 @@ public class TripSelectionActivity extends AppCompatActivity {
     RecyclerView rcvTrip;
     TripSelectionAdapter tripSelectionAdapter;
     List<tripModel> tripModelList;
+    Destination destination ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_selection);
 
+
+        destination = new Destination();
+
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle!=null){
+            destination.setName(bundle.getString("googleMapPlaceName"));
+            destination.setPlaceId(bundle.getString("googleMapPlaceID"));
+            destination.setLatitude(bundle.getDouble("googleMapPlaceLat"));
+            destination.setLongtitude(bundle.getDouble("googleMapPlaceLong"));
+        }
+
         tripModelList = new ArrayList<>();
-        tripSelectionAdapter = new TripSelectionAdapter(tripModelList);
+        tripSelectionAdapter = new TripSelectionAdapter(tripModelList,destination);
         rcvTrip = findViewById(R.id.rcvTripSelection);
         rcvTrip.setLayoutManager(new LinearLayoutManager(this));
         rcvTrip.setAdapter(tripSelectionAdapter);
@@ -57,6 +71,8 @@ public class TripSelectionActivity extends AppCompatActivity {
         });
 
     }
+
+
 
 
 
