@@ -3,9 +3,11 @@ package com.example.travelbuddyv2.ui.dashboard;
 import android.content.Context;
 import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,8 +27,10 @@ public class DashboardFragment extends Fragment {
 
    // private DashboardViewModel dashboardViewModel;
 
+    private final String tag = "DashboardFragment";
     private PagerAdapter pagerAdapter;
     ViewPager viewPager;
+    boolean changeToGroup ;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +44,13 @@ public class DashboardFragment extends Fragment {
         //    textView.setText(s);
         //}
         //});
+
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+//            Log.d(tag,bundle.getString("changeToGroup"));
+            changeToGroup=true;
+        }
+
         return root;
     }
 
@@ -50,6 +61,12 @@ public class DashboardFragment extends Fragment {
         viewPager.setAdapter(pagerAdapter);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
+        if(changeToGroup){
+            viewPager.setCurrentItem(1);
+        }
+
+
+
     }
 }
 

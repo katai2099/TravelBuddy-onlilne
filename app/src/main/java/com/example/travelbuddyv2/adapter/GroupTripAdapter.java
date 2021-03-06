@@ -1,8 +1,10 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,23 +16,31 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.GroupTripDetailActivity;
+import com.example.travelbuddyv2.Main2Activity;
 import com.example.travelbuddyv2.MemberActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.TripDetailActivity;
 import com.example.travelbuddyv2.model.tripModel;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.GroupTripHolder> {
 
 
+    private final String tag = "GROUPTRIPADAPTER";
     List<tripModel> groupTripList;
     AdapterCallback adapterCallback;
+    Activity activity ;
 
 
-    public GroupTripAdapter(List<tripModel> lists,AdapterCallback adapterCallback) {
+    public GroupTripAdapter(List<tripModel> lists,AdapterCallback adapterCallback,Activity activity) {
         this.groupTripList = lists;
         this.adapterCallback = adapterCallback;
+        this.activity = activity;
 
     }
 
@@ -72,7 +82,9 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(holder.itemView.getContext(),"I am leaving",Toast.LENGTH_SHORT).show();
+                      leaveGroup(currentTrip);
+                      toGroupTripFragment(holder);
+
                     }
                 });
                 builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -128,6 +140,45 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
 
     public interface AdapterCallback{
         void onMethodCallback(int position);
+    }
+
+    private void leaveGroup(final tripModel trip){
+
+        String currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //remove user from Group Node
+        DatabaseReference userGroupNode = FirebaseDatabase.getInstance().getReference().child("Group")
+                .child(currentUserUUID)
+                .child(trip.getOwner())
+                .child(trip.getStringID());
+
+        //remove user from memberNode
+        final DatabaseReference userMemberNode = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(trip.getOwner())
+                .child(trip.getStringID())
+                .child(currentUserUUID);
+
+
+        userGroupNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(tag,"Done remove from group NODE ");
+                userMemberNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(tag,"Done remove from Member NODE");
+                    }
+                });
+            }
+        });
+    }
+
+    private void toGroupTripFragment(final GroupTripHolder holder){
+        Intent i = new Intent(holder.itemView.getContext(), Main2Activity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.putExtra("changeToGroup","changeToGroup");
+        holder.itemView.getContext().startActivity(i);
+        activity.finish();
     }
 
 

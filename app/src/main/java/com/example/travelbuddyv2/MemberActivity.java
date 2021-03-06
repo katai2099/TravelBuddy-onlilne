@@ -101,13 +101,14 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(MemberActivity.this,"I am leaving",Toast.LENGTH_SHORT).show();
+                       leaveGroup();
+                       toGroupTripFragment();
                     }
                 });
                 builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(MemberActivity.this,"Nah, I am not leaving",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MemberActivity.this,"Guess I still want to be here",Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -190,11 +191,51 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
         return fromWho.equals("personalTrip");
     }
 
+    private void leaveGroup(){
+
+        String currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //remove user from Group Node
+        DatabaseReference userGroupNode = FirebaseDatabase.getInstance().getReference().child("Group")
+                .child(currentUserUUID)
+                .child(tripOwnerID)
+                .child(tripStringID);
+
+        //remove user from memberNode
+        final DatabaseReference userMemberNode = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(tripOwnerID)
+                .child(tripStringID)
+                .child(currentUserUUID);
+
+
+        userGroupNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(tag,"Done remove from group NODE ");
+                userMemberNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(tag,"Done remove from Member NODE");
+                        Toast.makeText(MemberActivity.this,"Done leaving",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    private void toGroupTripFragment(){
+        Intent i = new Intent(MemberActivity.this,Main2Activity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.putExtra("changeToGroup","changeToGroup");
+        startActivity(i);
+        finish();
+    }
+
     @Override
     public void onMemberListClicked(int position) {
       //  Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
         if(position==0){
-            Toast.makeText(getBaseContext(),"You cannot change owner permission",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(),"Owner permission cannot be changed",Toast.LENGTH_SHORT).show();
         }
         else {
             Intent i = new Intent(this, PermissionModificationActivity.class);

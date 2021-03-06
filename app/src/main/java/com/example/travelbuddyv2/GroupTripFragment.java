@@ -2,6 +2,7 @@ package com.example.travelbuddyv2;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,8 +18,10 @@ import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +44,7 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Adap
         View root = inflater.inflate(R.layout.fragment_group_trip, container, false);
 
         groupTripList = new ArrayList<>();
-        groupTripAdapter = new GroupTripAdapter(groupTripList,this);
+        groupTripAdapter = new GroupTripAdapter(groupTripList,this,getActivity());
         rcvGroupTripView = root.findViewById(R.id.rcvFragmentGroupTrip);
         rcvGroupTripView.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvGroupTripView.setAdapter(groupTripAdapter);
@@ -57,20 +60,24 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Adap
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Group")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                if(dataSnapshot!=null){
-                    for(DataSnapshot inviter:dataSnapshot.getChildren()){
-                       if(inviter!=null){
-                           for(DataSnapshot tripList:inviter.getChildren() ){
-                               tripModel tmp = tripList.getValue(tripModel.class);
-                               groupTripList.add(tmp);
-                           }
-                       }
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                groupTripList.clear();
+                for(DataSnapshot inviter:snapshot.getChildren()){
+                    if(inviter!=null){
+                        for(DataSnapshot tripList:inviter.getChildren() ){
+                            tripModel tmp = tripList.getValue(tripModel.class);
+                            groupTripList.add(tmp);
+                        }
                     }
                 }
                 groupTripAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
@@ -80,5 +87,11 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Adap
     @Override
     public void onMethodCallback(int position) {
         Toast.makeText(getContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initializeGroupTripList();
     }
 }

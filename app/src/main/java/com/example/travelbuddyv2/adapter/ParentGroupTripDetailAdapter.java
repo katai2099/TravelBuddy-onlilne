@@ -93,10 +93,10 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
 
     //check whether user can view or can edit
 
-    public void updateUserPermission(boolean permission, Context context){
+    public void updateUserPermission(boolean permission){
         this.hasPermission = permission;
         Log.d(tag,"Permission of user is " + permission);
-        Toast.makeText(context,String.valueOf(hasPermission),Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context,String.valueOf(hasPermission),Toast.LENGTH_SHORT).show();
     }
 
 

@@ -133,11 +133,10 @@ public class GroupTripDetailFragment extends Fragment implements ParentGroupTrip
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Member member = snapshot.getValue(Member.class);
-                if(member.getPermission().equals("edit")){
-                    parentGroupTripDetailAdapter.updateUserPermission(true,getContext());
-                }
-                else{
-                    parentGroupTripDetailAdapter.updateUserPermission(false,getContext());
+                if (member!=null&&member.getPermission().equals("edit")) {
+                    parentGroupTripDetailAdapter.updateUserPermission(true);
+                } else {
+                    parentGroupTripDetailAdapter.updateUserPermission(false);
                 }
             }
 

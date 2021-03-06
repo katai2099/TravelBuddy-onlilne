@@ -150,6 +150,7 @@ public class addNewTrip extends AppCompatActivity {
                                         public void onSuccess(Void aVoid) {
                                             addOwnerToMemberNode(lastInsertedID);
                                             Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
+                                            toTripFragment();
                                         }
                                     });
 
@@ -434,7 +435,12 @@ public class addNewTrip extends AppCompatActivity {
         member.setPermission("owner");
 
         reference.setValue(member);
+    }
 
+    private void toTripFragment(){
+        Intent i = new Intent(addNewTrip.this,Main2Activity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
 
 }

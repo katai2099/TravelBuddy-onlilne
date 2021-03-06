@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.InviteFriendActivity;
@@ -19,12 +22,19 @@ import com.example.travelbuddyv2.MemberActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.TripDetailActivity;
 import com.example.travelbuddyv2.model.tripModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
 
     List<tripModel> list;
+    private final String tag = "TRIP_ADAPTER";
 
 
     public TripAdapter(List<tripModel> list) {
@@ -75,7 +85,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(holder.itemView.getContext(),"I am leaving",Toast.LENGTH_SHORT).show();
+                        deleteTrip(currentTrip);
                     }
                 });
                 builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -137,6 +147,66 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
             i.putExtra("TRIP_STRING_ID",tmp.getStringID());
             itemView.getContext().startActivity(i);
         }
+    }
+
+    private void deleteTrip(final tripModel currentTrip){
+
+        String userUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        final DatabaseReference memberNodeReference = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(userUUID)
+                .child(currentTrip.getStringID());
+
+        DatabaseReference tripDetailNodeReference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(userUUID)
+                .child(currentTrip.getStringID());
+
+        final DatabaseReference tripNodeReference = FirebaseDatabase.getInstance().getReference().child("Trips")
+                .child(userUUID)
+                .child(currentTrip.getStringID());
+        
+        final DatabaseReference groupNodeReference = FirebaseDatabase.getInstance().getReference().child("Group");
+
+        groupNodeReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot first : snapshot.getChildren()){
+
+                    for (DataSnapshot data : first.getChildren()) {
+                        if (data.getKey().equals(currentTrip.getOwner())) {
+                            for (DataSnapshot trip : data.getChildren()) {
+                                if (trip.getKey().equals(currentTrip.getStringID()))
+                                    trip.getRef().removeValue();
+                            }
+                        }
+                    }
+            }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        tripDetailNodeReference.removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                memberNodeReference.removeValue(new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        tripNodeReference.removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                Log.d(tag,"DONE DELETING GROUP");
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
     }
 
 }
