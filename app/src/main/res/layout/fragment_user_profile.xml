@@ -15,14 +15,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/imgProfilePic"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:textColor="@color/quantum_black_100"/>
 
     <TextView
         android:id="@+id/tvProfileEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvProfileName"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:textColor="@color/quantum_black_100"/>
 
     <Button
         android:id="@+id/btnUserLogOut"

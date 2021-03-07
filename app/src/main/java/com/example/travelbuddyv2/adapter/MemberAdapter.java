@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
     public void onBindViewHolder(@NonNull MemberHolder holder, int position) {
 
         Member member = memberList.get(position);
+        holder.imgMemberProfile.setImageResource(R.drawable.ic_baseline_person_24);
         holder.tvMemberName.setText(member.getName());
         holder.tvMemberEmail.setText(member.getEmail());
         if(member.getPermission().equals("owner")){
@@ -56,6 +58,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
 
     class MemberHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        final ImageView imgMemberProfile;
         final TextView tvMemberName, tvMemberEmail , tvMemberPermission, tvMemberOwnership;
 
         public MemberHolder(@NonNull View itemView) {
@@ -65,6 +68,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
             tvMemberEmail = itemView.findViewById(R.id.tvMemberEmail);
             tvMemberPermission = itemView.findViewById(R.id.tvMemberPermission);
             tvMemberOwnership = itemView.findViewById(R.id.tvMemberOwnership);
+            imgMemberProfile = itemView.findViewById(R.id.imgMemberProfile);
             itemView.setOnClickListener(this);
 
         }

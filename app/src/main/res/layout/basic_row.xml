@@ -6,7 +6,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         app:cardCornerRadius="6dp"
         app:cardUseCompatPadding="true"
         android:layout_marginTop="2dp">
@@ -14,7 +14,9 @@
         <TextView
             android:id="@+id/tvBasicRow"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/quantum_black_100"
+            android:textSize="16sp"
             />
 
 

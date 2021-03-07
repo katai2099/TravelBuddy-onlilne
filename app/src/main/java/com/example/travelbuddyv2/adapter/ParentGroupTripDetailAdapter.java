@@ -22,15 +22,13 @@ import java.util.List;
 public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGroupTripDetailAdapter.ParentGroupTripDetailHolder> {
 
     private final String tag = "PARENT_DETAIL_ADAPTER";
-    ParentGroupTripDetailAdapterCallBack parentGroupTripDetailAdapterCallBack;
     List<TripSection> tripSectionList;
     String tripStringId;
     boolean hasPermission;
 
-    public ParentGroupTripDetailAdapter(List<TripSection> tripSectionList, String tripStringId,ParentGroupTripDetailAdapterCallBack parentGroupTripDetailAdapterCallBack) {
+    public ParentGroupTripDetailAdapter(List<TripSection> tripSectionList, String tripStringId) {
         this.tripSectionList = tripSectionList;
         this.tripStringId = tripStringId;
-        this.parentGroupTripDetailAdapterCallBack = parentGroupTripDetailAdapterCallBack;
         hasPermission = false;
     }
 
@@ -85,10 +83,6 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
             childRecyclerView = itemView.findViewById(R.id.childRecyclerView);
             btnAddTripDetail = itemView.findViewById(R.id.section_row_btnAddTripDetail);
         }
-    }
-
-    public interface ParentGroupTripDetailAdapterCallBack{
-        void onListClicked(int position);
     }
 
     //check whether user can view or can edit

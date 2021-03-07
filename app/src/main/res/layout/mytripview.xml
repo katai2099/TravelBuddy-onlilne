@@ -22,8 +22,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/quantum_black_100"
         />
 
     <TextView
@@ -34,6 +34,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
+        android:textSize="14sp"
          />
 
         <Button

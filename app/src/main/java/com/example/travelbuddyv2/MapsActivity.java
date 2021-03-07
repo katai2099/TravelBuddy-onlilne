@@ -36,8 +36,11 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     RecyclerView rcvGoogleMapPictures;
     String dateFromTripDetail,tripStringID;
     Button btnAddTripToDatabase;
+    int ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Places.initialize(this,"AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw");
 
         placesClient = Places.createClient(this);
+
+        getDateLatestTripDetailID();
 
        /* CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("katai");*/
@@ -137,93 +143,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 placesClient.fetchPlace(placeRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
                     @Override
                     public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
-                        final Place place= fetchPlaceResponse.getPlace();
-                       // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
+                        final Place place = fetchPlaceResponse.getPlace();
+                        // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
 
                         final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-                        if(metadata==null || metadata.isEmpty()){
-                            Toast.makeText(getApplicationContext(),"No metadata",Toast.LENGTH_SHORT).show();
+                        if (metadata == null || metadata.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "No metadata", Toast.LENGTH_SHORT).show();
                         }
 
-                        for(PhotoMetadata meta:metadata){
-                          //  Log.d(tag,meta.toString());
-                        }
-
-                     //   final PhotoMetadata photoMetadata = metadata.get(0);
+                        //   final PhotoMetadata photoMetadata = metadata.get(0);
 
                         // Get the attribution text.
-                      //  final String attributions = photoMetadata.getAttributions();
+                        //  final String attributions = photoMetadata.getAttributions();
 
+                        if (metadata != null && !(metadata.isEmpty())){
 
-                        for(int i=0;i<metadata.size();i++){
-                            if(i==5)
-                                break;
-                            final PhotoMetadata photoMetadata = metadata.get(i);
-                            final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                                    .setMaxWidth(300)
-                                    .setMaxHeight(300)
-                                    .build();
+                            for (int i = 0; i < metadata.size(); i++) {
+                                if (i == 5)
+                                    break;
+                                final PhotoMetadata photoMetadata = metadata.get(i);
+                                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                                        .setMaxWidth(300)
+                                        .setMaxHeight(300)
+                                        .build();
 
-                            placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
-                                @Override
-                                public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
-                                    //Toast.makeText(getBaseContext(),"FETCH PHOTO COMPLETED",Toast.LENGTH_SHORT).show();
-                                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                                    bitmapList.add(bitmap);
-                                    googleMapPictureAdapter.notifyDataSetChanged();
-                              //      googleMapPhotoAdapter = new GoogleMapPhotoAdapter(getApplicationContext(), bitmapList);
-                                //    viewPagerGoogleMapPhoto.setAdapter(googleMapPhotoAdapter);
-                                //    viewPagerGoogleMapPhoto.setPadding(10,10,10,0);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    if(e instanceof ApiException){
-                                        final ApiException apiException = (ApiException) e;
-                                        Log.e(tag, "Place not found: " + e.getMessage());
-                                        final int statusCode = apiException.getStatusCode();
-                                        Log.e(tag,String.valueOf(statusCode));
-
+                                placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
+                                    @Override
+                                    public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
+                                        //Toast.makeText(getBaseContext(),"FETCH PHOTO COMPLETED",Toast.LENGTH_SHORT).show();
+                                        Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                                        bitmapList.add(bitmap);
+                                        googleMapPictureAdapter.notifyDataSetChanged();
+                                        //      googleMapPhotoAdapter = new GoogleMapPhotoAdapter(getApplicationContext(), bitmapList);
+                                        //    viewPagerGoogleMapPhoto.setAdapter(googleMapPhotoAdapter);
+                                        //    viewPagerGoogleMapPhoto.setPadding(10,10,10,0);
                                     }
-                                }
-                            });
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        if (e instanceof ApiException) {
+                                            final ApiException apiException = (ApiException) e;
+                                            Log.e(tag, "Place not found: " + e.getMessage());
+                                            final int statusCode = apiException.getStatusCode();
+                                            Log.e(tag, String.valueOf(statusCode));
+
+                                        }
+                                    }
+                                });
 
 
-                        }
-
-                        // Create a FetchPhotoRequest.
-                   /*     final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                                .setMaxWidth(500) // Optional.
-                                .setMaxHeight(300) // Optional.
-                                .build();
-                        */
-
-
-
-                        /*placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
-                            @Override
-                            public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
-                                bitmapList.clear();
-                            //    Toast.makeText(getBaseContext(),"ON SUCCESS",Toast.LENGTH_SHORT).show();
-                                Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                                bitmapList.add(bitmap);
-                                googleMapPhotoAdapter = new GoogleMapPhotoAdapter(getApplicationContext(), bitmapList);
-                                viewPagerGoogleMapPhoto.setAdapter(googleMapPhotoAdapter);
-                                viewPagerGoogleMapPhoto.setPadding(130,0,130,0);
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                if(e instanceof ApiException){
-                                    final ApiException apiException = (ApiException) e;
-                                    Log.e(tag, "Place not found: " + e.getMessage());
-                                    final int statusCode = apiException.getStatusCode();
-                                    Log.e(tag,String.valueOf(statusCode));
-
-                                }
-                            }
-                        });*/
-
+                    }
 
                     }
                 });
@@ -241,7 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .child(tripStringID)
                                 .child(dateFromTripDetail)
-                                .child("td"+1);
+                                .child("td"+ID);
 
                         Destination destination = new Destination();
                         destination.setPlaceId(placeId);
@@ -249,7 +219,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         destination.setLongtitude(placeLatLng.longitude);
                         destination.setLatitude(placeLatLng.latitude);
 
-                        reference.setValue(destination);
+                        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                killActivity();
+                            }
+                        });
 
 
                     }
@@ -259,4 +234,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
+
+    private void getDateLatestTripDetailID(){
+
+        DatabaseReference currentDateTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(tripStringID)
+                .child(dateFromTripDetail);
+
+        currentDateTripDetailNode.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Integer> idTmp = new ArrayList<>();
+                for(DataSnapshot tripDetailID:snapshot.getChildren())
+                {
+                    idTmp.add(Helper.tripDetailStringIDToInt(tripDetailID.getKey()));
+                }
+                if(!idTmp.isEmpty()){
+                    Collections.sort(idTmp);
+                    int res = idTmp.get(idTmp.size()-1);
+                    ID = res+1;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void killActivity(){
+        finish();
+    }
+
 }

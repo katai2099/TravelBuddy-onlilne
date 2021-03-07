@@ -15,35 +15,6 @@
             tools:context=".MapsActivity" />
 
 
-
-
-
-        <!--<com.google.android.material.appbar.AppBarLayout
-
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="200dp">
-
-
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:contentScrim="@color/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-
-                &lt;!&ndash;This is where we set title&ndash;&gt;
-              &lt;!&ndash;  <androidx.appcompat.widget.Toolbar
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />&ndash;&gt;
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-
-        </com.google.android.material.appbar.AppBarLayout>-->
-
     <RelativeLayout
         android:id="@+id/googleMapInformationLayout"
         android:layout_gravity="bottom"
@@ -67,6 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/googleMapPicturesViewPager"
+            android:textColor="@color/quantum_black_100"
+            android:textSize="16sp"
             />
 
         <Button

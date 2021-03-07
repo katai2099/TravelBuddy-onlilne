@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.adapter.DayAdapter;
 import com.example.travelbuddyv2.adapter.ParentTripDetailAdapter;
 import com.example.travelbuddyv2.adapter.TripDetailAdapter;
 import com.example.travelbuddyv2.model.Destination;
@@ -30,14 +31,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TripDetailFragment extends Fragment {
+public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapterCallback {
 
     private final String tag = "TRIP_DETAIL_FRAGMENT" ;
 
     List<TripSection> tripSectionList;
-    RecyclerView rcvTripDetail;
+    List<String> dayList;
+    RecyclerView rcvTripDetail , rcvDays;
     ParentTripDetailAdapter parentTripDetailAdapter;
-    FloatingActionButton floatingActionButton;
+    DayAdapter dayAdapter;
+
+
 
     String tripID ;
 
@@ -63,25 +67,26 @@ public class TripDetailFragment extends Fragment {
 
 
         tripSectionList = new ArrayList<>();
+
         //fillList();
-        fillDateInterval();
+
         rcvTripDetail = root.findViewById(R.id.rcvFragmentTripDetailList);
-        floatingActionButton = root.findViewById(R.id.katai);
+
         rcvTripDetail.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         parentTripDetailAdapter = new ParentTripDetailAdapter(tripSectionList,tripID);
-
         rcvTripDetail.setAdapter(parentTripDetailAdapter);
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //Day adapter initialization
+        dayList = new ArrayList<>();
+        rcvDays = root.findViewById(R.id.rcvFragmentTripDetailToSelectedList);
+        rcvDays.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
 
-                Intent i = new Intent(getContext(),MapsActivity.class);
-                startActivity(i);
+        dayAdapter = new DayAdapter(dayList,this);
 
-            }
-        });
+        rcvDays.setAdapter(dayAdapter);
+
+        fillDateInterval();
 
         return root;
     }
@@ -96,6 +101,8 @@ public class TripDetailFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tripSectionList.clear();
+                dayList.clear();
+                int dayCount = 0 ;
                 for(DataSnapshot data: snapshot.getChildren()){
                     String tmp = data.getKey();
                     Log.d(tag,tmp);
@@ -106,10 +113,17 @@ public class TripDetailFragment extends Fragment {
                         Destination destination = childData.getValue(Destination.class);
                         tmpDestination.add(destination);
                     }
+                   //add to TripSection
                     TripSection tripSection = new TripSection(tmp,tmpDestination);
                     tripSectionList.add(tripSection);
+
+                    //add to DayList
+                    String day = "Day " + (dayCount+1);
+                    dayList.add(day);
+                    dayCount++;
                 }
                 parentTripDetailAdapter.notifyDataSetChanged();
+                dayAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -118,6 +132,11 @@ public class TripDetailFragment extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onListClicked(int position) {
+        rcvTripDetail.scrollToPosition(position);
     }
 
 

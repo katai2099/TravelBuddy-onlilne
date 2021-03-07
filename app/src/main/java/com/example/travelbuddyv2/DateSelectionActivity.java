@@ -164,6 +164,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(DateSelectionActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
+                goBackToMapFragment();
             }
         });
     }
@@ -173,7 +174,13 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
     public void onListClicked(final int position) {
 
        addTripDetailToDatabase(position);
+    }
 
+    private void goBackToMapFragment(){
+        Intent i = new Intent(DateSelectionActivity.this,Main2Activity.class);
+        i.putExtra("changeToMapFragment","changeToMapFragment");
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
 
     @Override

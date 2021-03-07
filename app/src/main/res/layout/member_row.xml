@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,7 +9,6 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="4dp"
         app:cardUseCompatPadding="true">
 
 
@@ -20,25 +20,31 @@
 
             <ImageView
                 android:id="@+id/imgMemberProfile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"/>
+                android:layout_width="80dp"
+                android:layout_height="80dp" />
 
             <LinearLayout
                 android:id="@+id/linear1"
                 android:layout_toEndOf="@+id/imgMemberProfile"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tvMemberName"
                     android:layout_width="170dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:textColor="@color/quantum_black_100"
+                    android:gravity="center|left"
+                    tools:ignore="RtlHardcoded"
+                    android:padding="5dp"/>
 
                 <TextView
                     android:id="@+id/tvMemberOwnership"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:textColor="@color/quantum_black_100"
+                    android:padding="5dp"/>
 
             </LinearLayout>
 
@@ -46,18 +52,24 @@
                 android:layout_below="@+id/linear1"
                 android:layout_toEndOf="@id/imgMemberProfile"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tvMemberEmail"
                     android:layout_width="170dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:textColor="@color/quantum_black_100"
+                    android:padding="5dp"
+                    android:paddingBottom="5dp"/>
 
                 <TextView
                     android:id="@+id/tvMemberPermission"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:textColor="@color/quantum_black_100"
+                    android:padding="5dp"
+                    android:paddingBottom="5dp"/>
 
             </LinearLayout>
 

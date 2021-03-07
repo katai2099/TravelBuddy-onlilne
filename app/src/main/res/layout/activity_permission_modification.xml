@@ -13,6 +13,7 @@
         android:layout_height="30dp"
         android:layout_toEndOf="@id/imgTick1"
         android:text="Can Edit"
+        android:textColor="@color/quantum_black_100"
         android:gravity="bottom"
         android:paddingLeft="10dp"
         />
@@ -30,6 +31,7 @@
         android:layout_toEndOf="@id/imgTick2"
         android:layout_below="@id/tvCanEdit"
         android:text="Can View"
+        android:textColor="@color/quantum_black_100"
         android:gravity="bottom"
         android:paddingLeft="10dp"/>
 

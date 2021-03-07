@@ -41,7 +41,8 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
 
         TripSection tripSection = tripSectionList.get(position);
         final String date = tripSection.getDate();
-        holder.sectionTextview.setText(date);
+        String positionString = String.valueOf(position+1);
+        holder.sectionTextview.setText("Day " + positionString + ":   "+ date);
 
         List<Destination> destinationList = tripSection.getDestinations();
         ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList);

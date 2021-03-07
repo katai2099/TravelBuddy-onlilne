@@ -6,16 +6,17 @@
     tools:context=".TripDetailFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvFragmentTripDetailToSelectedList"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"/>
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvFragmentTripDetailList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/rcvFragmentTripDetailToSelectedList"
+        android:layout_marginTop="2dp"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/katai"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"/>
 
 
 </RelativeLayout>

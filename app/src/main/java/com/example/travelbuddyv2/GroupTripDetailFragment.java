@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.adapter.DayAdapter;
 import com.example.travelbuddyv2.adapter.GroupTripAdapter;
 import com.example.travelbuddyv2.adapter.ParentGroupTripDetailAdapter;
 import com.example.travelbuddyv2.model.Destination;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GroupTripDetailFragment extends Fragment implements ParentGroupTripDetailAdapter.ParentGroupTripDetailAdapterCallBack {
+public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayAdapterCallback {
 
     private final String tag = "GROUPDETAILFRAGMENT";
 
@@ -38,7 +39,10 @@ public class GroupTripDetailFragment extends Fragment implements ParentGroupTrip
 
     List<TripSection> tripSectionList;
     ParentGroupTripDetailAdapter parentGroupTripDetailAdapter;
-    RecyclerView rcvGroupTripDetailView;
+    RecyclerView rcvGroupTripDetailView,rcvDays;
+    List<String> dayList;
+    DayAdapter dayAdapter;
+
 
 
 
@@ -74,11 +78,21 @@ public class GroupTripDetailFragment extends Fragment implements ParentGroupTrip
 
         View root = inflater.inflate(R.layout.fragment_group_trip_detail, container, false);
         tripSectionList = new ArrayList<>();
-        parentGroupTripDetailAdapter = new ParentGroupTripDetailAdapter(tripSectionList,tripID,this);
+
+        parentGroupTripDetailAdapter = new ParentGroupTripDetailAdapter(tripSectionList,tripID);
 
         rcvGroupTripDetailView = root.findViewById(R.id.rcvFragmentGroupTripDetail);
         rcvGroupTripDetailView.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvGroupTripDetailView.setAdapter(parentGroupTripDetailAdapter);
+
+        //
+        dayList = new ArrayList<>();
+        rcvDays = root.findViewById(R.id.rcvFragmentGroupTripDetailToSelectedList);
+        rcvDays.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
+
+        dayAdapter = new DayAdapter(dayList,this);
+
+        rcvDays.setAdapter(dayAdapter);
 
         fillDateInterval();
 
@@ -95,6 +109,8 @@ public class GroupTripDetailFragment extends Fragment implements ParentGroupTrip
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tripSectionList.clear();
+                dayList.clear();
+                int dayCount = 0 ;
                 for(DataSnapshot data: snapshot.getChildren()){
                     String tmp = data.getKey();
                     Log.d(tag,tmp);
@@ -105,10 +121,17 @@ public class GroupTripDetailFragment extends Fragment implements ParentGroupTrip
                         Destination destination = childData.getValue(Destination.class);
                         tmpDestination.add(destination);
                     }
+                    //Add to tripSection
                     TripSection tripSection = new TripSection(tmp,tmpDestination);
                     tripSectionList.add(tripSection);
+
+                    //add to DayList
+                    String day = "Day " + (dayCount+1);
+                    dayList.add(day);
+                    dayCount++;
                 }
                parentGroupTripDetailAdapter.notifyDataSetChanged();
+                dayAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -119,10 +142,6 @@ public class GroupTripDetailFragment extends Fragment implements ParentGroupTrip
 
     }
 
-    @Override
-    public void onListClicked(int position) {
-        Toast.makeText(getContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
-    }
 
     public void checkUserPermission(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
@@ -147,4 +166,8 @@ public class GroupTripDetailFragment extends Fragment implements ParentGroupTrip
         });
     }
 
+    @Override
+    public void onListClicked(int position) {
+        rcvGroupTripDetailView.scrollToPosition(position);
+    }
 }

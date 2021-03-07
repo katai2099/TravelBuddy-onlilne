@@ -16,10 +16,7 @@ import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.Request;
 import com.example.travelbuddyv2.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,10 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EventListener;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
@@ -70,7 +65,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
         holder.tvFriendName.setText(user.getName());
         holder.tvFriendEmail.setText(user.getEmail());
-        holder.img.setImageResource(holder.itemView.getResources().getIdentifier("@drawable/email_confirmmation",null,holder.itemView.getContext().getPackageName()));
+        holder.imgFriendProfile.setImageResource(R.drawable.ic_baseline_person_24);
         holder.tvPending.setVisibility(View.GONE);
         holder.btnInviteFriend.setVisibility(View.VISIBLE);
 
@@ -111,7 +106,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
     class UserHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView img;
+        private final ImageView imgFriendProfile;
         private final TextView tvFriendEmail,tvFriendName , tvPending;
         private final Button btnInviteFriend;
 
@@ -121,7 +116,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
            super(itemView);
             this.name = name;
             this.id = id ;
-           img = itemView.findViewById(R.id.friendProfile);
+           imgFriendProfile = itemView.findViewById(R.id.friendProfile);
            tvFriendEmail = itemView.findViewById(R.id.friendEmail);
            tvFriendName = itemView.findViewById(R.id.friendName);
            btnInviteFriend = itemView.findViewById(R.id.btnInviteFriend);

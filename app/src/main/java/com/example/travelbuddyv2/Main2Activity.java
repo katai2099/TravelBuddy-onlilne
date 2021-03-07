@@ -22,6 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 public class Main2Activity extends AppCompatActivity {
 
     String changeToGroupTripFragment;
+    String changeToMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +32,10 @@ public class Main2Activity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         changeToGroupTripFragment = "";
+        changeToMapFragment = "";
         if(bundle!=null){
             changeToGroupTripFragment = bundle.getString("changeToGroup");
+            changeToMapFragment = bundle.getString("changeToMapFragment");
         }
 
 
@@ -48,12 +51,15 @@ public class Main2Activity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        if(changeToGroupTripFragment.length()>1)
+        if( changeToGroupTripFragment!=null&&changeToGroupTripFragment.length()>1)
         {
             navController.navigate(R.id.navigation_dashboard,bundle);
            // NavGraph  navGraph = navController.getGraph();
            // navGraph.setStartDestination();
-
+        }
+        else if(changeToMapFragment != null && changeToMapFragment.length()>1)
+        {
+            navController.navigate(R.id.navigation_map);
         }
 
     }
