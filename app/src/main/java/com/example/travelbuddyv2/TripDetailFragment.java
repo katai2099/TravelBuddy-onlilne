@@ -136,31 +136,11 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onListClicked(int position) {
-        rcvTripDetail.scrollToPosition(position);
+       // rcvTripDetail.scrollToPosition(position);
+        rcvTripDetail.smoothScrollToPosition(position);
     }
 
 
-   /* private void fillList(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(tripID);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                destinationList.clear();
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    Log.d(tag,snapshot.getValue().toString());
-                    Destination destination = dataSnapshot.getValue(Destination.class);
-                   destinationList.add(destination);
-                }
-                tripDetailAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }*/
 
 }

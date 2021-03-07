@@ -23,12 +23,12 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
 
     private final String tag = "PARENT_DETAIL_ADAPTER";
     List<TripSection> tripSectionList;
-    String tripStringId;
     boolean hasPermission;
+    ParentGroupTripDetailAdapterCallback parentGroupTripDetailAdapterCallback;
 
-    public ParentGroupTripDetailAdapter(List<TripSection> tripSectionList, String tripStringId) {
+    public ParentGroupTripDetailAdapter(List<TripSection> tripSectionList,ParentGroupTripDetailAdapterCallback parentGroupTripDetailAdapterCallback) {
         this.tripSectionList = tripSectionList;
-        this.tripStringId = tripStringId;
+        this.parentGroupTripDetailAdapterCallback = parentGroupTripDetailAdapterCallback;
         hasPermission = false;
     }
 
@@ -55,12 +55,13 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
             @Override
             public void onClick(View v) {
                // parentGroupTripDetailAdapterCallBack.onListClicked(position);
-                if(!hasPermission)
+                if(hasPermission)
                 {
-                    Toast.makeText(holder.itemView.getContext(),"You dont have permission to edit",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(holder.itemView.getContext(),"You may proceed",Toast.LENGTH_SHORT).show();
+                    parentGroupTripDetailAdapterCallback.addNewAttractionClicked(position);
                 }
                 else{
-                    Toast.makeText(holder.itemView.getContext(),"You may proceed",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(holder.itemView.getContext(),"You dont have permission to edit",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -91,6 +92,10 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
         this.hasPermission = permission;
         Log.d(tag,"Permission of user is " + permission);
 //        Toast.makeText(context,String.valueOf(hasPermission),Toast.LENGTH_SHORT).show();
+    }
+
+    public interface ParentGroupTripDetailAdapterCallback{
+        void addNewAttractionClicked(int position);
     }
 
 

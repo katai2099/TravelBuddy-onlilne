@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -58,8 +56,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     PlacesClient placesClient;
     GoogleMapPictureAdapter googleMapPictureAdapter;
     RecyclerView rcvGoogleMapPictures;
-    String dateFromTripDetail,tripStringID;
+    String dateFromTripDetail,tripStringID, tripOwner;
     Button btnAddTripToDatabase;
+    boolean isCurrentUserAMember;
     int ID = 0;
 
     @Override
@@ -75,9 +74,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(bundle!=null){
             tripStringID = bundle.getString("tripStringID");
             dateFromTripDetail = bundle.getString("dateOfTrip");
+            tripOwner = bundle.getString("tripOwner");
+
+            Log.d(tag,tripOwner==null?"null":tripOwner);
             Log.d(tag,"date of Trip " + dateFromTripDetail);
             Log.d(tag,"trip String ID " + tripStringID);
         }
+
+        isCurrentUserAMember = tripOwner != null;
+
 
         btnAddTripToDatabase = findViewById(R.id.mapActivityBtnAddTripDetail);
         bitmapList = new ArrayList<>();
@@ -97,7 +102,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         placesClient = Places.createClient(this);
 
-        getDateLatestTripDetailID();
+        if(!isCurrentUserAMember){
+            getDateLatestTripDetailIDForOwner();
+        }else{
+            getDateLatestTripDetailIDForMember();
+        }
+
 
        /* CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("katai");*/
@@ -207,25 +217,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 btnAddTripToDatabase.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .child(tripStringID)
-                                .child(dateFromTripDetail)
-                                .child("td"+ID);
 
-                        Destination destination = new Destination();
-                        destination.setPlaceId(placeId);
-                        destination.setName(placeName);
-                        destination.setLongtitude(placeLatLng.longitude);
-                        destination.setLatitude(placeLatLng.latitude);
-
-                        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                killActivity();
-                            }
-                        });
-
+                        if(!isCurrentUserAMember){
+                            addAttractionToDatabaseForOwner(placeId,placeName,placeLatLng);
+                        }else{
+                            addAttractionToDatabaseForMember(placeId,placeName,placeLatLng);
+                        }
 
                     }
                 });
@@ -235,7 +232,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void getDateLatestTripDetailID(){
+    private void getDateLatestTripDetailIDForOwner(){
 
         DatabaseReference currentDateTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -256,7 +253,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     ID = res+1;
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -265,8 +261,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    private void getDateLatestTripDetailIDForMember(){
+
+        DatabaseReference currentDateTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(tripOwner)
+                .child(tripStringID)
+                .child(dateFromTripDetail);
+
+        currentDateTripDetailNode.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Integer> idTmp = new ArrayList<>();
+                for(DataSnapshot tripDetailID:snapshot.getChildren())
+                {
+                    idTmp.add(Helper.tripDetailStringIDToInt(tripDetailID.getKey()));
+                }
+                if(!idTmp.isEmpty()){
+                    Collections.sort(idTmp);
+                    int res = idTmp.get(idTmp.size()-1);
+                    ID = res+1;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+
+
     private void killActivity(){
         finish();
+    }
+
+    private void addAttractionToDatabaseForOwner(String placeId,String placeName,LatLng placeLatLng){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(tripStringID)
+                .child(dateFromTripDetail)
+                .child("td"+ID);
+
+        Destination destination = new Destination();
+        destination.setPlaceId(placeId);
+        destination.setName(placeName);
+        destination.setLongtitude(placeLatLng.longitude);
+        destination.setLatitude(placeLatLng.latitude);
+
+        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                killActivity();
+            }
+        });
+    }
+
+    private void addAttractionToDatabaseForMember(String placeId,String placeName,LatLng placeLatLng){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(tripOwner)
+                .child(tripStringID)
+                .child(dateFromTripDetail)
+                .child("td"+ID);
+
+        Destination destination = new Destination();
+        destination.setPlaceId(placeId);
+        destination.setName(placeName);
+        destination.setLongtitude(placeLatLng.longitude);
+        destination.setLatitude(placeLatLng.latitude);
+
+        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                killActivity();
+            }
+        });
+
     }
 
 }

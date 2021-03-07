@@ -42,7 +42,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
         holder.tvMemberName.setText(member.getName());
         holder.tvMemberEmail.setText(member.getEmail());
         if(member.getPermission().equals("owner")){
-            holder.tvMemberPermission.setText("Edit");
+            holder.tvMemberPermission.setText("edit");
             holder.tvMemberOwnership.setText(member.getPermission());
         }
         else{

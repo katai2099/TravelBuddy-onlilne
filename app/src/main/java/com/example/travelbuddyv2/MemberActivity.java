@@ -168,22 +168,6 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
             }
         });
 
-        /*databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                memberList.clear();
-                for(DataSnapshot member: snapshot.getChildren()){
-                    Member tmp = member.getValue(Member.class);
-                    memberList.add(tmp);
-                }
-                memberAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });*/
 
     }
 
@@ -233,16 +217,17 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
 
     @Override
     public void onMemberListClicked(int position) {
-      //  Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
-        if(position==0){
-            Toast.makeText(getBaseContext(),"Owner permission cannot be changed",Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Intent i = new Intent(this, PermissionModificationActivity.class);
-            i.putExtra("TripOwnerID", tripOwnerID);
-            i.putExtra("TripStringID", tripStringID);
-            i.putExtra("MemberID", memberList.get(position).getID());
-            startActivity(i);
+
+        if(isFromPersonalTripFragment()) {
+            if (position == 0) {
+                Toast.makeText(getBaseContext(), "Owner permission cannot be changed", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent i = new Intent(this, PermissionModificationActivity.class);
+                i.putExtra("TripOwnerID", tripOwnerID);
+                i.putExtra("TripStringID", tripStringID);
+                i.putExtra("MemberID", memberList.get(position).getID());
+                startActivity(i);
+            }
         }
     }
 

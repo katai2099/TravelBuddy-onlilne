@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.DayAdapter;
@@ -31,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayAdapterCallback {
+public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayAdapterCallback,
+        ParentGroupTripDetailAdapter.ParentGroupTripDetailAdapterCallback {
 
     private final String tag = "GROUPDETAILFRAGMENT";
 
@@ -79,10 +82,11 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         View root = inflater.inflate(R.layout.fragment_group_trip_detail, container, false);
         tripSectionList = new ArrayList<>();
 
-        parentGroupTripDetailAdapter = new ParentGroupTripDetailAdapter(tripSectionList,tripID);
+        parentGroupTripDetailAdapter = new ParentGroupTripDetailAdapter(tripSectionList,this);
 
         rcvGroupTripDetailView = root.findViewById(R.id.rcvFragmentGroupTripDetail);
-        rcvGroupTripDetailView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rcvGroupTripDetailView.setLayoutManager(layoutManager);
         rcvGroupTripDetailView.setAdapter(parentGroupTripDetailAdapter);
 
         //
@@ -168,6 +172,17 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
 
     @Override
     public void onListClicked(int position) {
-        rcvGroupTripDetailView.scrollToPosition(position);
+        rcvGroupTripDetailView.smoothScrollToPosition(position);
+       // rcvGroupTripDetailView.scrollToPosition(position);
+    }
+
+    @Override
+    public void addNewAttractionClicked(int position) {
+        Intent i = new Intent(getContext(),MapsActivity.class);
+        Toast.makeText(getContext(),"You may proceed",Toast.LENGTH_SHORT).show();
+        i.putExtra("tripStringID",tripID);
+        i.putExtra("dateOfTrip",tripSectionList.get(position).getDate());
+        i.putExtra("tripOwner",tripOwner);
+        startActivity(i);
     }
 }
