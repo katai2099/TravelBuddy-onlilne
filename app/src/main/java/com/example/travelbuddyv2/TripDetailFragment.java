@@ -14,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.adapter.ChildTripDetailAdapter;
 import com.example.travelbuddyv2.adapter.DayAdapter;
 import com.example.travelbuddyv2.adapter.ParentTripDetailAdapter;
 import com.example.travelbuddyv2.adapter.TripDetailAdapter;
 import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.TripSection;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapterCallback {
+public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapterCallback, ChildTripDetailAdapter.ChildTripDetailAdapterCallBack {
 
     private final String tag = "TRIP_DETAIL_FRAGMENT" ;
 
@@ -74,7 +76,7 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
         rcvTripDetail.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        parentTripDetailAdapter = new ParentTripDetailAdapter(tripSectionList,tripID);
+        parentTripDetailAdapter = new ParentTripDetailAdapter(tripSectionList,tripID,this);
         rcvTripDetail.setAdapter(parentTripDetailAdapter);
 
         //Day adapter initialization
@@ -141,6 +143,19 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
     }
 
 
+    @Override
+    public void onDeleteDestinationClick(String date, String destinationStringID) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(tripID)
+                .child(date)
+                .child(destinationStringID);
 
-
+        reference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(),"Delete success",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

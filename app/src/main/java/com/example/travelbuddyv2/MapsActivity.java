@@ -306,8 +306,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Destination destination = new Destination();
         destination.setPlaceId(placeId);
         destination.setName(placeName);
-        destination.setLongtitude(placeLatLng.longitude);
+        destination.setLongitude(placeLatLng.longitude);
         destination.setLatitude(placeLatLng.latitude);
+        destination.setStartDate(dateFromTripDetail);
+        destination.setDestinationStringID("td"+ID);
 
         reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -327,8 +329,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Destination destination = new Destination();
         destination.setPlaceId(placeId);
         destination.setName(placeName);
-        destination.setLongtitude(placeLatLng.longitude);
+        destination.setLongitude(placeLatLng.longitude);
         destination.setLatitude(placeLatLng.latitude);
+        destination.setStartDate(dateFromTripDetail);
+        destination.setDestinationStringID("td"+ID);
 
         reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

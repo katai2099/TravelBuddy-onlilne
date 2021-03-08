@@ -53,7 +53,7 @@ public class TripSelectionAdapter extends RecyclerView.Adapter<TripSelectionAdap
                 i.putExtra("googleMapPlaceName",destination.getName());
                 i.putExtra("googleMapPlaceID",destination.getPlaceId());
                 i.putExtra("googleMapPlaceLat",destination.getLatitude());
-                i.putExtra("googleMapPlaceLong",destination.getLongtitude());
+                i.putExtra("googleMapPlaceLong",destination.getLongitude());
                 v.getContext().startActivity(i);
             }
         });

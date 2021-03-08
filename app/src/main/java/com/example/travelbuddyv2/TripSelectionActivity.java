@@ -1,13 +1,10 @@
 package com.example.travelbuddyv2;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.example.travelbuddyv2.adapter.TripSelectionAdapter;
 import com.example.travelbuddyv2.model.Destination;
@@ -42,7 +39,7 @@ public class TripSelectionActivity extends AppCompatActivity {
             destination.setName(bundle.getString("googleMapPlaceName"));
             destination.setPlaceId(bundle.getString("googleMapPlaceID"));
             destination.setLatitude(bundle.getDouble("googleMapPlaceLat"));
-            destination.setLongtitude(bundle.getDouble("googleMapPlaceLong"));
+            destination.setLongitude(bundle.getDouble("googleMapPlaceLong"));
         }
 
         tripModelList = new ArrayList<>();

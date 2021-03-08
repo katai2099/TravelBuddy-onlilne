@@ -25,10 +25,14 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
     List<TripSection> tripSectionList;
     boolean hasPermission;
     ParentGroupTripDetailAdapterCallback parentGroupTripDetailAdapterCallback;
+    ChildTripDetailAdapter.ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack;
 
-    public ParentGroupTripDetailAdapter(List<TripSection> tripSectionList,ParentGroupTripDetailAdapterCallback parentGroupTripDetailAdapterCallback) {
+    public ParentGroupTripDetailAdapter(List<TripSection> tripSectionList, ParentGroupTripDetailAdapterCallback parentGroupTripDetailAdapterCallback,
+                                        ChildTripDetailAdapter.ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack) {
+
         this.tripSectionList = tripSectionList;
         this.parentGroupTripDetailAdapterCallback = parentGroupTripDetailAdapterCallback;
+        this.childTripDetailAdapterCallBack = childTripDetailAdapterCallBack;
         hasPermission = false;
     }
 
@@ -45,10 +49,11 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
 
         TripSection tripSection = tripSectionList.get(position);
         final String date = tripSection.getDate();
-        holder.sectionTextview.setText(date);
+        String positionString = String.valueOf(position+1);
+        holder.sectionTextview.setText("Day " + positionString + ":   "+ date);
 
         List<Destination> destinationList = tripSection.getDestinations();
-        ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList);
+        ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList,childTripDetailAdapterCallBack);
         holder.childRecyclerView.setAdapter(childTripDetailAdapter);
 
         holder.btnAddTripDetail.setOnClickListener(new View.OnClickListener() {

@@ -22,9 +22,13 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
 
     List<TripSection> tripSectionList;
     String tripStringId ;
-    public ParentTripDetailAdapter(List<TripSection> tripSectionsList,String tripStringId) {
+    ChildTripDetailAdapter.ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack;
+
+    public ParentTripDetailAdapter(List<TripSection> tripSectionsList, String tripStringId,
+                                   ChildTripDetailAdapter.ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack) {
         this.tripSectionList = tripSectionsList;
         this.tripStringId = tripStringId;
+        this.childTripDetailAdapterCallBack = childTripDetailAdapterCallBack;
     }
 
     @NonNull
@@ -45,7 +49,7 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
         holder.sectionTextview.setText("Day " + positionString + ":   "+ date);
 
         List<Destination> destinationList = tripSection.getDestinations();
-        ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList);
+        ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList,childTripDetailAdapterCallBack);
         holder.childRecyclerView.setAdapter(childTripDetailAdapter);
 
         holder.btnAddTripDetail.setOnClickListener(new View.OnClickListener() {

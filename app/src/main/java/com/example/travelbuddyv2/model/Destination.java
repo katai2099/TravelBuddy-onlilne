@@ -6,11 +6,12 @@ public class Destination {
     private String name;
     private String startTime;
     private String endTime;
-    private String StartDate;
+    private String startDate;
     private String endDate;
-    private double longtitude;
+    private double longitude;
     private double latitude;
     private String placeId;
+    private String destinationStringID;
 
     public Destination() {
     }
@@ -48,11 +49,11 @@ public class Destination {
     }
 
     public String getStartDate() {
-        return StartDate;
+        return startDate;
     }
 
     public void setStartDate(String startDate) {
-        StartDate = startDate;
+        this.startDate = startDate;
     }
 
     public String getEndDate() {
@@ -63,12 +64,12 @@ public class Destination {
         this.endDate = endDate;
     }
 
-    public double getLongtitude() {
-        return longtitude;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLongtitude(double longtitude) {
-        this.longtitude = longtitude;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public double getLatitude() {
@@ -85,5 +86,13 @@ public class Destination {
 
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
+    }
+
+    public String getDestinationStringID() {
+        return destinationStringID;
+    }
+
+    public void setDestinationStringID(String destinationStringID) {
+        this.destinationStringID = destinationStringID;
     }
 }

@@ -3,6 +3,7 @@ package com.example.travelbuddyv2.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,8 @@ public class ChildGroupTripDetailAdapter extends RecyclerView.Adapter<ChildGroup
     @Override
     public void onBindViewHolder(@NonNull ChildGroupTripDetailHolder holder, int position) {
         holder.itemTextView.setText(destinations.get(position).getName());
+        holder.startTime.setText("8:30");
+        holder.endTime.setText("9:00");
     }
 
     @Override
@@ -41,10 +44,14 @@ public class ChildGroupTripDetailAdapter extends RecyclerView.Adapter<ChildGroup
     }
 
     class ChildGroupTripDetailHolder extends RecyclerView.ViewHolder {
-        TextView itemTextView;
+        TextView itemTextView,startTime,endTime;
+        Button btnRemoveDestination;
         public ChildGroupTripDetailHolder(@NonNull View itemView) {
             super(itemView);
             itemTextView = itemView.findViewById(R.id.itemTextView);
+            startTime = itemView.findViewById(R.id.tvStartTime);
+            endTime = itemView.findViewById(R.id.tvEndTime);
+            btnRemoveDestination = itemView.findViewById(R.id.btnDeleteDestination);
         }
     }
 

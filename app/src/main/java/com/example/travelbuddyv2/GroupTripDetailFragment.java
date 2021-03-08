@@ -16,12 +16,14 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.adapter.ChildTripDetailAdapter;
 import com.example.travelbuddyv2.adapter.DayAdapter;
 import com.example.travelbuddyv2.adapter.GroupTripAdapter;
 import com.example.travelbuddyv2.adapter.ParentGroupTripDetailAdapter;
 import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.TripSection;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,11 +32,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayAdapterCallback,
-        ParentGroupTripDetailAdapter.ParentGroupTripDetailAdapterCallback {
+        ParentGroupTripDetailAdapter.ParentGroupTripDetailAdapterCallback ,
+        ChildTripDetailAdapter.ChildTripDetailAdapterCallBack {
 
     private final String tag = "GROUPDETAILFRAGMENT";
 
@@ -82,7 +86,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         View root = inflater.inflate(R.layout.fragment_group_trip_detail, container, false);
         tripSectionList = new ArrayList<>();
 
-        parentGroupTripDetailAdapter = new ParentGroupTripDetailAdapter(tripSectionList,this);
+        parentGroupTripDetailAdapter = new ParentGroupTripDetailAdapter(tripSectionList,this,this);
 
         rcvGroupTripDetailView = root.findViewById(R.id.rcvFragmentGroupTripDetail);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -184,5 +188,25 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         i.putExtra("dateOfTrip",tripSectionList.get(position).getDate());
         i.putExtra("tripOwner",tripOwner);
         startActivity(i);
+    }
+
+    @Override
+    public void onDeleteDestinationClick(String date,String destinationStringID) {
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(tripOwner)
+                .child(tripID)
+                .child(date)
+                .child(destinationStringID);
+
+        reference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(),"Delete success",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 }

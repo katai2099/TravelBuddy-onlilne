@@ -52,7 +52,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
             destination.setName(bundle.getString("googleMapPlaceName"));
             destination.setPlaceId(bundle.getString("googleMapPlaceID"));
             destination.setLatitude(bundle.getDouble("googleMapPlaceLat"));
-            destination.setLongtitude(bundle.getDouble("googleMapPlaceLong"));
+            destination.setLongitude(bundle.getDouble("googleMapPlaceLong"));
         }
 
 
@@ -154,11 +154,15 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
 
         Log.d(tag,"This is after user decide to add " + dateAndItsIdPair.toString());
 
+
         final DatabaseReference userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(tripStringID)
                 .child(dates.get(position))
                 .child("td"+dateAndItsIdPair.get(dates.get(position)));
+
+        destination.setStartDate(dates.get(position));
+        destination.setDestinationStringID("td"+dateAndItsIdPair.get(dates.get(position)));
 
         userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

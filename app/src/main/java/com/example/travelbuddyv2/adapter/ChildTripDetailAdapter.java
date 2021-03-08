@@ -3,6 +3,7 @@ package com.example.travelbuddyv2.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,9 +18,12 @@ import java.util.zip.Inflater;
 public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetailAdapter.ChildTripDetailHolder> {
 
     List<Destination> destinations;
+    ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack;
 
-    public ChildTripDetailAdapter(List<Destination> destinationList) {
-        this.destinations = destinationList;
+
+    public ChildTripDetailAdapter(List<Destination> destinations, ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack) {
+        this.destinations = destinations;
+        this.childTripDetailAdapterCallBack = childTripDetailAdapterCallBack;
     }
 
     @NonNull
@@ -33,8 +37,17 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChildTripDetailHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChildTripDetailHolder holder, final int position) {
         holder.itemTextView.setText(destinations.get(position).getName());
+        holder.startTime.setText("8:30");
+        holder.endTime.setText("9:00");
+
+        holder.btnRemoveDestination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                childTripDetailAdapterCallBack.onDeleteDestinationClick(destinations.get(position).getStartDate(),destinations.get(position).getDestinationStringID());
+            }
+        });
     }
 
     @Override
@@ -44,12 +57,21 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
 
     class ChildTripDetailHolder extends RecyclerView.ViewHolder {
 
-        TextView itemTextView;
+        TextView itemTextView , startTime , endTime;
+        Button btnRemoveDestination;
 
         public ChildTripDetailHolder(@NonNull View itemView) {
             super(itemView);
             itemTextView = itemView.findViewById(R.id.itemTextView);
+            startTime = itemView.findViewById(R.id.tvStartTime);
+            endTime = itemView.findViewById(R.id.tvEndTime);
+            btnRemoveDestination = itemView.findViewById(R.id.btnDeleteDestination);
         }
     }
+
+    public interface ChildTripDetailAdapterCallBack{
+        void onDeleteDestinationClick(String date,String destinationStringID);
+    }
+
 
 }
