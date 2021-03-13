@@ -195,4 +195,15 @@ public class Helper {
 
     }
 
+    public static String getNextThirtyMinute(String time){
+        Date date = stringToTime(time);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MINUTE,30);
+
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        return df.format(cal.getTime());
+
+    }
+
 }

@@ -187,6 +187,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         i.putExtra("tripStringID",tripID);
         i.putExtra("dateOfTrip",tripSectionList.get(position).getDate());
         i.putExtra("tripOwner",tripOwner);
+        i.putExtra("isCurrentUserAMember",true);
         startActivity(i);
     }
 

@@ -39,8 +39,8 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
     @Override
     public void onBindViewHolder(@NonNull ChildTripDetailHolder holder, final int position) {
         holder.itemTextView.setText(destinations.get(position).getName());
-        holder.startTime.setText("8:30");
-        holder.endTime.setText("9:00");
+        holder.startTime.setText(destinations.get(position).getStartTime());
+        holder.endTime.setText(destinations.get(position).getEndTime());
 
         holder.btnRemoveDestination.setOnClickListener(new View.OnClickListener() {
             @Override

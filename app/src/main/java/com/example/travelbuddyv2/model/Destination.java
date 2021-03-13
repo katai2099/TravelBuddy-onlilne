@@ -95,4 +95,18 @@ public class Destination {
     public void setDestinationStringID(String destinationStringID) {
         this.destinationStringID = destinationStringID;
     }
+
+    @Override
+    public String toString() {
+        return "Destination{" +
+                "name='" + name + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", placeId='" + placeId + '\'' +
+                ", destinationStringID='" + destinationStringID + '\'' +
+                '}';
+    }
 }

@@ -34,8 +34,8 @@ public class ChildGroupTripDetailAdapter extends RecyclerView.Adapter<ChildGroup
     @Override
     public void onBindViewHolder(@NonNull ChildGroupTripDetailHolder holder, int position) {
         holder.itemTextView.setText(destinations.get(position).getName());
-        holder.startTime.setText("8:30");
-        holder.endTime.setText("9:00");
+        holder.startTime.setText(destinations.get(position).getStartTime());
+        holder.endTime.setText(destinations.get(position).getEndTime());
     }
 
     @Override

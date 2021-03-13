@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -165,23 +167,40 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
 
         Log.d(tag,"This is after user decide to add " + dateAndItsIdPair.toString());
 
+        int latestID = dateAndItsIdPair.get(dates.get(position));
 
-        final DatabaseReference userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(owner)
-                .child(tripStringID)
-                .child(dates.get(position))
-                .child("td"+dateAndItsIdPair.get(dates.get(position)));
+        DatabaseReference userTripDetailNode;
+
+        //to sort firebase database tripDetailID
+        if(latestID<10 ){
+
+            userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                    .child(owner)
+                    .child(tripStringID)
+                    .child(dates.get(position))
+                    .child("td0"+dateAndItsIdPair.get(dates.get(position)));
+            destination.setDestinationStringID("td0"+dateAndItsIdPair.get(dates.get(position)));
+
+        }else{
+            userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                    .child(owner)
+                    .child(tripStringID)
+                    .child(dates.get(position))
+                    .child("td"+dateAndItsIdPair.get(dates.get(position)));
+            destination.setDestinationStringID("td"+dateAndItsIdPair.get(dates.get(position)));
+        }
 
         destination.setStartDate(dates.get(position));
-        destination.setDestinationStringID("td"+dateAndItsIdPair.get(dates.get(position)));
 
-        userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+        checkLatestEndTime(position,owner,userTripDetailNode);
+
+      /*  userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(DateSelectionActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
                 goBackToMapFragment();
             }
-        });
+        });*/
     }
 
 
@@ -203,10 +222,57 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
         startActivity(i);
     }
 
+    private void checkLatestEndTime(int position, String owner, final DatabaseReference userTripDetailNode){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(owner)
+                .child(tripStringID)
+                .child(dates.get(position));
+
+
+        reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount()==0){
+                    destination.setStartTime("08:00");
+                    destination.setEndTime("08:30");
+                    userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(DateSelectionActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
+                            goBackToMapFragment();
+                        }
+                    });
+                }else{
+                    int cnt = 0;
+                    Log.d(tag,dataSnapshot.toString());
+                    Destination tmp = new Destination();
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        if(cnt==dataSnapshot.getChildrenCount()-1){
+                            tmp =  data.getValue(Destination.class);
+                        }
+                       cnt++;
+                    }
+
+                    Log.d(tag,tmp.toString());
+                    destination.setStartTime(tmp.getEndTime());
+                    destination.setEndTime(Helper.getNextThirtyMinute(tmp.getEndTime()));
+                            userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(DateSelectionActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
+                                    goBackToMapFragment();
+                                }
+                            });
+
+                }
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         //getEachDateLatestTripDetailID();
-        Log.d(tag,"onResume " + dateAndItsIdPair);
     }
 }

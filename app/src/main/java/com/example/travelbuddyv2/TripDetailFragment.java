@@ -135,6 +135,8 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+
+
         });
 
     }

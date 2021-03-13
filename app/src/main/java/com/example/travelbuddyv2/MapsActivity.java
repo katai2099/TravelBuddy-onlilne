@@ -74,14 +74,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(bundle!=null){
             tripStringID = bundle.getString("tripStringID");
             dateFromTripDetail = bundle.getString("dateOfTrip");
-            tripOwner = bundle.getString("tripOwner");
-
-            Log.d(tag,tripOwner==null?"null":tripOwner);
+            isCurrentUserAMember = bundle.getBoolean("isCurrentUserAMember");
             Log.d(tag,"date of Trip " + dateFromTripDetail);
             Log.d(tag,"trip String ID " + tripStringID);
+            Log.d(tag,"is Current User a Member " + isCurrentUserAMember);
         }
 
-        isCurrentUserAMember = tripOwner != null;
+        if(isCurrentUserAMember){
+            tripOwner = bundle.getString("tripOwner");
+        }
 
 
         btnAddTripToDatabase = findViewById(R.id.mapActivityBtnAddTripDetail);
@@ -103,9 +104,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placesClient = Places.createClient(this);
 
         if(!isCurrentUserAMember){
-            getDateLatestTripDetailIDForOwner();
+            getDateLatestTripDetailID(FirebaseAuth.getInstance().getCurrentUser().getUid());
         }else{
-            getDateLatestTripDetailIDForMember();
+            getDateLatestTripDetailID(tripOwner);
         }
 
 
@@ -219,9 +220,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onClick(View v) {
 
                         if(!isCurrentUserAMember){
-                            addAttractionToDatabaseForOwner(placeId,placeName,placeLatLng);
+                          //  addAttractionToDatabaseForOwner(placeId,placeName,placeLatLng);
+                            addAttractionToDatabase(placeId,placeName,placeLatLng,FirebaseAuth.getInstance().getCurrentUser().getUid());
                         }else{
-                            addAttractionToDatabaseForMember(placeId,placeName,placeLatLng);
+                         //   addAttractionToDatabaseForMember(placeId,placeName,placeLatLng);
+                            addAttractionToDatabase(placeId,placeName,placeLatLng,tripOwner);
                         }
 
                     }
@@ -232,10 +235,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void getDateLatestTripDetailIDForOwner(){
+    private void getDateLatestTripDetailID(String owner){
 
         DatabaseReference currentDateTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(owner)
                 .child(tripStringID)
                 .child(dateFromTripDetail);
 
@@ -258,89 +261,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
-
     }
 
-    private void getDateLatestTripDetailIDForMember(){
-
-        DatabaseReference currentDateTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(tripOwner)
+    private void addAttractionToDatabase(String placeId,String placeName,LatLng placeLatLng,String owner){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(owner)
                 .child(tripStringID)
-                .child(dateFromTripDetail);
+                .child(dateFromTripDetail)
+                .child("td"+ID);
 
-        currentDateTripDetailNode.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Integer> idTmp = new ArrayList<>();
-                for(DataSnapshot tripDetailID:snapshot.getChildren())
-                {
-                    idTmp.add(Helper.tripDetailStringIDToInt(tripDetailID.getKey()));
-                }
-                if(!idTmp.isEmpty()){
-                    Collections.sort(idTmp);
-                    int res = idTmp.get(idTmp.size()-1);
-                    ID = res+1;
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+        Destination destination = new Destination();
+        destination.setPlaceId(placeId);
+        destination.setName(placeName);
+        destination.setLongitude(placeLatLng.longitude);
+        destination.setLatitude(placeLatLng.latitude);
+        destination.setStartDate(dateFromTripDetail);
+        destination.setDestinationStringID("td"+ID);
 
+        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                killActivity();
             }
         });
-
     }
-
 
 
     private void killActivity(){
         finish();
     }
 
-    private void addAttractionToDatabaseForOwner(String placeId,String placeName,LatLng placeLatLng){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(tripStringID)
-                .child(dateFromTripDetail)
-                .child("td"+ID);
 
-        Destination destination = new Destination();
-        destination.setPlaceId(placeId);
-        destination.setName(placeName);
-        destination.setLongitude(placeLatLng.longitude);
-        destination.setLatitude(placeLatLng.latitude);
-        destination.setStartDate(dateFromTripDetail);
-        destination.setDestinationStringID("td"+ID);
 
-        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                killActivity();
-            }
-        });
-    }
-
-    private void addAttractionToDatabaseForMember(String placeId,String placeName,LatLng placeLatLng){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(tripOwner)
-                .child(tripStringID)
-                .child(dateFromTripDetail)
-                .child("td"+ID);
-
-        Destination destination = new Destination();
-        destination.setPlaceId(placeId);
-        destination.setName(placeName);
-        destination.setLongitude(placeLatLng.longitude);
-        destination.setLatitude(placeLatLng.latitude);
-        destination.setStartDate(dateFromTripDetail);
-        destination.setDestinationStringID("td"+ID);
-
-        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                killActivity();
-            }
-        });
-
-    }
 
 }

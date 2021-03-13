@@ -58,6 +58,7 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
                 Intent i = new Intent(holder.itemView.getContext(), MapsActivity.class);
                 i.putExtra("tripStringID",tripStringId);
                 i.putExtra("dateOfTrip",date);
+                i.putExtra("isCurrentUserAMember",false);
                 holder.itemView.getContext().startActivity(i);
             }
         });
