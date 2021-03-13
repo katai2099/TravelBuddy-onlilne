@@ -20,6 +20,7 @@ import com.example.travelbuddyv2.adapter.ParentTripDetailAdapter;
 import com.example.travelbuddyv2.adapter.TripDetailAdapter;
 import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.TripSection;
+import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.ls.LSOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,18 +147,38 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
 
     @Override
-    public void onDeleteDestinationClick(String date, String destinationStringID) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+    public void onDeleteDestinationClick(final String date, String destinationStringID) {
+
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(tripID)
                 .child(date)
                 .child(destinationStringID);
 
-        reference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        //first check if it is the last child of the node
+
+        final DatabaseReference checkNumberOfChild = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(tripID)
+                .child(date);
+
+        checkNumberOfChild.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getContext(),"Delete success",Toast.LENGTH_SHORT).show();
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount()>1){
+                    reference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getContext(),"Delete success",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else{
+                    checkNumberOfChild.setValue("");
+                }
             }
         });
+
     }
+
+
 }

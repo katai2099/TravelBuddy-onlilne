@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.TripAdapter;
 import com.example.travelbuddyv2.model.tripModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +45,7 @@ public class PersonalTripFragment extends Fragment {
 
     List<tripModel> tripLists  = new ArrayList<>();
 
+
     public PersonalTripFragment() {
         // Required empty public constructor
     }
@@ -57,6 +59,7 @@ public class PersonalTripFragment extends Fragment {
 
 
         fbtnAddNewTrip = root.findViewById(R.id.fbtnFragmentPersonalTrip);
+
 
         rcvTriplist = root.findViewById(R.id.rcvFragmentPersonalTrip);
         rcvTriplist.setLayoutManager(new LinearLayoutManager(getActivity()));

@@ -191,22 +191,42 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     }
 
     @Override
-    public void onDeleteDestinationClick(String date,String destinationStringID) {
+    public void onDeleteDestinationClick(final String date, String destinationStringID) {
 
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(tripOwner)
                 .child(tripID)
                 .child(date)
                 .child(destinationStringID);
 
-        reference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        //first check if it is the last child of the node
+
+        final DatabaseReference checkNumberOfChild = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(tripOwner)
+                .child(tripID)
+                .child(date);
+
+        checkNumberOfChild.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getContext(),"Delete success",Toast.LENGTH_SHORT).show();
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount()>1){
+                    reference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getContext(),"Delete success",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else{
+                    checkNumberOfChild.setValue("");
+                }
             }
         });
 
 
     }
+
+
+
+
 }
