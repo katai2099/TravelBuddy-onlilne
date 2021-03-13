@@ -21,11 +21,11 @@ import java.util.List;
 public class TripSelectionAdapter extends RecyclerView.Adapter<TripSelectionAdapter.TripListHolder>{
 
     List<tripModel> tripModelList;
-    Destination destination;
+    TripSelectionAdapterCallback tripSelectionAdapterCallback;
 
-    public TripSelectionAdapter(List<tripModel> tripModelList, Destination destination) {
+    public TripSelectionAdapter(List<tripModel> tripModelList,TripSelectionAdapterCallback tripSelectionAdapterCallback) {
         this.tripModelList = tripModelList;
-        this.destination = destination;
+        this.tripSelectionAdapterCallback = tripSelectionAdapterCallback;
     }
 
     @NonNull
@@ -39,24 +39,11 @@ public class TripSelectionAdapter extends RecyclerView.Adapter<TripSelectionAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TripListHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TripListHolder holder, final int position) {
 
         final tripModel trip = tripModelList.get(position);
 
         holder.textView.setText(trip.getTripName());
-
-        holder.textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), DateSelectionActivity.class);
-                i.putExtra("tripStringId",trip.getStringID());
-                i.putExtra("googleMapPlaceName",destination.getName());
-                i.putExtra("googleMapPlaceID",destination.getPlaceId());
-                i.putExtra("googleMapPlaceLat",destination.getLatitude());
-                i.putExtra("googleMapPlaceLong",destination.getLongitude());
-                v.getContext().startActivity(i);
-            }
-        });
 
     }
 
@@ -65,14 +52,25 @@ public class TripSelectionAdapter extends RecyclerView.Adapter<TripSelectionAdap
         return tripModelList.size();
     }
 
-    class TripListHolder extends RecyclerView.ViewHolder {
+    class TripListHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         final TextView textView;
 
         public TripListHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.tvBasicRow);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            tripSelectionAdapterCallback.onTripClicked(getAdapterPosition());
+
+        }
+    }
+
+    public interface TripSelectionAdapterCallback{
+        void onTripClicked(int position);
     }
 
 }

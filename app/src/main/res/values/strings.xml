@@ -11,6 +11,7 @@
     <string name="tab_text_2">Inventory</string>
     <string name="tab_text_3">Group</string>
     <string name="tab_text_4">Trip</string>
+    <string name="tab_text_5">Personal</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>

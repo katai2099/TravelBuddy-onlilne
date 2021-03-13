@@ -3,15 +3,20 @@ package com.example.travelbuddyv2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.ContactsContract;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,13 +31,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class UserProfileFragment extends Fragment {
 
     TextView tvUserEmail;
     EditText etUserName;
     Button btnLogOut , btnEditUserName;
-    ImageView imgUserProfileImage;
+    //ImageView imgUserProfileImage;
+    CircleImageView imgUserProfileImage;
     User user;
 
     public UserProfileFragment() {
@@ -70,17 +78,22 @@ public class UserProfileFragment extends Fragment {
             }
         });
 
-        etUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus)
-                {
-                    btnEditUserName.setVisibility(View.VISIBLE);
-                    etUserName.setEnabled(false);
-                }
+       etUserName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+           @Override
+           public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+               if(actionId== EditorInfo.IME_ACTION_DONE){
 
-            }
-        });
+                   final String newName = etUserName.getText().toString();
+
+                  changeUserName(newName,v);
+
+                   return true;
+               }
+               return false;
+           }
+       });
+
+
 
 
 
@@ -126,6 +139,22 @@ public class UserProfileFragment extends Fragment {
                 etUserName.setText(user.getName());
 
                 tvUserEmail.setText(user.getEmail());
+            }
+        });
+    }
+
+    private void changeUserName(String newName, final View v){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("name");
+
+        reference.setValue(newName).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+                btnEditUserName.setVisibility(View.VISIBLE);
+                etUserName.setEnabled(false);
             }
         });
 

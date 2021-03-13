@@ -30,6 +30,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
     private final String tag = "REQUEST_ADAPTER";
     List<Request> requestList;
+    String name ;
 
     public RequestAdapter(List<Request>requestList) {
         this.requestList = requestList;
@@ -49,7 +50,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
     public void onBindViewHolder(@NonNull final RequestHolder holder, int position) {
 
         final Request request = requestList.get(position);
-        holder.tvFriendRequestNotification.setText("You got an invitation from "+ request.getInviter() + " to join " + request.getTripName() +"  trip");
+
+        getInviterName(request,holder);
 
         holder.btnReject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,9 +206,22 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
             }
         });
 
+    }
+
+    private void getInviterName(final Request request, final RequestHolder holder){
+        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(request.getInviter());
+
+        userNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+                holder.tvFriendRequestNotification.setText("You got an invitation from "+ user.getName() + " to join " + request.getTripName() +"  trip");
 
 
-
+            }
+        });
 
     }
 

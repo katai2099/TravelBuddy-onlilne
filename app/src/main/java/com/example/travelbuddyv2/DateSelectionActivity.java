@@ -35,6 +35,8 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
     Destination destination;
     List<Integer> idList;
     HashMap<String,Integer> dateAndItsIdPair;
+    boolean isFromPersonalTrip;
+    String tripOwnerUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +55,15 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
             destination.setPlaceId(bundle.getString("googleMapPlaceID"));
             destination.setLatitude(bundle.getDouble("googleMapPlaceLat"));
             destination.setLongitude(bundle.getDouble("googleMapPlaceLong"));
+            isFromPersonalTrip = bundle.getBoolean("isFromPersonalTrip");
+        }
+
+        if(!isFromPersonalTrip){
+            tripOwnerUUID = bundle.getString("tripOwnerUUID");
+            Toast.makeText(DateSelectionActivity.this,tripOwnerUUID,Toast.LENGTH_SHORT).show();
         }
 
 
-
-        Toast.makeText(this,tripStringID,Toast.LENGTH_SHORT).show();
 
         dates = new ArrayList<>();
 
@@ -67,16 +73,23 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
         rcvDate.setLayoutManager(new LinearLayoutManager(this));
         rcvDate.setAdapter(dateSelectionAdapter);
 
-        fillListWithDate();
-        getEachDateLatestTripDetailID();
+        if(isFromPersonalTrip){
+            String userUUID=FirebaseAuth.getInstance().getCurrentUser().getUid();
+            fillListWithDate(userUUID);
+            getEachDateLatestTripDetailID(userUUID);
+        }else{
+            fillListWithDate(tripOwnerUUID);
+            getEachDateLatestTripDetailID(tripOwnerUUID);
+        }
+
         Log.d(tag,"Oncreate " + dateAndItsIdPair.toString());
 
     }
 
-    private void fillListWithDate(){
+    private void fillListWithDate(String owner){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(owner)
                 .child(tripStringID);
 
         reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -90,14 +103,12 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
                 dateSelectionAdapter.notifyDataSetChanged();
             }
         });
-
-
     }
 
-    private void getEachDateLatestTripDetailID(){
+    private void getEachDateLatestTripDetailID(String owner){
 
          DatabaseReference tripDetailStringID = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(owner)
                 .child(tripStringID);
 
          tripDetailStringID.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -148,7 +159,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
         Log.d(tag,"This is outside on dataChange " + dateAndItsIdPair.toString());
     }
 
-    private void addTripDetailToDatabase(int position){
+    private void addTripDetailToDatabase(int position,String owner){
 
       //  Toast.makeText(DateSelectionActivity.this,String.valueOf(ID),Toast.LENGTH_SHORT).show();
 
@@ -156,7 +167,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
 
 
         final DatabaseReference userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(owner)
                 .child(tripStringID)
                 .child(dates.get(position))
                 .child("td"+dateAndItsIdPair.get(dates.get(position)));
@@ -177,7 +188,12 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
     @Override
     public void onListClicked(final int position) {
 
-       addTripDetailToDatabase(position);
+        if(isFromPersonalTrip){
+            addTripDetailToDatabase(position,FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
+        else{
+            addTripDetailToDatabase(position,tripOwnerUUID);
+        }
     }
 
     private void goBackToMapFragment(){
@@ -190,7 +206,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
     @Override
     protected void onResume() {
         super.onResume();
-        getEachDateLatestTripDetailID();
+        //getEachDateLatestTripDetailID();
         Log.d(tag,"onResume " + dateAndItsIdPair);
     }
 }

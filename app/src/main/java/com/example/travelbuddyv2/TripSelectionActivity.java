@@ -3,13 +3,16 @@ package com.example.travelbuddyv2;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 
 import com.example.travelbuddyv2.adapter.TripSelectionAdapter;
 import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.tripModel;
+import com.example.travelbuddyv2.ui.main.TripSelectionPagerAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +37,7 @@ public class TripSelectionActivity extends AppCompatActivity {
         destination = new Destination();
 
         Bundle bundle = getIntent().getExtras();
-
+/*
         if(bundle!=null){
             destination.setName(bundle.getString("googleMapPlaceName"));
             destination.setPlaceId(bundle.getString("googleMapPlaceID"));
@@ -47,27 +50,17 @@ public class TripSelectionActivity extends AppCompatActivity {
         rcvTrip = findViewById(R.id.rcvTripSelection);
         rcvTrip.setLayoutManager(new LinearLayoutManager(this));
         rcvTrip.setAdapter(tripSelectionAdapter);
-        fillListWithTrip();
+        fillListWithTrip();*/
+
+        TripSelectionPagerAdapter tripSelectionPagerAdapter = new TripSelectionPagerAdapter(this,getSupportFragmentManager(),bundle);
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(tripSelectionPagerAdapter);
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
 
 
     }
 
-    private void fillListWithTrip(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trips")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for(DataSnapshot data:dataSnapshot.getChildren()){
-                    tripModel tmp = data.getValue(tripModel.class);
-                    tripModelList.add(tmp);
-                }
-                tripSelectionAdapter.notifyDataSetChanged();
-            }
-        });
-
-    }
 
 
 
