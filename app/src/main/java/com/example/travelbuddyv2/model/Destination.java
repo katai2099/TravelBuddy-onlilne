@@ -12,8 +12,10 @@ public class Destination {
     private double latitude;
     private String placeId;
     private String destinationStringID;
+    private int extraDay;
 
     public Destination() {
+        extraDay=0;
     }
 
     public int getID() {
@@ -94,6 +96,14 @@ public class Destination {
 
     public void setDestinationStringID(String destinationStringID) {
         this.destinationStringID = destinationStringID;
+    }
+
+    public int getExtraDay() {
+        return extraDay;
+    }
+
+    public void setExtraDay(int extraDay) {
+        this.extraDay = extraDay;
     }
 
     @Override

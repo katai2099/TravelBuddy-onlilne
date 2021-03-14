@@ -209,7 +209,7 @@ public class Helper {
 
     }
 
-    public static String calculateExtraDay(String currentDate,String time){
+    public static int calculateExtraDay(String currentDate,String time,int numberOfExtraDayFromLastDestination){
 
         //get time
         Date currentUserTime = stringToTime(time);
@@ -225,6 +225,11 @@ public class Helper {
         beforeAdding.setTime(currentUserDate);
         beforeAdding.set(Calendar.HOUR_OF_DAY,getMinHour.get(Calendar.HOUR_OF_DAY));
         beforeAdding.set(Calendar.MINUTE,getMinHour.get(Calendar.MINUTE));
+        beforeAdding.set(Calendar.SECOND,0);
+        beforeAdding.set(Calendar.MILLISECOND,0);
+
+        //add number of extra day in case there is one destination took more then one day
+        beforeAdding.add(Calendar.DATE,numberOfExtraDayFromLastDestination);
 
         //get date
         Calendar afterAdding = Calendar.getInstance();
@@ -232,18 +237,33 @@ public class Helper {
         afterAdding.setTime(currentUserDate);
         afterAdding.set(Calendar.HOUR_OF_DAY,getMinHour.get(Calendar.HOUR_OF_DAY));
         afterAdding.set(Calendar.MINUTE,getMinHour.get(Calendar.MINUTE));
+        afterAdding.set(Calendar.SECOND,0);
+        afterAdding.set(Calendar.MILLISECOND,0);
+
+        //add number of extra day in case there is one destination took more then one day
+        afterAdding.add(Calendar.DATE,numberOfExtraDayFromLastDestination);
+
         afterAdding.add(Calendar.MINUTE,30);
 
+        List<String> dates = new ArrayList<>();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-       /* while(calendar.getTime().before(end))
+        while(beforeAdding.getTime().before(afterAdding.getTime()) || beforeAdding.getTime().equals(afterAdding.getTime())  )
         {
-            Date result = calendar.getTime();
+            Date result = beforeAdding.getTime();
             String tmp = simpleDateFormat.format(result);
-            listOfdate.add(tmp);
-            calendar.add(Calendar.DATE, 1);
-        }*/
+            dates.add(tmp);
+            beforeAdding.add(Calendar.MINUTE, 30);
+        }
 
-        return afterAdding.toString();
+        Date res = afterAdding.getTime();
+
+        if(!( dates.get(0).equals(dates.get(1))) ){
+            return 1;
+        }
+
+        //~ return res.toString();
+        return 0 ;
     }
 
 }

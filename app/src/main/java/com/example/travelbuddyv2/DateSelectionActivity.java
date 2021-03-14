@@ -222,7 +222,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
         startActivity(i);
     }
 
-    private void checkLatestEndTime(int position, String owner, final DatabaseReference userTripDetailNode){
+    private void checkLatestEndTime(final int position, String owner, final DatabaseReference userTripDetailNode){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(owner)
@@ -246,17 +246,26 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
                 }else{
                     int cnt = 0;
                     Log.d(tag,dataSnapshot.toString());
-                    Destination tmp = new Destination();
+                    Destination lastDestination = new Destination();
                     for(DataSnapshot data:dataSnapshot.getChildren()){
                         if(cnt==dataSnapshot.getChildrenCount()-1){
-                            tmp =  data.getValue(Destination.class);
+                            lastDestination =  data.getValue(Destination.class);
                         }
                        cnt++;
                     }
 
-                    Log.d(tag,tmp.toString());
-                    destination.setStartTime(tmp.getEndTime());
-                    destination.setEndTime(Helper.getNextThirtyMinute(tmp.getEndTime()));
+                    Log.d(tag,lastDestination.toString());
+                    destination.setStartTime(lastDestination.getEndTime());
+                    destination.setEndTime(Helper.getNextThirtyMinute(lastDestination.getEndTime()));
+
+                    //check for number Of extra Day in case destination took more than one day
+
+
+                        int extraDayFromLastDestination = lastDestination.getExtraDay();
+                        int endResult = Helper.calculateExtraDay(dates.get(position),lastDestination.getEndTime(),extraDayFromLastDestination);
+                        endResult += extraDayFromLastDestination;
+                        destination.setExtraDay(endResult);
+
                             userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
