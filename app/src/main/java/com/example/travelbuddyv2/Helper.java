@@ -6,9 +6,12 @@ import android.widget.EditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -204,6 +207,43 @@ public class Helper {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         return df.format(cal.getTime());
 
+    }
+
+    public static String calculateExtraDay(String currentDate,String time){
+
+        //get time
+        Date currentUserTime = stringToTime(time);
+
+        Calendar getMinHour = Calendar.getInstance();
+        getMinHour.setTime(currentUserTime);
+
+        //get date
+        Date currentUserDate = stringToDate(currentDate);
+
+        Calendar beforeAdding = Calendar.getInstance();
+
+        beforeAdding.setTime(currentUserDate);
+        beforeAdding.set(Calendar.HOUR_OF_DAY,getMinHour.get(Calendar.HOUR_OF_DAY));
+        beforeAdding.set(Calendar.MINUTE,getMinHour.get(Calendar.MINUTE));
+
+        //get date
+        Calendar afterAdding = Calendar.getInstance();
+
+        afterAdding.setTime(currentUserDate);
+        afterAdding.set(Calendar.HOUR_OF_DAY,getMinHour.get(Calendar.HOUR_OF_DAY));
+        afterAdding.set(Calendar.MINUTE,getMinHour.get(Calendar.MINUTE));
+        afterAdding.add(Calendar.MINUTE,30);
+
+
+       /* while(calendar.getTime().before(end))
+        {
+            Date result = calendar.getTime();
+            String tmp = simpleDateFormat.format(result);
+            listOfdate.add(tmp);
+            calendar.add(Calendar.DATE, 1);
+        }*/
+
+        return afterAdding.toString();
     }
 
 }

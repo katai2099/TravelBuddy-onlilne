@@ -264,10 +264,13 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
                                     goBackToMapFragment();
                                 }
                             });
-
                 }
             }
         });
+    }
+
+    public void setValueForDatabaseReference(DatabaseReference reference){
+
     }
 
     @Override

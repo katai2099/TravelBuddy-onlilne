@@ -59,7 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String dateFromTripDetail,tripStringID, tripOwner;
     Button btnAddTripToDatabase;
     boolean isCurrentUserAMember;
-    int ID = 0;
+    int latestID = 0;
+    Destination destination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(isCurrentUserAMember){
             tripOwner = bundle.getString("tripOwner");
         }
+
+        destination = new Destination();
 
 
         btnAddTripToDatabase = findViewById(R.id.mapActivityBtnAddTripDetail);
@@ -202,7 +205,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
                                 });
 
-
                             }
                     }
 
@@ -253,7 +255,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(!idTmp.isEmpty()){
                     Collections.sort(idTmp);
                     int res = idTmp.get(idTmp.size()-1);
-                    ID = res+1;
+                    latestID = res+1;
                 }
             }
             @Override
@@ -264,24 +266,88 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addAttractionToDatabase(String placeId,String placeName,LatLng placeLatLng,String owner){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                .child(owner)
-                .child(tripStringID)
-                .child(dateFromTripDetail)
-                .child("td"+ID);
 
-        Destination destination = new Destination();
+
+
+        DatabaseReference userTripDetailNode ;
+
+        if(latestID<10){
+            userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                    .child(owner)
+                    .child(tripStringID)
+                    .child(dateFromTripDetail)
+                    .child("td0"+ latestID);
+            destination.setDestinationStringID("td0"+ latestID);
+        }else{
+            userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                    .child(owner)
+                    .child(tripStringID)
+                    .child(dateFromTripDetail)
+                    .child("td"+ latestID);
+            destination.setDestinationStringID("td"+ latestID);
+        }
+
         destination.setPlaceId(placeId);
         destination.setName(placeName);
         destination.setLongitude(placeLatLng.longitude);
         destination.setLatitude(placeLatLng.latitude);
         destination.setStartDate(dateFromTripDetail);
-        destination.setDestinationStringID("td"+ID);
 
-        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        /*reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 killActivity();
+            }
+        });*/
+
+        checkLatestEndTime(owner,userTripDetailNode);
+
+    }
+
+    private void checkLatestEndTime(String owner, final DatabaseReference userTripDetailNode){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(owner)
+                .child(tripStringID)
+                .child(dateFromTripDetail);
+
+
+        reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount()==0){
+                    destination.setStartTime("08:00");
+                    destination.setEndTime("08:30");
+                    userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(MapsActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
+                            killActivity();
+                        }
+                    });
+                }else{
+                    int cnt = 0;
+                    Log.d(tag,dataSnapshot.toString());
+                    Destination tmp = new Destination();
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        if(cnt==dataSnapshot.getChildrenCount()-1){
+                            tmp =  data.getValue(Destination.class);
+                        }
+                        cnt++;
+                    }
+
+                    Log.d(tag,tmp.toString());
+                    destination.setStartTime(tmp.getEndTime());
+                    destination.setEndTime(Helper.getNextThirtyMinute(tmp.getEndTime()));
+                    userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(MapsActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
+                            killActivity();
+                        }
+                    });
+                }
             }
         });
     }

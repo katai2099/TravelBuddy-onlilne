@@ -102,6 +102,13 @@ public class HelperClassUnitTest {
         assertFalse(checkFalse);
     }
 
+   /* @Test
+    public void calculateExtraDay(){
+        String checkTrue = Helper.calculateExtraDay("2020-12-1","09:30");
+        assertEquals("ff",checkTrue);
+    }*/
+
+
 
 
 
