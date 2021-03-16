@@ -271,13 +271,30 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
         //here
         int  extraDayAfterPeriodChanged = Helper.calculateExtraDay(curDateOfDestination,startTime,extraDay,hour,minute);
 
-        if(extraDayAfterPeriodChanged==1) {
-            extraDayAfterPeriodChanged += extraDay;
-        }else {
-            if(extraDay!=0)
-            extraDayAfterPeriodChanged = (extraDay-1);
+        if(extraDayAfterPeriodChanged==1 ) {
+            if(!destinations.get(position).isIncreased()) {
+                extraDayAfterPeriodChanged += extraDay;
+                destinations.get(position).setIncreased(true);
+                destinations.get(position).setDecreased(false);
+            }
             else{
+                extraDayAfterPeriodChanged = extraDay;
+            }
+        }else {
+            if(extraDay!=0 && !destinations.get(position).isDecreased()) {
+                Log.d(tag,"HERE");
+                extraDayAfterPeriodChanged = (extraDay - 1);
+                destinations.get(position).setIncreased(false);
+                destinations.get(position).setDecreased(true);
+            }
+            else if(!destinations.get(position).isDecreased() && extraDay==0){
+                Log.d(tag,"Here2");
                 extraDayAfterPeriodChanged = 0;
+                destinations.get(position).setIncreased(false);
+                destinations.get(position).setDecreased(true);
+            }
+            else {
+                extraDayAfterPeriodChanged = extraDay;
             }
         }
 
@@ -320,7 +337,7 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
         reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getContext(),"Update done",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),"Update done",Toast.LENGTH_SHORT).show();
             }
         });
 

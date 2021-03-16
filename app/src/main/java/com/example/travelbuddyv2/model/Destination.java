@@ -14,10 +14,14 @@ public class Destination {
     private String destinationStringID;
     private int extraDay;
     private long duration;
+    private boolean isIncreased ;
+    private boolean isDecreased;
 
     public Destination() {
         extraDay=0;
         duration = 30;
+        isIncreased = false;
+        isDecreased = true;
     }
 
     public int getID() {
@@ -114,6 +118,22 @@ public class Destination {
 
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    public boolean isIncreased() {
+        return isIncreased;
+    }
+
+    public void setIncreased(boolean increased) {
+        isIncreased = increased;
+    }
+
+    public boolean isDecreased() {
+        return isDecreased;
+    }
+
+    public void setDecreased(boolean decreased) {
+        isDecreased = decreased;
     }
 
     @Override
