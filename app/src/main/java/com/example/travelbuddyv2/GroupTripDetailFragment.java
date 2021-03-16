@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -227,7 +228,9 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
 
     }
 
-
+    @Override
+    public void onDurationEditingClicked(int position,String curDate) {
+    }
 
 
 }

@@ -13,9 +13,11 @@ public class Destination {
     private String placeId;
     private String destinationStringID;
     private int extraDay;
+    private long duration;
 
     public Destination() {
         extraDay=0;
+        duration = 30;
     }
 
     public int getID() {
@@ -104,6 +106,14 @@ public class Destination {
 
     public void setExtraDay(int extraDay) {
         this.extraDay = extraDay;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     @Override

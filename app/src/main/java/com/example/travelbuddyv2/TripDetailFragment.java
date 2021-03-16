@@ -1,5 +1,7 @@
 package com.example.travelbuddyv2;
 
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.ChildTripDetailAdapter;
@@ -32,7 +35,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.ls.LSOutput;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -177,6 +184,143 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
                 }else{
                     checkNumberOfChild.setValue("");
                 }
+            }
+        });
+
+    }
+
+    @Override
+    public void onDurationEditingClicked(final int position, final String curDate) {
+
+
+
+
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+                changeStayPeriodOfDestination(hourOfDay,minute,position,curDate);
+
+            }
+        },0,0,true);
+
+
+        timePickerDialog.setTitle("modify stay period");
+
+
+        timePickerDialog.show();
+    }
+
+    private void changeStayPeriodOfDestination(int hour, int minute, int position,String currentDate){
+
+        //need to calculate new extraDay , get new EndDate
+
+
+
+        List<Destination> destinations = new ArrayList<>();
+
+        for(TripSection list:tripSectionList){
+            if(list.getDate().equals(currentDate))
+                destinations = list.getDestinations();
+        }
+
+        String startTime = destinations.get(position).getStartTime();
+
+
+        SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat toTime = new SimpleDateFormat("HH:mm");
+
+        Date date = new Date();
+
+
+        try{
+            date = toDate.parse(currentDate);
+        }catch(ParseException e){
+            System.out.println(e);
+        }
+
+        Calendar curDate = Calendar.getInstance();
+        curDate.setTime(date);
+
+        Date time = new Date();
+
+        try{
+            time = toTime.parse(startTime);
+        }catch(ParseException e){
+            System.out.println(e);
+        }
+
+        Calendar curTime = Calendar.getInstance();
+        curTime.setTime(time);
+
+        curDate.set(Calendar.HOUR_OF_DAY, curTime.get(Calendar.HOUR_OF_DAY));
+        curDate.set(Calendar.MINUTE,curTime.get(Calendar.MINUTE));
+        curDate.set(Calendar.MILLISECOND,0);
+
+        curDate.add(Calendar.HOUR_OF_DAY, hour);
+        curDate.add(Calendar.MINUTE,minute);
+
+        Date res = curDate.getTime();
+
+        String finalTime = toTime.format(res);
+
+        int extraDay = destinations.get(position).getExtraDay();
+
+        String curDateOfDestination  = destinations.get(position).getStartDate();
+        Log.d(tag,"There is the problem down there");
+        //here
+        int  extraDayAfterPeriodChanged = Helper.calculateExtraDay(curDateOfDestination,startTime,extraDay,hour,minute);
+
+        if(extraDayAfterPeriodChanged==1) {
+            extraDayAfterPeriodChanged += extraDay;
+        }else {
+            if(extraDay!=0)
+            extraDayAfterPeriodChanged = (extraDay-1);
+            else{
+                extraDayAfterPeriodChanged = 0;
+            }
+        }
+
+        destinations.get(position).setEndTime( finalTime) ;
+        destinations.get(position).setDuration((hour*60) + minute);
+        destinations.get(position).setExtraDay(extraDayAfterPeriodChanged);
+
+        updateToFirebaseAfterPeriodChanged(destinations.get(position));
+
+        for(int i=position+1;i<destinations.size();i++){
+            Destination lastDestination = destinations.get(i-1);
+
+            destinations.get(i).setExtraDay(lastDestination.getExtraDay());
+            destinations.get(i).setStartTime(lastDestination.getEndTime());
+            String currentDateOfTheTrip = destinations.get(i).getStartDate();
+            String startTimeOfTheTrip = destinations.get(i).getStartTime();
+            long duration = destinations.get(i).getDuration();
+
+            Helper.changeStayPeriodOfDestination(currentDateOfTheTrip,startTimeOfTheTrip,0,(int)(duration),destinations.get(i));
+
+            updateToFirebaseAfterPeriodChanged(destinations.get(i));
+
+        }
+
+    }
+
+
+    private void updateToFirebaseAfterPeriodChanged(Destination destination){
+
+        String destinationStringID = destination.getDestinationStringID();
+        String destinationCurDate = destination.getStartDate();
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(tripID)
+                .child(destinationCurDate)
+                .child(destinationStringID);
+
+        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(),"Update done",Toast.LENGTH_SHORT).show();
             }
         });
 

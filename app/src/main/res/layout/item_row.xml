@@ -22,6 +22,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/layoutEditDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -43,6 +44,13 @@
 
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvExtraDay"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+
+
 
                 <TextView
                     android:id="@+id/itemTextView"

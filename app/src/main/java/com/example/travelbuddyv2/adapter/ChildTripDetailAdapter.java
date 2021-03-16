@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.R;
@@ -48,6 +49,27 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
                 childTripDetailAdapterCallBack.onDeleteDestinationClick(destinations.get(position).getStartDate(),destinations.get(position).getDestinationStringID());
             }
         });
+
+        String midNight = "00:00" ;
+        String endTime = destinations.get(position).getEndTime();
+        int extra = destinations.get(position).getExtraDay();
+
+        if(extra!=1 && endTime.equals(midNight)){
+            holder.extraDay.setText("+ " + (extra - 1));
+        }else if(extra !=0 && !(endTime.equals(midNight))){
+            holder.extraDay.setText("+ " + (extra));
+        }
+
+        holder.editDuration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String curDate = destinations.get(position).getStartDate();
+                String startTime = destinations.get(position).getStartTime();
+
+                childTripDetailAdapterCallBack.onDurationEditingClicked(position,curDate);
+            }
+        });
+
     }
 
     @Override
@@ -57,20 +79,24 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
 
     class ChildTripDetailHolder extends RecyclerView.ViewHolder {
 
-        TextView itemTextView , startTime , endTime;
+        TextView itemTextView , startTime , endTime , extraDay;
         Button btnRemoveDestination;
+        View editDuration ;
 
         public ChildTripDetailHolder(@NonNull View itemView) {
             super(itemView);
             itemTextView = itemView.findViewById(R.id.itemTextView);
             startTime = itemView.findViewById(R.id.tvStartTime);
             endTime = itemView.findViewById(R.id.tvEndTime);
+            extraDay = itemView.findViewById(R.id.tvExtraDay);
             btnRemoveDestination = itemView.findViewById(R.id.btnDeleteDestination);
+            editDuration = itemView.findViewById(R.id.layoutEditDuration);
         }
     }
 
     public interface ChildTripDetailAdapterCallBack{
         void onDeleteDestinationClick(String date,String destinationStringID);
+        void onDurationEditingClicked(int position,String curDate);
     }
 
 

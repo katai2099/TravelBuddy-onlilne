@@ -30,6 +30,7 @@ public class HelperClassUnitTest {
         Boolean checkFalse = Helper.checkIfStartDateSameDateAsEndDate("12-12-2020","28-12-2020");
         assertFalse(checkFalse);
     }
+
     /*
     @Test
     public void getStartDateInMilliSec(){
@@ -43,7 +44,8 @@ public class HelperClassUnitTest {
         cal.set(Calendar.MILLISECOND,0);
         float checkTrue = Helper.getStartDateInMilli("2020-12-2");
         assertEquals(1606802400000f,checkTrue,0); // 1606802400000f is millsec of 2020-12-1 at 7 am
-    } */
+    }
+    */
     /*
     @Test
     public void stringToDate(){
@@ -62,7 +64,9 @@ public class HelperClassUnitTest {
         String tmp = "Tue Dec 04 00:00:00 CET 2020";
         Boolean checkFalse =  tmp.equals(d2.toString());
         assertFalse(checkFalse);
-    }*/
+    }
+    */
+
     //we only care about time here
     /*
     @Test
@@ -79,7 +83,7 @@ public class HelperClassUnitTest {
         Boolean checkFalse =  tmp.equals(d2.toString());
         assertFalse(checkFalse);
 
-    } */
+    }*/
     @Test
     public void changeInputDateformat(){
         String checkTrue = Helper.changeInputDateFormat("2020-12-1");

@@ -85,6 +85,7 @@ public class PersonalTripFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+
         });
 
         rcvTriplist.setOnClickListener(new View.OnClickListener() {

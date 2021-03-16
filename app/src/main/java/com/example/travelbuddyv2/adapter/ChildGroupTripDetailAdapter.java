@@ -44,13 +44,14 @@ public class ChildGroupTripDetailAdapter extends RecyclerView.Adapter<ChildGroup
     }
 
     class ChildGroupTripDetailHolder extends RecyclerView.ViewHolder {
-        TextView itemTextView,startTime,endTime;
+        TextView itemTextView,startTime,endTime,extraDay;
         Button btnRemoveDestination;
         public ChildGroupTripDetailHolder(@NonNull View itemView) {
             super(itemView);
             itemTextView = itemView.findViewById(R.id.itemTextView);
             startTime = itemView.findViewById(R.id.tvStartTime);
             endTime = itemView.findViewById(R.id.tvEndTime);
+            extraDay = itemView.findViewById(R.id.tvExtraDay);
             btnRemoveDestination = itemView.findViewById(R.id.btnDeleteDestination);
         }
     }
