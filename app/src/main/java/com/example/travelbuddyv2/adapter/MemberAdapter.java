@@ -1,6 +1,7 @@
 package com.example.travelbuddyv2.adapter;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelbuddyv2.PermissionModificationActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Member;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -47,6 +49,9 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
         }
         else{
             holder.tvMemberPermission.setText(member.getPermission());
+        }
+        if(member.getProfileImg()!=null && !(TextUtils.isEmpty(member.getProfileImg()))){
+            Picasso.get().load(member.getProfileImg()).fit().into(holder.imgMemberProfile);
         }
 
     }

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.model.Member;
+import com.example.travelbuddyv2.model.User;
 import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -423,18 +424,32 @@ public class addNewTrip extends AppCompatActivity {
     }
 
     private void addOwnerToMemberNode(final int id){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("t"+id)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        Member member = new Member();
+        final Member member = new Member();
         member.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         member.setID(FirebaseAuth.getInstance().getCurrentUser().getUid());
         member.setName("kataix2");
         member.setPermission("owner");
 
-        reference.setValue(member);
+        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        userNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User userOfCurrentNode = dataSnapshot.getValue(User.class);
+                member.setName(userOfCurrentNode.getName());
+                member.setProfileImg(userOfCurrentNode.getProfile_image());
+                reference.setValue(member);
+            }
+        });
+
+
+
     }
 
     private void toTripFragment(){

@@ -30,14 +30,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -194,19 +197,49 @@ public class UserProfileFragment extends Fragment {
                                     user.setProfile_image(downloadUrl);
                                 }
                             });
-
                            /* String downloadUrl = task.getResult().getUploadSessionUri().toString();
 
                             user.setProfile_image(downloadUrl);*/
 
-
+                            //update current user node
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                            //update current user in member node
+
+                            final DatabaseReference memberReference = FirebaseDatabase.getInstance().getReference().child("Member");
 
                             reference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
+
+                                        memberReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for(DataSnapshot tripOwner:snapshot.getChildren()){
+                                                    for(DataSnapshot tripStringID:tripOwner.getChildren()){
+                                                        for(DataSnapshot member:tripStringID.getChildren()){
+                                                            Member currentMember = member.getValue(Member.class);
+                                                            if(currentMember.getID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                            && currentMember.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                                                currentMember.setProfileImg(user.getProfile_image());
+
+                                                                DatabaseReference toUpdate = member.getRef();
+                                                                toUpdate.setValue(currentMember);
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+
                                         Toast.makeText(getContext(),"Upload finished",Toast.LENGTH_SHORT).show();
                                         loadingBar.dismiss();
                                         Picasso.get().load(user.getProfile_image()).fit().into(imgUserProfileImage);
@@ -215,8 +248,6 @@ public class UserProfileFragment extends Fragment {
                                     }
                                 }
                             });
-
-
 
                         }
                         else{
@@ -271,14 +302,45 @@ public class UserProfileFragment extends Fragment {
         });
     }
 
-    private void changeUserName(String newName, final View v){
+    private void changeUserName(final String newName, final View v){
+        //update current user
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("name");
 
+        //update current user in member node
+
+        final DatabaseReference memberReference = FirebaseDatabase.getInstance().getReference().child("Member");
+
         reference.setValue(newName).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+
+                memberReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot tripOwner:snapshot.getChildren()){
+                            for(DataSnapshot tripStringID:tripOwner.getChildren()){
+                                for(DataSnapshot member:tripStringID.getChildren()){
+                                    Member currentMember = member.getValue(Member.class);
+                                    if(currentMember.getID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            && currentMember.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+
+                                        DatabaseReference toUpdate = member.getRef();
+                                        toUpdate.child("name").setValue(newName);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(),0);
                 btnEditUserName.setVisibility(View.VISIBLE);

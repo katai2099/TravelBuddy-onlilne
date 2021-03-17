@@ -1,10 +1,12 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.Iterator;
 import java.util.List;
@@ -113,12 +116,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
         private final TextView tvFriendRequestNotification;
         private final Button btnReject , btnAccept;
+        private final ImageView requesterProfileImage;
 
         public RequestHolder(@NonNull View itemView) {
             super(itemView);
             tvFriendRequestNotification = itemView.findViewById(R.id.tvfriendRequestNotification);
             btnReject = itemView.findViewById(R.id.btnReject);
             btnAccept = itemView.findViewById(R.id.btnAccept);
+            requesterProfileImage = itemView.findViewById(R.id.requesterImage);
 
         }
     }
@@ -192,6 +197,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
                 User user =  snapshot.getValue(User.class);
                 tmp.setName(user.getName());
                 tmp.setEmail(user.getEmail());
+                tmp.setProfileImg(user.getProfile_image());
                 reference.setValue(tmp).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -219,6 +225,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
                 holder.tvFriendRequestNotification.setText("You got an invitation from "+ user.getName() + " to join " + request.getTripName() +"  trip");
 
+                if(user.getProfile_image()!=null && !(TextUtils.isEmpty(user.getProfile_image())) ){
+                    Picasso.get().load(user.getProfile_image()).fit().into(holder.requesterProfileImage);
+                }
 
             }
         });

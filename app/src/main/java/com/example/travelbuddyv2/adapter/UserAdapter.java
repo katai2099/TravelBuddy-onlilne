@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,6 +70,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         holder.imgFriendProfile.setImageResource(R.drawable.ic_baseline_person_24);
         holder.tvPending.setVisibility(View.GONE);
         holder.btnInviteFriend.setVisibility(View.VISIBLE);
+        if(user.getProfile_image()!=null && !(TextUtils.isEmpty(user.getProfile_image()))){
+            Picasso.get().load(user.getProfile_image()).fit().into(holder.imgFriendProfile);
+        }
 
         final Request requester = new Request();
         requester.setRequestType("sent");

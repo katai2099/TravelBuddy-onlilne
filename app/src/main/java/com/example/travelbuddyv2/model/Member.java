@@ -5,6 +5,7 @@ public class Member {
     String permission;
     String name;
     String email;
+    String profileImg;
 
     public Member() {
     }
@@ -39,6 +40,14 @@ public class Member {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProfileImg() {
+        return profileImg;
+    }
+
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
     }
 
     @Override
