@@ -72,6 +72,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         holder.btnInviteFriend.setVisibility(View.VISIBLE);
         if(user.getProfile_image()!=null && !(TextUtils.isEmpty(user.getProfile_image()))){
             Picasso.get().load(user.getProfile_image()).fit().into(holder.imgFriendProfile);
+            Log.d(tag,"Picasso called");
         }
 
         final Request requester = new Request();
@@ -151,6 +152,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                 }
               //  Log.d(tag,String.valueOf(exist));
                 if(!exist){
+                    Log.d(tag,"Gonna add to knownList");
                     String key = FirebaseDatabase.getInstance().getReference().child("Known_lists")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
                     FirebaseDatabase.getInstance().getReference().child("Known_lists")

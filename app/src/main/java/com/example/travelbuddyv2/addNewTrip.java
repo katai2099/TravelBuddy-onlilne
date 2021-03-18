@@ -55,6 +55,7 @@ public class addNewTrip extends AppCompatActivity {
     DatePickerDialog datePickerDialogStartDate,datePickerDialogEndDate;
     Calendar calendar ;
     DatabaseHelper databaseHelper;
+    User currentUserInfo;
 
 
     @Override
@@ -63,6 +64,7 @@ public class addNewTrip extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_trip);
         this.setTitle("New Trip");
         getCurrentIdFromFirebaseDatabase();
+        getCurrentUserInfo();
         tripName = findViewById(R.id.etTripName);
 
        // setAlarmTime = findViewById(R.id.etSetAlarmTime);
@@ -295,6 +297,28 @@ public class addNewTrip extends AppCompatActivity {
 
     }
 
+    private void getCurrentUserInfo() {
+
+        currentUserInfo = new User();
+
+        DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        currentUserReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User tmp = dataSnapshot.getValue(User.class);
+                Log.d(tag,tmp.toString());
+                currentUserInfo.setProfile_image(tmp.getProfile_image());
+                currentUserInfo.setEmail(tmp.getEmail());
+                currentUserInfo.setName(tmp.getName());
+                currentUserInfo.setUser_id(tmp.getUser_id());
+            }
+        });
+
+
+    }
+
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -432,21 +456,11 @@ public class addNewTrip extends AppCompatActivity {
         final Member member = new Member();
         member.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         member.setID(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        member.setName("kataix2");
+        member.setName(currentUserInfo.getName());
         member.setPermission("owner");
+        member.setProfileImg(currentUserInfo.getProfile_image());
 
-        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("User")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        userNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                User userOfCurrentNode = dataSnapshot.getValue(User.class);
-                member.setName(userOfCurrentNode.getName());
-                member.setProfileImg(userOfCurrentNode.getProfile_image());
-                reference.setValue(member);
-            }
-        });
+        reference.setValue(member);
 
 
 

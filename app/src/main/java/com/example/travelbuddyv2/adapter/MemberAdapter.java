@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,7 +38,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MemberHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MemberHolder holder, final int position) {
 
         Member member = memberList.get(position);
         holder.imgMemberProfile.setImageResource(R.drawable.ic_baseline_person_24);
@@ -54,6 +55,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
             Picasso.get().load(member.getProfileImg()).fit().into(holder.imgMemberProfile);
         }
 
+        holder.btnMemberDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                memberAdapterCallBack.onMemberDeleteClicked(position);
+            }
+        });
+
     }
 
     @Override
@@ -65,6 +73,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
 
         final ImageView imgMemberProfile;
         final TextView tvMemberName, tvMemberEmail , tvMemberPermission, tvMemberOwnership;
+        final Button btnMemberDelete;
 
         public MemberHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +83,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
             tvMemberPermission = itemView.findViewById(R.id.tvMemberPermission);
             tvMemberOwnership = itemView.findViewById(R.id.tvMemberOwnership);
             imgMemberProfile = itemView.findViewById(R.id.imgMemberProfile);
+            btnMemberDelete = itemView.findViewById(R.id.btnMemberDelete);
             itemView.setOnClickListener(this);
 
         }
@@ -86,6 +96,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
 
     public interface MemberAdapterCallBack{
         void onMemberListClicked(int position);
+        void onMemberDeleteClicked(int position);
     }
 
 }

@@ -34,6 +34,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
     private final String tag = "REQUEST_ADAPTER";
     List<Request> requestList;
     String name ;
+    User inviter;
 
     public RequestAdapter(List<Request>requestList) {
         this.requestList = requestList;
@@ -93,6 +94,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
                                 removeInvitationRequest(request);
                                 addToMemberNode(request);
+                                addToKnownList();
                             }
                         });
                     }
@@ -211,6 +213,17 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
             }
         });
+    }
+
+
+    private void addToKnownList(){
+        DatabaseReference knownListNode = FirebaseDatabase.getInstance().getReference().child("Known_lists")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        String randomKey = knownListNode.push().getKey();
+
+        knownListNode.child(randomKey).setValue(inviter);
+
 
     }
 
@@ -218,10 +231,17 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
         DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("User")
                 .child(request.getInviter());
 
+        inviter = new User();
+
         userNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+
+                inviter.setProfile_image(user.getProfile_image());
+                inviter.setUser_id(user.getUser_id());
+                inviter.setName(user.getName());
+                inviter.setEmail(user.getEmail());
 
                 holder.tvFriendRequestNotification.setText("You got an invitation from "+ user.getName() + " to join " + request.getTripName() +"  trip");
 

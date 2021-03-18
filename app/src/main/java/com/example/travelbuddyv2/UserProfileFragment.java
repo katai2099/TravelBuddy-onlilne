@@ -209,6 +209,10 @@ public class UserProfileFragment extends Fragment {
 
                             final DatabaseReference memberReference = FirebaseDatabase.getInstance().getReference().child("Member");
 
+                            //update current user in knownList node
+
+                            final DatabaseReference knownListReference = FirebaseDatabase.getInstance().getReference().child("Known_lists");
+
                             reference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -229,6 +233,36 @@ public class UserProfileFragment extends Fragment {
                                                                 toUpdate.setValue(currentMember);
                                                                 break;
                                                             }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+
+                                        knownListReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for(DataSnapshot owner:snapshot.getChildren()){
+                                                    if(! owner.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                                    {
+                                                        for(DataSnapshot userList: owner.getChildren()){
+                                                            User currentUser = userList.getValue(User.class);
+
+                                                            if(currentUser.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                            && currentUser.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                                                currentUser.setProfile_image(user.getProfile_image());
+
+                                                                DatabaseReference toUpdate = userList.getRef();
+                                                                toUpdate.setValue(currentUser);
+                                                                break;
+
+                                                            }
+
                                                         }
                                                     }
                                                 }
@@ -312,6 +346,10 @@ public class UserProfileFragment extends Fragment {
 
         final DatabaseReference memberReference = FirebaseDatabase.getInstance().getReference().child("Member");
 
+        //update current user in knownList node
+
+        final DatabaseReference knownListReference = FirebaseDatabase.getInstance().getReference().child("Known_lists");
+
         reference.setValue(newName).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -340,6 +378,36 @@ public class UserProfileFragment extends Fragment {
 
                     }
                 });
+
+                knownListReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot owner:snapshot.getChildren()){
+                            if(! owner.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                            {
+                                for(DataSnapshot userList: owner.getChildren()){
+                                    User currentUser = userList.getValue(User.class);
+
+                                    if(currentUser.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            && currentUser.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+
+                                        DatabaseReference toUpdate = userList.getRef();
+                                        toUpdate.child("name").setValue(newName);
+                                        break;
+
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
 
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(),0);

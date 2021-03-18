@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -229,6 +230,69 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                 startActivity(i);
             }
         }
+    }
+
+    @Override
+    public void onMemberDeleteClicked(int position) {
+        if(isFromPersonalTripFragment()){
+            if(position==0){
+                Toast.makeText(MemberActivity.this,"Owner cannot be deleted from group",Toast.LENGTH_SHORT).show();
+            }else{
+                showAskingForDeleteDialog(position);
+            }
+        }
+    }
+
+    private void showAskingForDeleteDialog(final int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MemberActivity.this);
+        builder.setMessage("Are you sure you want to remove this member from group?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeFromGroup(position);
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(MemberActivity.this,"Well, he/she can be here then",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void removeFromGroup(int position){
+
+        Member deletingMember = memberList.get(position);
+
+        String ownerUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference groupNode ;
+        DatabaseReference memberNode ;
+
+        groupNode = FirebaseDatabase.getInstance().getReference().child("Group")
+                .child(deletingMember.getID())
+                .child(ownerUUID)
+                .child(tripStringID);
+        groupNode.removeValue();
+
+        memberNode = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(ownerUUID)
+                .child(tripStringID)
+                .child(deletingMember.getID());
+
+        memberNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(MemberActivity.this,"Remove Success",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
     }
 
     @Override
