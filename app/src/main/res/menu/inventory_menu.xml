@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <item
+        android:id="@+id/optionListView"
+        android:icon="@drawable/ic_baseline_view_list_24"
+        app:showAsAction="always"
+        android:title="List View"
+        />
+
+    <item
+        android:id="@+id/optionGridView"
+        android:icon="@drawable/ic_baseline_grid_view_24"
+        app:showAsAction="always"
+        android:title="Grid View"
+        />
+
+    <item
+        android:id="@+id/optionAddItem"
+        android:icon="@drawable/ic_baseline_add_24"
+
+        app:showAsAction="always"
+        android:title="add item" />
+
+</menu>

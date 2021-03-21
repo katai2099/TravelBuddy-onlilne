@@ -30,6 +30,14 @@ public class HelperClassUnitTest {
         Boolean checkFalse = Helper.checkIfStartDateSameDateAsEndDate("12-12-2020","28-12-2020");
         assertFalse(checkFalse);
     }
+    @Test
+    public void checkIfPdfFile(){
+        boolean checkTrue = Helper.isPdf("katai.pdf");
+        assertTrue(checkTrue);
+        Boolean checkFalse = Helper.isPdf("katai.png");
+        assertFalse(checkFalse);
+
+    }
 
     /*
     @Test

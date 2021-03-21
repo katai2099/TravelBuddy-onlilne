@@ -130,6 +130,7 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
             Intent i = new Intent(itemView.getContext(), GroupTripDetailActivity.class);
             i.putExtra("TRIP_STRING_ID",tmp.getStringID());
             i.putExtra("TRIP_OWNER",tmp.getOwner());
+            i.putExtra("isPersonal",false);
             itemView.getContext().startActivity(i);
 
          //   adapterCallback.onMethodCallback(getAdapterPosition());

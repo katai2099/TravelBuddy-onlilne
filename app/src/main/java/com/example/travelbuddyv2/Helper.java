@@ -386,4 +386,14 @@ public class Helper {
 
     }
 
+    public static boolean isPdf(String fileName){
+        if(fileName!=null){
+            String fileExtension = fileName.substring(fileName.length()-3,fileName.length());
+            if(fileExtension.toUpperCase().equals("PDF")){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

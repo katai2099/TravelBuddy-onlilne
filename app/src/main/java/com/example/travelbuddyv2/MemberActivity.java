@@ -146,16 +146,19 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                         ownerTmp.setPermission(memberList.get(0).getPermission());
                         ownerTmp.setID(memberList.get(0).getID());
                         ownerTmp.setEmail(memberList.get(0).getEmail());
+                        ownerTmp.setProfileImg(memberList.get(0).getProfileImg());
 
                         memberList.get(0).setEmail(tmp.getEmail());
                         memberList.get(0).setID(tmp.getID());
                         memberList.get(0).setPermission(tmp.getPermission());
                         memberList.get(0).setName(tmp.getName());
+                        memberList.get(0).setProfileImg(tmp.getProfileImg());
 
                         tmp.setName(ownerTmp.getName());
                         tmp.setPermission(ownerTmp.getPermission());
                         tmp.setID(ownerTmp.getID());
                         tmp.setEmail(ownerTmp.getEmail());
+                        tmp.setProfileImg(ownerTmp.getProfileImg());
 
                     }
                     memberList.add(tmp);

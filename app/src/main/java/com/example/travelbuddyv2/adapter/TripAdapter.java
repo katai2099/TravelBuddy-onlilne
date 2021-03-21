@@ -145,6 +145,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
          //   Toast.makeText(itemView.getContext(),tmp.getTripName(),Toast.LENGTH_SHORT).show();
             Intent i = new Intent(itemView.getContext(), TripDetailActivity.class);
             i.putExtra("TRIP_STRING_ID",tmp.getStringID());
+            i.putExtra("isPersonal",true);
             itemView.getContext().startActivity(i);
         }
     }

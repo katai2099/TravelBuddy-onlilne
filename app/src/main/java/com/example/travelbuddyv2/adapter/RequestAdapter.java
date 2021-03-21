@@ -217,12 +217,38 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
 
     private void addToKnownList(){
-        DatabaseReference knownListNode = FirebaseDatabase.getInstance().getReference().child("Known_lists")
+        final DatabaseReference knownListNode = FirebaseDatabase.getInstance().getReference().child("Known_lists")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        String randomKey = knownListNode.push().getKey();
+        //check first if user is already in knownList
 
-        knownListNode.child(randomKey).setValue(inviter);
+        knownListNode.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean exist = false;
+                for(DataSnapshot data:snapshot.getChildren()){
+                    User tmp = data.getValue(User.class);
+                    if(tmp.equals(inviter))
+                    {
+                        exist = true;
+                        break;
+                    }
+                }
+                //  Log.d(tag,String.valueOf(exist));
+                if(!exist){
+                    Log.d(tag,"Gonna add to knownList");
+                    String randomKey = knownListNode.push().getKey();
+
+                    knownListNode.child(randomKey).setValue(inviter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
 
     }

@@ -133,7 +133,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
     private void addToKnownList(final User user){
 
-        List<User> users = new ArrayList<>();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Known_lists")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
