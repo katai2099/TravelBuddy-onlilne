@@ -2,7 +2,9 @@
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,7 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.DocumentsContract;
+import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,10 +30,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.travelbuddyv2.adapter.InventoryAdapter;
+import com.example.travelbuddyv2.adapter.InventoryGridViewAdapter;
+import com.example.travelbuddyv2.adapter.InventoryListViewAdapter;
 import com.example.travelbuddyv2.model.Inventory;
 import com.example.travelbuddyv2.model.User;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,15 +45,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 
-    public class InventoryFragment extends Fragment implements InventoryAdapter.InventoryAdapterCallBack {
+    public class InventoryFragment extends Fragment implements InventoryListViewAdapter.InventoryAdapterCallBack ,
+            InventoryGridViewAdapter.InventoryGridViewAdapterCallBack {
 
 
       final int LIST = 10;
@@ -58,11 +66,14 @@ import java.util.List;
     RecyclerView rcvItems;
     private static final int PICK_IMAGE = 3;
     private static final int PICK_PDF_FILE = 2;
+    private MenuItem listView;
+    private MenuItem gridView;
     String tripID , tripOwner;
     boolean isPersonal;
     private ProgressDialog loadingBar ;
     private final String tag = "INVENTORY_FRAGMENT";
-    InventoryAdapter inventoryAdapter ;
+    InventoryListViewAdapter inventoryAdapter ;
+    InventoryGridViewAdapter inventoryGridViewAdapter;
     private List<Inventory> inventoryList;
     LinearLayoutManager gridLayout;
     LinearLayoutManager listLayout;
@@ -72,7 +83,6 @@ import java.util.List;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
     }
 
@@ -102,7 +112,9 @@ import java.util.List;
         rcvItems = root.findViewById(R.id.rcvItems);
         rcvItems.setLayoutManager(listLayout);
         rcvItems.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
-        inventoryAdapter = new InventoryAdapter(inventoryList,this);
+        inventoryAdapter = new InventoryListViewAdapter(inventoryList,this);
+        inventoryGridViewAdapter = new InventoryGridViewAdapter(inventoryList,this);
+
         rcvItems.setAdapter(inventoryAdapter);
 
         if(isPersonal){
@@ -152,6 +164,9 @@ import java.util.List;
         @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.inventory_menu,menu);
+        listView = menu.findItem(R.id.optionListView);
+        gridView = menu.findItem(R.id.optionGridView);
+        listView.setVisible(false);
     }
 
     @Override
@@ -176,10 +191,17 @@ import java.util.List;
 
         private void changeToListView() {
         rcvItems.setLayoutManager(listLayout);
+        rcvItems.setAdapter(inventoryAdapter);
+        gridView.setVisible(true);
+        listView.setVisible(false);
         }
 
         private void changeToGridView(){
         rcvItems.setLayoutManager(gridLayout);
+        rcvItems.setAdapter(inventoryGridViewAdapter);
+        listView.setVisible(true);
+        gridView.setVisible(false);
+
         }
 
         private void uploadToFirebaseCloudStorage(Uri uri,String owner){
@@ -222,7 +244,11 @@ import java.util.List;
                             inventory.setFileUri(downloadUrl);
                             inventory.setFileName(fileName);
                             inventory.setOwner(currentUserUUID);
-                            inventory.setPermission("private");
+                            if(isPersonal)
+                            inventory.setPermission("Private");
+                            else{
+                                inventory.setPermission("Shared");
+                            }
                             if(isPersonal){
                                 updateFirebaseDatabaseInventoryNode(inventory,currentUserUUID);
                             }else{
@@ -347,16 +373,20 @@ import java.util.List;
 
         @Override
         public void onDeleteClicked(int position) {
-            Inventory inventory = inventoryList.get(position);
+           final Inventory inventory = inventoryList.get(position);
 
-            if(inventory.getOwner().equals(currentUserUUID)){
+            if(currentUserUUID.equals(inventory.getOwner())){
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setMessage("are you sure you want to delete this item?");
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        if(isPersonal){
+                            removeItem(currentUserUUID,inventory);
+                        }else{
+                            removeItem(tripOwner,inventory);
+                        }
                     }
                 });
                 builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -371,12 +401,81 @@ import java.util.List;
 
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                getCurrentItemOwnerName(inventory.getOwner(),builder);
+                getCurrentItemOwnerName(inventory.getOwner(),builder,inventory);
 
             }
         }
 
-        private void getCurrentItemOwnerName(String ownerUUID,final AlertDialog.Builder builder){
+        @Override
+        public void onItemToEnlargeClicked(int position) {
+
+            Inventory itemToPassToNextActivity = inventoryList.get(position);
+            Intent i = new Intent(getContext(),ClickedItemActivity.class);
+            i.putExtra("itemName",itemToPassToNextActivity.getFileName());
+            i.putExtra("itemOwner",itemToPassToNextActivity.getOwner());
+            i.putExtra("itemUri",itemToPassToNextActivity.getFileUri());
+            if(isPersonal){
+                i.putExtra("isPersonal",true);
+                i.putExtra("tripStringID",tripID);
+            }else{
+                i.putExtra("isPersonal",false);
+                i.putExtra("tripStringID",tripID);
+                i.putExtra("tripOwner",tripOwner);
+            }
+            startActivity(i);
+        }
+
+        @Override
+        public void onDownloadClicked(int position) {
+            Inventory tmp = inventoryList.get(position);
+
+       /*     StorageReference fileRef ;
+
+            if(isPersonal){
+                fileRef = FirebaseStorage.getInstance().getReference().child("trip_file")
+                        .child(currentUserUUID)
+                        .child(tripID)
+                        .child(tmp.getFileName());
+            }else{
+                fileRef = FirebaseStorage.getInstance().getReference().child("trip_file")
+                        .child(tripOwner)
+                        .child(tripID)
+                        .child(tmp.getFileName());
+            }*/
+
+          /*  File rootPath = new File(Environment.getExternalStorageDirectory(), "images");
+            if(!rootPath.exists()) {
+                rootPath.mkdirs();
+                Log.d(tag,"make new dir");
+                Log.d(tag,rootPath.toString());
+            }*/
+
+            DownloadManager downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+            Uri uri = Uri.parse(tmp.getFileUri());
+            DownloadManager.Request request = new DownloadManager.Request(uri);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalFilesDir(getContext(),Environment.DIRECTORY_DOWNLOADS,tmp.getFileName());
+            downloadManager.enqueue(request);
+
+          /*  final File localFile = new File(rootPath,tmp.getFileName());
+
+            fileRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getContext(),"Download Success",Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(),"Download failed",Toast.LENGTH_SHORT).show();
+                    Log.d(tag,e.toString());
+                    e.printStackTrace();
+                }
+            });*/
+
+        }
+
+        private void getCurrentItemOwnerName(String ownerUUID, final AlertDialog.Builder builder, final Inventory inventory){
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
                     .child(ownerUUID);
 
@@ -389,7 +488,11 @@ import java.util.List;
                     builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            if(isPersonal){
+                                removeItem(currentUserUUID,inventory);
+                            }else{
+                                removeItem(tripOwner,inventory);
+                            }
                         }
                     });
                     builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -429,6 +532,45 @@ import java.util.List;
 
         }
 
+        private void removeItem(String owner, final Inventory inventory){
+
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Inventory")
+                    .child(owner)
+                    .child(tripID);
+
+            reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        Inventory tmp = data.getValue(Inventory.class);
+                        if(tmp.getFileName().equals(inventory.getFileName())){
+                            DatabaseReference toDelete = data.getRef();
+                            toDelete.removeValue();
+                            break;
+                        }
+                    }
+                }
+            });
+        }
 
 
+        @Override
+        public void gridOnPrivacyGClicked(int position) {
+            onPrivacyClicked(position);
+        }
+
+        @Override
+        public void gridOnDeleteClicked(int position) {
+            onDeleteClicked(position);
+        }
+
+        @Override
+        public void gridOnItemToEnlargeClicked(int position) {
+            onItemToEnlargeClicked(position);
+        }
+
+        @Override
+        public void gridOnDownloadClicked(int position) {
+            onDownloadClicked(position);
+        }
     }

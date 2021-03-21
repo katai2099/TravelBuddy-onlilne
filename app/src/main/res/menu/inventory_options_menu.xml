@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/optionDownload"
+        android:title="Download"
+        android:icon="@drawable/ic_baseline_download_24"
+        />
+
+    <item
         android:id="@+id/optionChangePrivacy"
         android:title="Privacy"
         android:icon="@drawable/ic_baseline_privacy_tip_24"
@@ -12,4 +18,5 @@
         android:title="Remove"
         android:icon="@drawable/ic_baseline_delete_forever_24"
         />
+
 </menu>
