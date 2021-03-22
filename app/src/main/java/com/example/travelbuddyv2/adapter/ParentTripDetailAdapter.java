@@ -15,20 +15,22 @@ import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.TripSection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDetailAdapter.ParentTripDetailHolder> {
 
     List<TripSection> tripSectionList;
     String tripStringId ;
+    ParentTripDetailAdapterCallBack parentTripDetailAdapterCallBack;
     ChildTripDetailAdapter.ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack;
 
     public ParentTripDetailAdapter(List<TripSection> tripSectionsList, String tripStringId,
-                                   ChildTripDetailAdapter.ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack) {
+                                   ChildTripDetailAdapter.ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack,
+                                   ParentTripDetailAdapterCallBack parentTripDetailAdapterCallBack) {
         this.tripSectionList = tripSectionsList;
         this.tripStringId = tripStringId;
         this.childTripDetailAdapterCallBack = childTripDetailAdapterCallBack;
+       this.parentTripDetailAdapterCallBack = parentTripDetailAdapterCallBack;
     }
 
     @NonNull
@@ -41,12 +43,24 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ParentTripDetailHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ParentTripDetailHolder holder, final int position) {
 
         TripSection tripSection = tripSectionList.get(position);
         final String date = tripSection.getDate();
         String positionString = String.valueOf(position+1);
-        holder.sectionTextview.setText("Day " + positionString + ":   "+ date);
+        holder.sectionTextView.setText("Day " + positionString + ":   "+ date);
+        if(tripSectionList.get(position).getDestinations().size()>0){
+            holder.sectionStartTime.setVisibility(View.VISIBLE);
+            holder.sectionStartTime.setText("Start : " + tripSectionList.get(position).getDestinations().get(0).getStartTime());
+            holder.sectionStartTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    parentTripDetailAdapterCallBack.onStartTimeChangeClicked(position);
+                }
+            });
+        }else{
+            holder.sectionStartTime.setVisibility(View.GONE);
+        }
 
         List<Destination> destinationList = tripSection.getDestinations();
         ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList,childTripDetailAdapterCallBack);
@@ -73,16 +87,21 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
 
     class ParentTripDetailHolder extends RecyclerView.ViewHolder {
 
-        TextView sectionTextview;
+        TextView sectionTextView,sectionStartTime;
         RecyclerView childRecyclerView;
         Button btnAddTripDetail;
 
         public ParentTripDetailHolder(@NonNull View itemView) {
             super(itemView);
-            sectionTextview = itemView.findViewById(R.id.sectionNameTextView);
+            sectionTextView = itemView.findViewById(R.id.sectionNameTextView);
+            sectionStartTime = itemView.findViewById(R.id.sectionStartTime);
             childRecyclerView = itemView.findViewById(R.id.childRecyclerView);
             btnAddTripDetail = itemView.findViewById(R.id.section_row_btnAddTripDetail);
         }
+    }
+
+    public interface ParentTripDetailAdapterCallBack{
+        void onStartTimeChangeClicked(int position);
     }
 
 

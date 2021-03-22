@@ -55,14 +55,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-    public class InventoryFragment extends Fragment implements InventoryListViewAdapter.InventoryAdapterCallBack ,
+public class InventoryFragment extends Fragment implements InventoryListViewAdapter.InventoryAdapterCallBack ,
             InventoryGridViewAdapter.InventoryGridViewAdapterCallBack {
 
-
-      final int LIST = 10;
-      final int GRID = 20;
-      int type = 10;
-
+    Boolean isListView = true , onCreateOptionMenuCalled = false;
     RecyclerView rcvItems;
     private static final int PICK_IMAGE = 3;
     private static final int PICK_PDF_FILE = 2;
@@ -167,6 +163,7 @@ import java.util.List;
         listView = menu.findItem(R.id.optionListView);
         gridView = menu.findItem(R.id.optionGridView);
         listView.setVisible(false);
+        onCreateOptionMenuCalled = true;
     }
 
     @Override
@@ -194,6 +191,7 @@ import java.util.List;
         rcvItems.setAdapter(inventoryAdapter);
         gridView.setVisible(true);
         listView.setVisible(false);
+        isListView = true;
         }
 
         private void changeToGridView(){
@@ -201,7 +199,7 @@ import java.util.List;
         rcvItems.setAdapter(inventoryGridViewAdapter);
         listView.setVisible(true);
         gridView.setVisible(false);
-
+        isListView = false;
         }
 
         private void uploadToFirebaseCloudStorage(Uri uri,String owner){
@@ -307,6 +305,7 @@ import java.util.List;
                     }
                 }
                 inventoryAdapter.notifyDataSetChanged();
+                inventoryGridViewAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -429,27 +428,6 @@ import java.util.List;
         public void onDownloadClicked(int position) {
             Inventory tmp = inventoryList.get(position);
 
-       /*     StorageReference fileRef ;
-
-            if(isPersonal){
-                fileRef = FirebaseStorage.getInstance().getReference().child("trip_file")
-                        .child(currentUserUUID)
-                        .child(tripID)
-                        .child(tmp.getFileName());
-            }else{
-                fileRef = FirebaseStorage.getInstance().getReference().child("trip_file")
-                        .child(tripOwner)
-                        .child(tripID)
-                        .child(tmp.getFileName());
-            }*/
-
-          /*  File rootPath = new File(Environment.getExternalStorageDirectory(), "images");
-            if(!rootPath.exists()) {
-                rootPath.mkdirs();
-                Log.d(tag,"make new dir");
-                Log.d(tag,rootPath.toString());
-            }*/
-
             DownloadManager downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
             Uri uri = Uri.parse(tmp.getFileUri());
             DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -457,21 +435,6 @@ import java.util.List;
             request.setDestinationInExternalFilesDir(getContext(),Environment.DIRECTORY_DOWNLOADS,tmp.getFileName());
             downloadManager.enqueue(request);
 
-          /*  final File localFile = new File(rootPath,tmp.getFileName());
-
-            fileRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(getContext(),"Download Success",Toast.LENGTH_SHORT).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getContext(),"Download failed",Toast.LENGTH_SHORT).show();
-                    Log.d(tag,e.toString());
-                    e.printStackTrace();
-                }
-            });*/
 
         }
 
@@ -573,4 +536,17 @@ import java.util.List;
         public void gridOnDownloadClicked(int position) {
             onDownloadClicked(position);
         }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isListView && onCreateOptionMenuCalled) {
+            gridView.setVisible(true);
+            listView.setVisible(false);
+        }else if(onCreateOptionMenuCalled){
+            gridView.setVisible(false);
+            listView.setVisible(true);
+        }
+
     }
+}

@@ -1,38 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingStart="10dp"
     android:paddingEnd="10dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-    <RelativeLayout
-        android:layout_width="170dp"
-        android:layout_height="170dp">
+            <RelativeLayout
+                android:layout_width="195dp"
+                android:layout_height="180dp">
 
-        <ImageView
-            android:id="@+id/imgInventoryGridThumbnail"
-            android:layout_width="170dp"
-            android:layout_height="140dp"
-            android:scaleType="fitXY"/>
+                <ImageView
+                    android:id="@+id/imgInventoryGridThumbnail"
+                    android:layout_width="195dp"
+                    android:layout_height="140dp"
+                    android:scaleType="fitXY"/>
 
-        <TextView
-            android:layout_below="@id/imgInventoryGridThumbnail"
-            android:id="@+id/tvInventoryGridName"
-            android:layout_width="120dp"
-            android:layout_height="40dp"/>
+                <TextView
+                    android:layout_below="@id/imgInventoryGridThumbnail"
+                    android:id="@+id/tvInventoryGridName"
+                    android:layout_width="155dp"
+                    android:layout_height="40dp"
+                    android:layout_toStartOf="@id/btnInventoryGridOption"/>
 
-        <Button
-            android:background="@drawable/ic_baseline_more_vert_24"
-            android:id="@+id/btnInventoryGridOption"
-            android:layout_below="@id/imgInventoryGridThumbnail"
-            android:layout_alignParentEnd="true"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="10dp"/>
+                <Button
+                    android:background="@drawable/ic_baseline_more_vert_24"
+                    android:id="@+id/btnInventoryGridOption"
+                    android:layout_below="@id/imgInventoryGridThumbnail"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="10dp"/>
 
-    </RelativeLayout>
+            </RelativeLayout>
+
+
 
 
 </RelativeLayout>

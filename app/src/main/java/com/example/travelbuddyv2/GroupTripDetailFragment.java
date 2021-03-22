@@ -198,6 +198,24 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     }
 
     @Override
+    public void changeStartTimeClicked(int position) {
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+              //  changeStayPeriodOfDestination(hourOfDay,minute,position,curDate);
+
+            }
+        },0,0,true);
+
+
+        timePickerDialog.setTitle("modify stay period");
+
+
+        timePickerDialog.show();
+    }
+
+    @Override
     public void onDeleteDestinationClick(final String date, String destinationStringID) {
 
 
@@ -324,13 +342,13 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
                 extraDayAfterPeriodChanged = extraDay;
             }
         }else {
-            if(extraDay!=0 && !destinations.get(position).isDecreased()) {
+            if(extraDayAfterPeriodChanged!=0 && !destinations.get(position).isDecreased()) {
                 Log.d(tag,"HERE");
                 extraDayAfterPeriodChanged = (extraDay - 1);
                 destinations.get(position).setIncreased(false);
                 destinations.get(position).setDecreased(true);
             }
-            else if(!destinations.get(position).isDecreased() && extraDay==0){
+            else if(!destinations.get(position).isDecreased() && extraDayAfterPeriodChanged==0){
                 Log.d(tag,"Here2");
                 extraDayAfterPeriodChanged = 0;
                 destinations.get(position).setIncreased(false);

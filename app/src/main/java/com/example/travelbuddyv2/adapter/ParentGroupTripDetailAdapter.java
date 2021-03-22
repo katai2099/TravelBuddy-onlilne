@@ -51,6 +51,15 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
         final String date = tripSection.getDate();
         String positionString = String.valueOf(position+1);
         holder.sectionTextview.setText("Day " + positionString + ":   "+ date);
+        if(tripSectionList.get(position).getDestinations().size()>0){
+            holder.sectionStartTime.setText("Start : " + tripSectionList.get(position).getDestinations().get(0).getStartTime());
+            holder.sectionStartTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    parentGroupTripDetailAdapterCallback.changeStartTimeClicked(position);
+                }
+            });
+        }
 
         List<Destination> destinationList = tripSection.getDestinations();
         ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList,childTripDetailAdapterCallBack);
@@ -79,13 +88,14 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
 
     class ParentGroupTripDetailHolder extends RecyclerView.ViewHolder {
 
-        TextView sectionTextview;
+        TextView sectionTextview,sectionStartTime;;
         RecyclerView childRecyclerView;
         Button btnAddTripDetail;
 
         public ParentGroupTripDetailHolder(@NonNull View itemView) {
             super(itemView);
             sectionTextview = itemView.findViewById(R.id.sectionNameTextView);
+            sectionStartTime = itemView.findViewById(R.id.sectionStartTime);
             childRecyclerView = itemView.findViewById(R.id.childRecyclerView);
             btnAddTripDetail = itemView.findViewById(R.id.section_row_btnAddTripDetail);
         }
@@ -101,6 +111,7 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
 
     public interface ParentGroupTripDetailAdapterCallback{
         void addNewAttractionClicked(int position);
+        void changeStartTimeClicked(int position);
     }
 
 

@@ -7,7 +7,17 @@
 
     <TextView
         android:id="@+id/sectionNameTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="5dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/quantum_black_100" />
+
+    <TextView
+        android:id="@+id/sectionStartTime"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:padding="5dp"

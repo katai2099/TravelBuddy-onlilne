@@ -2,6 +2,7 @@ package com.example.travelbuddyv2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.example.travelbuddyv2.model.Destination;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class Helper {
 
     static int uniqueNotificationID = 0;
+    static private final String tag = "HELPER";
 
     public static String changeInputTimeFormat(String time)
     {
@@ -378,7 +380,75 @@ public class Helper {
 
         int  extraDayAfterPeriodChanged = calculateExtraDay(currentDate,startTime,extraDay,hour,minute);
 
-        extraDayAfterPeriodChanged += extraDay;
+        Log.d(tag,"Extra day " + extraDayAfterPeriodChanged);
+
+        if(extraDayAfterPeriodChanged==1){
+
+            if(!destination.isIncreased()){
+                extraDayAfterPeriodChanged += extraDay;
+            }else{
+                extraDayAfterPeriodChanged = extraDay;
+            }
+
+            destination.setIncreased(true);
+            destination.setDecreased(false);
+
+        }else if(extraDayAfterPeriodChanged==0){
+
+            if(!destination.isDecreased()){
+                if(extraDay==0){
+                    extraDayAfterPeriodChanged = 0;
+                }else {
+                    extraDayAfterPeriodChanged = extraDay - 1;
+                }
+
+                destination.setIncreased(false);
+                destination.setDecreased(true);
+
+            }else{
+                extraDayAfterPeriodChanged = extraDay;
+            }
+
+        }
+
+      /*  if(extraDayAfterPeriodChanged==1 ) {
+            if(!destination.isIncreased()) {
+                Log.d(tag,"!isIncrease and extraDay == 1");
+                extraDayAfterPeriodChanged += extraDay;
+            }
+            else{
+                Log.d(tag,"isIncrease and extraDay == 1");
+                extraDayAfterPeriodChanged = extraDay;
+            }
+            destination.setIncreased(true);
+            destination.setDecreased(false);
+        }else {
+            if(extraDayAfterPeriodChanged!=0 && !destination.isDecreased()) {
+                Log.d(tag,"!isDecease and extraDay != 0");
+                if(extraDay == 0){
+                    extraDayAfterPeriodChanged = 0;
+                }else{
+                    extraDayAfterPeriodChanged = (extraDay - 1);
+                }
+                destination.setIncreased(false);
+                destination.setDecreased(true);
+            }
+            else if(destination.isDecreased() && extraDayAfterPeriodChanged==0){
+                Log.d(tag,"isDecease and extraDay == 0");
+                extraDayAfterPeriodChanged = extraDay;
+                destination.setIncreased(false);
+                destination.setDecreased(true);
+            }
+            else {
+                extraDayAfterPeriodChanged = extraDay;
+                destination.setIncreased(false);
+                destination.setDecreased(true);
+            }
+        }*/
+
+//        extraDayAfterPeriodChanged += extraDay;
+
+        Log.d(tag,"Extra day after if else " + extraDayAfterPeriodChanged);
 
         destination.setEndTime( finalTime) ;
         destination.setDuration((hour*60) + minute);
