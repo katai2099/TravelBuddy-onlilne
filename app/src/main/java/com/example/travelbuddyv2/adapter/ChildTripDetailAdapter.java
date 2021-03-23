@@ -46,7 +46,8 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
         holder.btnRemoveDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                childTripDetailAdapterCallBack.onDeleteDestinationClick(destinations.get(position).getStartDate(),destinations.get(position).getDestinationStringID());
+            //    childTripDetailAdapterCallBack.onDeleteDestinationClick(destinations.get(position).getStartDate(),destinations.get(position).getDestinationStringID());
+                childTripDetailAdapterCallBack.onDeleteDestinationClicked(destinations.get(position).getStartDate(),destinations.get(position).getDestinationStringID(),position);
             }
         });
 
@@ -96,6 +97,7 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
 
     public interface ChildTripDetailAdapterCallBack{
         void onDeleteDestinationClick(String date,String destinationStringID);
+        void onDeleteDestinationClicked(String date,String destinationStringID,int position);
         void onDurationEditingClicked(int position,String curDate);
     }
 

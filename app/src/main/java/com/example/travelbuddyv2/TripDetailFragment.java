@@ -195,6 +195,70 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
     }
 
     @Override
+    public void onDeleteDestinationClicked(String date, String destinationStringID, int position) {
+
+        List<Destination> destinationsOfCurrentDate = new ArrayList<>();
+
+        for(int i=0;i<tripSectionList.size();i++){
+            if(tripSectionList.get(i).getDate().equals(date)){
+                destinationsOfCurrentDate = tripSectionList.get(i).getDestinations();
+            }
+        }
+
+        List<Destination> destinationsOfCurrentDateReplica = new ArrayList<>(destinationsOfCurrentDate);
+
+        Destination deletedOne = destinationsOfCurrentDateReplica.get(position);
+
+
+        boolean updateTheRest = false;
+        onDeleteDestinationClick(date,destinationStringID);
+
+        if(destinationsOfCurrentDateReplica.size()!=1 && position != destinationsOfCurrentDateReplica.size()-1){
+
+            Destination toUpdateDestination = destinationsOfCurrentDateReplica.get(position+1);
+            toUpdateDestination.setExtraDay(deletedOne.getExtraDay());
+            toUpdateDestination.setDecreased(deletedOne.isDecreased());
+            toUpdateDestination.setIncreased(deletedOne.isIncreased());
+            toUpdateDestination.setStartTime(deletedOne.getStartTime());
+            Helper.changeStayPeriodOfDestination(toUpdateDestination.getStartDate(),toUpdateDestination.getStartTime(),0,(int)toUpdateDestination.getDuration(),toUpdateDestination);
+            updateToFirebaseAfterPeriodChanged(toUpdateDestination);
+            updateTheRest = true ;
+
+        }
+
+        if(updateTheRest && destinationsOfCurrentDateReplica.size()!=2){
+
+            Log.d(tag,"update the rest");
+
+             for(int i=position+2;i<destinationsOfCurrentDateReplica.size();i++){
+
+                 Destination lastDestination = destinationsOfCurrentDateReplica.get(i-1);
+
+                Destination toUpdateDestination = destinationsOfCurrentDateReplica.get(i);
+                toUpdateDestination.setExtraDay(lastDestination.getExtraDay());
+                toUpdateDestination.setDecreased(lastDestination.isDecreased());
+                toUpdateDestination.setIncreased(lastDestination.isIncreased());
+                toUpdateDestination.setStartTime(lastDestination.getEndTime());
+
+                 if(lastDestination.isDecreased() && toUpdateDestination.isIncreased())
+                     toUpdateDestination.setExtraDay(toUpdateDestination.getExtraDay()+1);
+                 else if(lastDestination.isIncreased() && toUpdateDestination.isIncreased()){
+                     toUpdateDestination.setExtraDay(toUpdateDestination.getExtraDay()+1);
+                 }
+
+                Helper.changeStayPeriodOfDestination(toUpdateDestination.getStartDate(),toUpdateDestination.getStartTime(),0,(int)toUpdateDestination.getDuration(),toUpdateDestination);
+                updateToFirebaseAfterPeriodChanged(toUpdateDestination);
+            }
+
+        }
+
+
+
+
+
+    }
+
+    @Override
     public void onDurationEditingClicked(final int position, final String curDate) {
 
 
@@ -242,7 +306,7 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
             String startTimeOfTheTrip = destinations.get(i).getStartTime();
             long duration = destinations.get(i).getDuration();
 
-            int extraDay = destinations.get(i).getExtraDay();
+                    int extraDay = destinations.get(i).getExtraDay();
 
             if(lastDestination.isDecreased() && destinations.get(i).isIncreased())
                 destinations.get(i).setExtraDay(extraDay+1);

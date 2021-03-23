@@ -15,8 +15,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvFragmentGroupTripDetail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/rcvFragmentGroupTripDetailToSelectedList"
-        android:layout_marginTop="2dp"/>
+        android:layout_marginTop="2dp"
+        android:paddingBottom="5dp"/>
 
 </RelativeLayout>

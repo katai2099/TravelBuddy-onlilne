@@ -339,15 +339,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     Log.d(tag,lastDestination.toString());
                     destination.setStartTime(lastDestination.getEndTime());
-                    destination.setEndTime(Helper.getNextThirtyMinute(lastDestination.getEndTime()));
+
+
+                   // destination.setEndTime(Helper.getNextThirtyMinute(lastDestination.getEndTime()));
 
                     //check for number Of extra Day in case destination took more than one day
 
 
                     int extraDayFromLastDestination = lastDestination.getExtraDay();
-                    int endResult = Helper.calculateExtraDay(dateFromTripDetail,lastDestination.getEndTime(),extraDayFromLastDestination);
-                    endResult += extraDayFromLastDestination;
-                    destination.setExtraDay(endResult);
+                    destination.setExtraDay(extraDayFromLastDestination);
+                    //int endResult = Helper.calculateExtraDay(dateFromTripDetail,lastDestination.getEndTime(),extraDayFromLastDestination);
+                    Helper.changeStayPeriodOfDestination(dateFromTripDetail,destination.getStartTime(),0,30,destination);
+                    //endResult += extraDayFromLastDestination;
+
 
                     userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
