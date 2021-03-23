@@ -198,12 +198,12 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     }
 
     @Override
-    public void changeStartTimeClicked(int position) {
+    public void changeStartTimeClicked(final int position) {
         final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-              //  changeStayPeriodOfDestination(hourOfDay,minute,position,curDate);
+                resetStartTimeOfCurrentDate(position,hourOfDay,minute);
 
             }
         },0,0,true);
@@ -274,10 +274,6 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
 
     private void changeStayPeriodOfDestination(int hour, int minute, int position,String currentDate){
 
-        //need to calculate new extraDay , get new EndDate
-
-
-
         List<Destination> destinations = new ArrayList<>();
 
         for(TripSection list:tripSectionList){
@@ -288,80 +284,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         String startTime = destinations.get(position).getStartTime();
 
 
-        SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat toTime = new SimpleDateFormat("HH:mm");
-
-        Date date = new Date();
-
-
-        try{
-            date = toDate.parse(currentDate);
-        }catch(ParseException e){
-            System.out.println(e);
-        }
-
-        Calendar curDate = Calendar.getInstance();
-        curDate.setTime(date);
-
-        Date time = new Date();
-
-        try{
-            time = toTime.parse(startTime);
-        }catch(ParseException e){
-            System.out.println(e);
-        }
-
-        Calendar curTime = Calendar.getInstance();
-        curTime.setTime(time);
-
-        curDate.set(Calendar.HOUR_OF_DAY, curTime.get(Calendar.HOUR_OF_DAY));
-        curDate.set(Calendar.MINUTE,curTime.get(Calendar.MINUTE));
-        curDate.set(Calendar.MILLISECOND,0);
-
-        curDate.add(Calendar.HOUR_OF_DAY, hour);
-        curDate.add(Calendar.MINUTE,minute);
-
-        Date res = curDate.getTime();
-
-        String finalTime = toTime.format(res);
-
-        int extraDay = destinations.get(position).getExtraDay();
-
-        String curDateOfDestination  = destinations.get(position).getStartDate();
-        Log.d(tag,"There is the problem down there");
-        //here
-        int  extraDayAfterPeriodChanged = Helper.calculateExtraDay(curDateOfDestination,startTime,extraDay,hour,minute);
-
-        if(extraDayAfterPeriodChanged==1 ) {
-            if(!destinations.get(position).isIncreased()) {
-                extraDayAfterPeriodChanged += extraDay;
-                destinations.get(position).setIncreased(true);
-                destinations.get(position).setDecreased(false);
-            }
-            else{
-                extraDayAfterPeriodChanged = extraDay;
-            }
-        }else {
-            if(extraDayAfterPeriodChanged!=0 && !destinations.get(position).isDecreased()) {
-                Log.d(tag,"HERE");
-                extraDayAfterPeriodChanged = (extraDay - 1);
-                destinations.get(position).setIncreased(false);
-                destinations.get(position).setDecreased(true);
-            }
-            else if(!destinations.get(position).isDecreased() && extraDayAfterPeriodChanged==0){
-                Log.d(tag,"Here2");
-                extraDayAfterPeriodChanged = 0;
-                destinations.get(position).setIncreased(false);
-                destinations.get(position).setDecreased(true);
-            }
-            else {
-                extraDayAfterPeriodChanged = extraDay;
-            }
-        }
-
-        destinations.get(position).setEndTime( finalTime) ;
-        destinations.get(position).setDuration((hour*60) + minute);
-        destinations.get(position).setExtraDay(extraDayAfterPeriodChanged);
+        Helper.changeStayPeriodOfDestination(currentDate,startTime,hour,minute,destinations.get(position));
 
         updateToFirebaseAfterPeriodChanged(destinations.get(position));
 
@@ -373,6 +296,14 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
             String currentDateOfTheTrip = destinations.get(i).getStartDate();
             String startTimeOfTheTrip = destinations.get(i).getStartTime();
             long duration = destinations.get(i).getDuration();
+
+            int extraDay = destinations.get(i).getExtraDay();
+
+            if(lastDestination.isDecreased() && destinations.get(i).isIncreased())
+                destinations.get(i).setExtraDay(extraDay+1);
+            else if(lastDestination.isIncreased() && destinations.get(i).isIncreased()){
+                destinations.get(i).setExtraDay(extraDay+1);
+            }
 
             Helper.changeStayPeriodOfDestination(currentDateOfTheTrip,startTimeOfTheTrip,0,(int)(duration),destinations.get(i));
 
@@ -400,6 +331,64 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
 //                Toast.makeText(getContext(),"Update done",Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    private void resetStartTimeOfCurrentDate(int position,int hourOfDay,int minute){
+
+        List<Destination> currentDestinationsOfThisDate = tripSectionList.get(position).getDestinations();
+
+        for(int i=0;i<currentDestinationsOfThisDate.size();i++){
+
+
+            if(i==0){
+
+
+                String currentDateOfTheTrip = tripSectionList.get(position).getDate();
+                Destination lastDestination = currentDestinationsOfThisDate.get(i);
+                String hour = String.valueOf(hourOfDay);
+                String min = String.valueOf(minute);
+                StringBuilder builder = new StringBuilder();
+                builder.append(hour).append(":").append(min);
+                String actualClock = builder.toString();
+                String resClock = Helper.changeInputTimeFormat(actualClock);
+                //        Log.d(tag,"time is " + resClock);
+                lastDestination.setStartTime(resClock);
+                long duration = lastDestination.getDuration();
+                Helper.changeStayPeriodOfDestination(currentDateOfTheTrip,lastDestination.getStartTime(),0,(int)duration,lastDestination);
+                updateToFirebaseAfterPeriodChanged(lastDestination);
+            }else{
+
+                Destination lastDestination = currentDestinationsOfThisDate.get(i-1);
+
+                currentDestinationsOfThisDate.get(i).setExtraDay(lastDestination.getExtraDay());
+                currentDestinationsOfThisDate.get(i).setStartTime(lastDestination.getEndTime());
+
+                String currentDateOfTheTrip = tripSectionList.get(position).getDate();
+                String startTimeOfTheTrip = currentDestinationsOfThisDate.get(i).getStartTime();
+
+
+                int extraDay = currentDestinationsOfThisDate.get(i).getExtraDay();
+
+                if(lastDestination.isDecreased() && currentDestinationsOfThisDate.get(i).isIncreased())
+                    currentDestinationsOfThisDate.get(i).setExtraDay(extraDay+1);
+                else if(lastDestination.isIncreased() && currentDestinationsOfThisDate.get(i).isIncreased()){
+                    currentDestinationsOfThisDate.get(i).setExtraDay(extraDay+1);
+                }
+
+                Log.d(tag,"extra dayyyyy is " + extraDay);
+
+                long duration = currentDestinationsOfThisDate.get(i).getDuration();
+
+                Helper.changeStayPeriodOfDestination(currentDateOfTheTrip,startTimeOfTheTrip,0,(int)(duration),currentDestinationsOfThisDate.get(i));
+
+                Log.d(tag,"extra dayyyyy is " + currentDestinationsOfThisDate.get(i).getExtraDay());
+
+                updateToFirebaseAfterPeriodChanged(currentDestinationsOfThisDate.get(i));
+            }
+
+
+        }
 
     }
 

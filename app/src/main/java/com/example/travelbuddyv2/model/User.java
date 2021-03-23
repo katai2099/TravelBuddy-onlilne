@@ -10,6 +10,7 @@ public class User {
     private String phone;
     private String profile_image;
     private String user_id;
+    private String deviceToken;
 
     public User(String name,String email, String phone, String profile_image, String user_id) {
         this.name = name;
@@ -17,7 +18,6 @@ public class User {
         this.phone = phone;
         this.profile_image = profile_image;
         this.user_id = user_id;
-
     }
 
     public User() {
@@ -62,6 +62,14 @@ public class User {
 
     public void setProfile_image(String profile_image) {
         this.profile_image = profile_image;
+    }
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 
     @Override

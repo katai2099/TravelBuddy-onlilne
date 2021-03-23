@@ -65,8 +65,6 @@ public class DashboardFragment extends Fragment {
             viewPager.setCurrentItem(1);
         }
 
-
-
     }
 }
 

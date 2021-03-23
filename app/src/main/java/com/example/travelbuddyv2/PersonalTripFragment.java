@@ -33,8 +33,6 @@ public class PersonalTripFragment extends Fragment {
 
     int ID = 0;
 
-
-
     final String tag = "PERSONAL_TRIP_FRAGMENT";
 
     FloatingActionButton fbtnAddNewTrip;
@@ -105,8 +103,6 @@ public class PersonalTripFragment extends Fragment {
                 startActivity(i);*/
             }
         });
-
-
 
         return root;
 

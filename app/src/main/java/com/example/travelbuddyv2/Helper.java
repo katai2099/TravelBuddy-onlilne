@@ -384,7 +384,7 @@ public class Helper {
 
         if(extraDayAfterPeriodChanged==1){
 
-            if(!destination.isIncreased()){
+            if(!destination.isIncreased() && destination.isDecreased()){
                 extraDayAfterPeriodChanged += extraDay;
             }else{
                 extraDayAfterPeriodChanged = extraDay;
@@ -395,7 +395,7 @@ public class Helper {
 
         }else if(extraDayAfterPeriodChanged==0){
 
-            if(!destination.isDecreased()){
+            if(!destination.isDecreased() && destination.isIncreased()){
                 if(extraDay==0){
                     extraDayAfterPeriodChanged = 0;
                 }else {
