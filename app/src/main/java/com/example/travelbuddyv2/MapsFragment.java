@@ -26,6 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +69,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -85,6 +88,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment {
 
+    private BottomSheetBehavior bottomSheetBehavior;
+    LinearLayout llBottomSheet;
 
     private final String tag = "MAP_FRAGMENT";
 
@@ -119,6 +124,10 @@ public class MapsFragment extends Fragment {
     private Button btnAddTrip;
 
     private List<Bitmap> bitmapList;
+
+    private TextView locationName , locationAddress , locationRating , locationWorkingHour , locationPhoneNumber , locationEmail;
+
+    private RatingBar locationStarRating;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -199,6 +208,14 @@ public class MapsFragment extends Fragment {
                             e1.printStackTrace();
                         }
                     }
+                }
+            });
+
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    btnAddTrip.setVisibility(View.GONE);
+                    googleMapInformationLayout.setVisibility(View.GONE);
                 }
             });
 
@@ -283,9 +300,11 @@ public class MapsFragment extends Fragment {
                     });
 
 
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
                     googleMapInformationLayout.setVisibility(View.VISIBLE);
-                    TextView tv = googleMapInformationLayout.findViewById(R.id.tvPlaceName);
-                    tv.setText(placeName);
+                    btnAddTrip.setVisibility(View.VISIBLE);
+                 /*   TextView tv = googleMapInformationLayout.findViewById(R.id.tvPlaceName);
+                    tv.setText(placeName);*/
 
                     btnAddTrip.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -315,11 +334,13 @@ public class MapsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_maps, container, false);
 
+        initComponent(root);
+
         materialSearchBar = root.findViewById(R.id.searchBar);
 
 //        getCurrentTripDetailIdFromFirebaseDatabase();
 
-        googleMapInformationLayout = root.findViewById(R.id.googleMapInformationLayout);
+        googleMapInformationLayout = root.findViewById(R.id.bottom_sheet);
         googleMapInformationLayout.setVisibility(View.GONE);
         bitmapList = new ArrayList<>();
         googleMapPictureAdapter = new GoogleMapPictureAdapter(bitmapList);
@@ -327,7 +348,8 @@ public class MapsFragment extends Fragment {
         rcvGoogleMapPics.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.HORIZONTAL,false));
         rcvGoogleMapPics.setAdapter(googleMapPictureAdapter);
 
-        btnAddTrip = googleMapInformationLayout.findViewById(R.id.mapFragmentBtnAddTripDetail);
+        btnAddTrip = root.findViewById(R.id.mapFragmentBtnAddTripDetail);
+        btnAddTrip.setVisibility(View.GONE);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -588,6 +610,22 @@ public class MapsFragment extends Fragment {
 
     }
 
+    private void initComponent(View root){
+
+        llBottomSheet =  root.findViewById(R.id.bottom_sheet);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setFitToContents(true);
+
+      //  bottomSheetBehavior.setHalfExpandedRatio(0.5f);
+     //   bottomSheetBehavior.setHalfExpandedRatio(0.4f);
+
+
+    }
 
 
 

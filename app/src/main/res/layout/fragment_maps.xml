@@ -13,23 +13,72 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MapsFragment" />
-    <com.mancj.materialsearchbar.MaterialSearchBar
-        style="@style/MaterialSearchBarLight"
-        app:mt_speechMode="true"
-        app:mt_hint="Search a place"
-        app:mt_maxSuggestionsCount="10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:id="@+id/searchBar"
-        app:mt_navIconEnabled="true"
-        android:elevation="5dp"
-        android:outlineProvider="bounds"
-        app:mt_placeholder="Search a place"
 
-        />
+        <com.mancj.materialsearchbar.MaterialSearchBar
+            style="@style/MaterialSearchBarLight"
+            app:mt_speechMode="true"
+            app:mt_hint="Search a place"
+            app:mt_maxSuggestionsCount="10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:id="@+id/searchBar"
+            app:mt_navIconEnabled="true"
+            android:elevation="5dp"
+            android:outlineProvider="bounds"
+            app:mt_placeholder="Search a place"
+            />
 
-    <RelativeLayout
+
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            app:cardCornerRadius="20dp"
+            android:layout_marginBottom="@dimen/floating_above_bottom_navigation_bar"
+            android:background="?android:attr/selectableItemBackground">
+
+            <Button
+                android:id="@+id/btnSearchForAttraction"
+                android:text="@string/search_for_attraction"
+                android:textAllCaps="false"
+                android:textColor="@color/quantum_black_100"
+                android:textSize="12sp"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+
+                />
+
+        </androidx.cardview.widget.CardView>
+
+
+        <include
+            layout="@layout/map_bottom_sheet_layout" />
+
+
+
+        <Button
+            android:id="@+id/mapFragmentBtnAddTripDetail"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_to_trip"
+            android:layout_marginBottom="@dimen/floating_above_bottom_navigation_bar"
+            android:textColor="@color/quantum_black_100"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            />
+
+
+
+
+   <!-- <RelativeLayout
         android:id="@+id/googleMapInformationLayout"
         android:layout_marginBottom="48dp"
         android:layout_gravity="bottom"
@@ -67,7 +116,7 @@
 
 
 
-    </RelativeLayout>
+    </RelativeLayout>-->
 
 
 

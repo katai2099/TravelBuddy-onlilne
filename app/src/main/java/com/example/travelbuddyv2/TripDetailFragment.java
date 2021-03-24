@@ -251,10 +251,7 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
             }
 
         }
-
-
-
-
+        
 
     }
 

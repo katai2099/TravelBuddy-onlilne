@@ -16,4 +16,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_group_trip_detail">GroupTripDetailActivity</string>
+    <string name="search_for_attraction">Search for attraction</string>
+    <string name="add_to_trip">Add to trip</string>
 </resources>
