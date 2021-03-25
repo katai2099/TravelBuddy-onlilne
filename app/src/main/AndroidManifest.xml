@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ClickedItemActivity"></activity>
+        <activity android:name=".ClickedItemActivity" />
         <activity android:name=".PermissionModificationActivity" />
         <activity android:name=".MemberActivity" />
         <activity
@@ -50,7 +50,6 @@
             android:resource="@color/colorAccent" />
 
 
-
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
@@ -59,15 +58,21 @@
             android:name=".TripDetailActivity"
             android:label="@string/title_activity_trip_detail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Main2Activity"
-            android:label="@string/title_activity_main2" />
+        <activity  android:name=".Main2Activity"
+
+            android:label="@string/title_activity_main2">
+
+            <intent-filter>
+                <action android:name=".Main2Activity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".confirmEmailActivity" />
         <activity android:name=".registerActivity" />
         <activity android:name=".loginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -101,8 +106,19 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
+
+        <service
+            android:name=".fcm.FcmMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
     </application>
 
-    
+
+
+
 
 </manifest>

@@ -50,7 +50,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
                 <ImageView
-                    android:id="@+id/locationPhoto"
+                    android:id="@+id/locationSinglePic"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_toEndOf="@id/locationName"
@@ -82,7 +82,7 @@
                 <TextView
                     android:id="@+id/locationRating"
                     android:layout_below="@id/locationAddress"
-                    android:layout_toEndOf="@id/locationRating"
+                    android:layout_toEndOf="@id/locationStarRating"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="4.7 (51)"
@@ -186,7 +186,7 @@
                             android:layout_height="0dp" />
 
                         <TextView
-                            android:id="@+id/locationEmail"
+                            android:id="@+id/locationWebsite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"

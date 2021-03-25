@@ -1,5 +1,8 @@
 package com.example.travelbuddyv2;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -21,22 +24,25 @@ import androidx.navigation.ui.NavigationUI;
 
 public class Main2Activity extends AppCompatActivity {
 
-    String changeToGroupTripFragment;
-    String changeToMapFragment;
+    boolean changeToGroupTripFragment=false;
+    boolean changeToMapFragment=false;
+    boolean changeToNotificationFragment=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        createNotificationChannel();
+
         Bundle bundle = getIntent().getExtras();
 
-        changeToGroupTripFragment = "";
-        changeToMapFragment = "";
         if(bundle!=null){
-            changeToGroupTripFragment = bundle.getString("changeToGroup");
-            changeToMapFragment = bundle.getString("changeToMapFragment");
+            changeToGroupTripFragment = bundle.getBoolean("changeToGroup");
+            changeToMapFragment = bundle.getBoolean("changeToMapFragment");
+            changeToNotificationFragment = bundle.getBoolean("changeToNotificationFragment");
         }
+
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -51,21 +57,36 @@ public class Main2Activity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        if( changeToGroupTripFragment!=null&&changeToGroupTripFragment.length()>1)
+        if(changeToGroupTripFragment)
         {
             navController.navigate(R.id.navigation_dashboard,bundle);
            // NavGraph  navGraph = navController.getGraph();
            // navGraph.setStartDestination();
         }
-        else if(changeToMapFragment != null && changeToMapFragment.length()>1)
+        else if(changeToMapFragment)
         {
             navController.navigate(R.id.navigation_map);
         }
+        else if(changeToNotificationFragment){
+            navController.navigate(R.id.navigation_notifications);
+        }
+
 
     }
 
-    public interface MyInterface{
-        public void onClick(int position);
+
+    private void createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "Notify trip invitation request";
+            String description = "Channel for Trip invitation request";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("NotifyTripInvitationRequest",name,importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+            //    Toast.makeText(MainActivity.this,"Function Trigger!",Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

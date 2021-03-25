@@ -217,7 +217,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
 
     private void goBackToMapFragment(){
         Intent i = new Intent(DateSelectionActivity.this,Main2Activity.class);
-        i.putExtra("changeToMapFragment","changeToMapFragment");
+        i.putExtra("changeToMapFragment",true);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }

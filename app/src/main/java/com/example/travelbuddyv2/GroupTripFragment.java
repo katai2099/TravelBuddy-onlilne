@@ -1,5 +1,8 @@
 package com.example.travelbuddyv2;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,11 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GroupTripFragment extends Fragment implements GroupTripAdapter.AdapterCallback {
+public class GroupTripFragment extends Fragment implements GroupTripAdapter.GroupTripAdapterCallback {
 
     List<tripModel> groupTripList;
     RecyclerView rcvGroupTripView;
     GroupTripAdapter groupTripAdapter;
+    static final String tag = "GROUP_TRIP_FRAGMENT";
 
     public GroupTripFragment() {
         // Required empty public constructor
@@ -85,13 +90,75 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Adap
 
 
     @Override
-    public void onMethodCallback(int position) {
-        Toast.makeText(getContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         initializeGroupTripList();
     }
+
+
+    @Override
+    public void onLeaveGroupClicked(int position) {
+
+        final tripModel currentTrip = groupTripList.get(position);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Are you sure you want to leave this group?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                leaveGroup(currentTrip);
+                toGroupTripFragment();
+
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getContext(),"Nah, I am not leaving",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void leaveGroup(final tripModel trip){
+
+        String currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //remove user from Group Node
+        DatabaseReference userGroupNode = FirebaseDatabase.getInstance().getReference().child("Group")
+                .child(currentUserUUID)
+                .child(trip.getOwner())
+                .child(trip.getStringID());
+
+        //remove user from memberNode
+        final DatabaseReference userMemberNode = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(trip.getOwner())
+                .child(trip.getStringID())
+                .child(currentUserUUID);
+
+
+        userGroupNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(tag,"Done remove from group NODE ");
+                userMemberNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(tag,"Done remove from Member NODE");
+                    }
+                });
+            }
+        });
+    }
+
+    private void toGroupTripFragment(){
+        Intent i = new Intent(getContext(), Main2Activity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.putExtra("changeToGroup",true);
+        startActivity(i);
+        getActivity().finish();
+    }
+
 }

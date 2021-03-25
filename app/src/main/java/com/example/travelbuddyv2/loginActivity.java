@@ -43,7 +43,14 @@ public class loginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etLoginPassword);
         auth = FirebaseAuth.getInstance();
 
-        authentication();
+        Bundle bundle = getIntent().getExtras();
+        boolean toNotification = false;
+        if(bundle!=null){
+            toNotification = Boolean.parseBoolean(bundle.getString("changeToNotificationFragment")) ;
+        }
+
+        authentication(toNotification);
+
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +143,7 @@ public class loginActivity extends AppCompatActivity {
         });
     }
 
-    private  void authentication(){
+    private  void authentication(final boolean payload){
         Toast.makeText(loginActivity.this,"This is called",Toast.LENGTH_SHORT).show();
        authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -159,24 +166,21 @@ public class loginActivity extends AppCompatActivity {
                                     public void onSuccess(Void aVoid) {
                                         Intent intent = new Intent(loginActivity.this, Main2Activity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        if(payload){
+                                            intent.putExtra("changeToNotificationFragment",true);
+                                        }
                                         startActivity(intent);
                                         finish();
                                     }
                                 });
-
-
                             }
                         });
-
-
                     } else {
                         // user is registered, but not verified yet through email
-
                         FirebaseAuth.getInstance().signOut();
                     }
                 } else {
                     // User is signed out
-
                 }
             }
         };

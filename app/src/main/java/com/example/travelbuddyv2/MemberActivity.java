@@ -214,7 +214,7 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
     private void toGroupTripFragment(){
         Intent i = new Intent(MemberActivity.this,Main2Activity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        i.putExtra("changeToGroup","changeToGroup");
+        i.putExtra("changeToGroup",true);
         startActivity(i);
         finish();
     }

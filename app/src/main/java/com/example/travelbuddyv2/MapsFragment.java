@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -59,6 +60,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.DayOfWeek;
+import com.google.android.libraries.places.api.model.OpeningHours;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
@@ -81,6 +84,7 @@ import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -125,7 +129,7 @@ public class MapsFragment extends Fragment {
 
     private List<Bitmap> bitmapList;
 
-    private TextView locationName , locationAddress , locationRating , locationWorkingHour , locationPhoneNumber , locationEmail;
+    private TextView locationName , locationAddress , locationRating , locationWorkingHour , locationPhoneNumber , locationWebsite;
 
     private RatingBar locationStarRating;
 
@@ -240,6 +244,64 @@ public class MapsFragment extends Fragment {
                     final LatLng placeLatLng = pointOfInterest.latLng;
                     Toast.makeText(getActivity(), placeName, Toast.LENGTH_SHORT).show();
 
+
+                    final List<Place.Field> placeInformation = Arrays.asList(Place.Field.ADDRESS,Place.Field.RATING,Place.Field.OPENING_HOURS,
+                                                                            Place.Field.PHONE_NUMBER,Place.Field.RATING, Place.Field.WEBSITE_URI);
+
+                    final FetchPlaceRequest placeInformationRequest = FetchPlaceRequest.newInstance(placeId,placeInformation);
+
+                    placesClient.fetchPlace(placeInformationRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
+                        @Override
+                        public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
+                            final Place place = fetchPlaceResponse.getPlace();
+
+                            locationAddress.setText("N/A");
+                            locationRating.setText("N/A");
+                            locationWorkingHour.setText("N/A");
+                            locationPhoneNumber.setText("N/A");
+                            locationStarRating.setNumStars(0);
+                            locationWebsite.setText("N/A");
+
+
+                            if(place.getAddress()!=null){
+                                String address = place.getAddress();
+                                locationAddress.setText(address);
+                            }
+                            if(place.getRating()!=null && place.getUserRatingsTotal()!=null){
+                                Double rating = place.getRating();
+                                int numberOfRater = place.getUserRatingsTotal();
+                                locationStarRating.setRating(rating.floatValue());
+                                locationRating.setText(String.format("%s %d", rating, numberOfRater));
+                            }
+                            if(place.getOpeningHours()!=null){
+                                OpeningHours workingHour = place.getOpeningHours();
+                                Calendar cal = Calendar.getInstance();
+                                int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+                                System.out.println("kataikataikatai" + today);
+                                locationWorkingHour.setText(workingHour.getWeekdayText().get(today));
+                            }
+                            if(place.getPhoneNumber()!=null){
+                                String phone = place.getPhoneNumber();
+                                locationPhoneNumber.setText(phone);
+                            }
+                            if(place.getWebsiteUri()!=null){
+                                Uri website = place.getWebsiteUri();
+                                locationWebsite.setText(website.toString());
+
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            locationAddress.setText("N/A");
+                            locationRating.setText("N/A");
+                            locationWorkingHour.setText("N/A");
+                            locationPhoneNumber.setText("N/A");
+                            locationStarRating.setNumStars(0);
+                            locationWebsite.setText("N/A");
+                        }
+                    });
+
                     //clear list to display new image every time user click on POI
                     bitmapList.clear();
 
@@ -254,7 +316,6 @@ public class MapsFragment extends Fragment {
                         public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
                             final Place place = fetchPlaceResponse.getPlace();
                             // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
-
                             final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
                             if (metadata == null || metadata.isEmpty()) {
                                 Toast.makeText(getContext(), "No metadata", Toast.LENGTH_SHORT).show();
@@ -306,6 +367,8 @@ public class MapsFragment extends Fragment {
                  /*   TextView tv = googleMapInformationLayout.findViewById(R.id.tvPlaceName);
                     tv.setText(placeName);*/
 
+                    locationName.setText(placeName);
+
                     btnAddTrip.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -341,6 +404,8 @@ public class MapsFragment extends Fragment {
 //        getCurrentTripDetailIdFromFirebaseDatabase();
 
         googleMapInformationLayout = root.findViewById(R.id.bottom_sheet);
+        initPlaceInformationLayout(googleMapInformationLayout);
+
         googleMapInformationLayout.setVisibility(View.GONE);
         bitmapList = new ArrayList<>();
         googleMapPictureAdapter = new GoogleMapPictureAdapter(bitmapList);
@@ -627,6 +692,19 @@ public class MapsFragment extends Fragment {
 
     }
 
+    private void initPlaceInformationLayout(View googleMapInformationLayout){
+
+     /*   locationName , locationAddress , locationRating , locationWorkingHour , locationPhoneNumber , location;*/
+        locationName = googleMapInformationLayout.findViewById(R.id.locationName);
+        locationAddress = googleMapInformationLayout.findViewById(R.id.locationAddress);
+        locationRating = googleMapInformationLayout.findViewById(R.id.locationRating);
+        locationWorkingHour = googleMapInformationLayout.findViewById(R.id.locationWorkingHour);
+        locationPhoneNumber = googleMapInformationLayout.findViewById(R.id.locationPhoneNumber);
+        locationWebsite = googleMapInformationLayout.findViewById(R.id.locationWebsite);
+        locationStarRating = googleMapInformationLayout.findViewById(R.id.locationStarRating);
+
+
+    }
 
 
 

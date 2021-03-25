@@ -28,6 +28,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
@@ -202,8 +203,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
                             for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-                                Request request= snapshot.getValue(Request.class);
-                                idList.add(StringToInt(snapshot.getKey()));
+                                if(snapshot.exists()){
+                                    Request request= snapshot.getValue(Request.class);
+                                    idList.add(StringToInt(snapshot.getKey()));
+                                }
                             }
                             if(idList.size()!=0){
                                 Collections.sort(idList);
@@ -257,7 +260,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                                                 public void onSuccess(Void aVoid) {
                                                     Toast.makeText(holder.itemView.getContext(),"Sent success",Toast.LENGTH_SHORT).show();
                                                     //add to knownlist
-
+                                                    addToNotificationNode(FirebaseAuth.getInstance().getCurrentUser().getUid(),user.getUser_id());
                                                     addToKnownList(user);
                                                     holder.tvPending.setVisibility(View.VISIBLE);
                                                     holder.btnInviteFriend.setVisibility(View.GONE);
@@ -323,6 +326,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
             }
         });
+    }
+
+    private void addToNotificationNode(String senderUUID,String receiverUUID){
+        HashMap<String,String> invitationRequest = new HashMap<>();
+
+        invitationRequest.put("from",senderUUID);
+        invitationRequest.put("type","request");
+
+        DatabaseReference notificationNode = FirebaseDatabase.getInstance().getReference().child("Notifications");
+        notificationNode.child(receiverUUID).push().setValue(invitationRequest);
 
     }
 

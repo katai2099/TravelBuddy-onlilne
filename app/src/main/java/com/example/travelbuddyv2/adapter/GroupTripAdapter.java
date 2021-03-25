@@ -33,13 +33,13 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
 
     private final String tag = "GROUPTRIPADAPTER";
     List<tripModel> groupTripList;
-    AdapterCallback adapterCallback;
+    GroupTripAdapterCallback groupTripadapterCallback;
     Activity activity ;
 
 
-    public GroupTripAdapter(List<tripModel> lists,AdapterCallback adapterCallback,Activity activity) {
+    public GroupTripAdapter(List<tripModel> lists,GroupTripAdapterCallback adapterCallback,Activity activity) {
         this.groupTripList = lists;
-        this.adapterCallback = adapterCallback;
+        this.groupTripadapterCallback = adapterCallback;
         this.activity = activity;
 
     }
@@ -55,7 +55,7 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final GroupTripHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final GroupTripHolder holder, final int position) {
 
         final tripModel currentTrip = groupTripList.get(position);
 
@@ -77,25 +77,9 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
         holder.btnLeaveGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                builder.setMessage("Are you sure you want to leave this group?");
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                      leaveGroup(currentTrip);
-                      toGroupTripFragment(holder);
 
-                    }
-                });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(holder.itemView.getContext(),"Nah, I am not leaving",Toast.LENGTH_SHORT).show();
-                    }
-                });
+                groupTripadapterCallback.onLeaveGroupClicked(position);
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
             }
         });
 
@@ -139,48 +123,13 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
         }
     }
 
-    public interface AdapterCallback{
-        void onMethodCallback(int position);
+    public interface GroupTripAdapterCallback{
+        void onLeaveGroupClicked(int position);
     }
 
-    private void leaveGroup(final tripModel trip){
-
-        String currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        //remove user from Group Node
-        DatabaseReference userGroupNode = FirebaseDatabase.getInstance().getReference().child("Group")
-                .child(currentUserUUID)
-                .child(trip.getOwner())
-                .child(trip.getStringID());
-
-        //remove user from memberNode
-        final DatabaseReference userMemberNode = FirebaseDatabase.getInstance().getReference().child("Member")
-                .child(trip.getOwner())
-                .child(trip.getStringID())
-                .child(currentUserUUID);
 
 
-        userGroupNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(tag,"Done remove from group NODE ");
-                userMemberNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(tag,"Done remove from Member NODE");
-                    }
-                });
-            }
-        });
-    }
 
-    private void toGroupTripFragment(final GroupTripHolder holder){
-        Intent i = new Intent(holder.itemView.getContext(), Main2Activity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        i.putExtra("changeToGroup","changeToGroup");
-        holder.itemView.getContext().startActivity(i);
-        activity.finish();
-    }
 
 
 

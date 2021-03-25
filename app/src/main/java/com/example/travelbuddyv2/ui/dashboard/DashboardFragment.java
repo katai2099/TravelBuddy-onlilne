@@ -30,7 +30,7 @@ public class DashboardFragment extends Fragment {
     private final String tag = "DashboardFragment";
     private PagerAdapter pagerAdapter;
     ViewPager viewPager;
-    boolean changeToGroup ;
+    boolean changeToGroup =false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +48,8 @@ public class DashboardFragment extends Fragment {
         Bundle bundle = getArguments();
         if(bundle!=null){
 //            Log.d(tag,bundle.getString("changeToGroup"));
-            changeToGroup=true;
+            changeToGroup = bundle.getBoolean("changeToGroup");
+            Toast.makeText(getContext(),String.valueOf(changeToGroup),Toast.LENGTH_SHORT).show();
         }
 
         return root;

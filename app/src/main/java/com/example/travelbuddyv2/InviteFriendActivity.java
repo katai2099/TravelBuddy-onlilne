@@ -147,7 +147,6 @@ public class InviteFriendActivity extends AppCompatActivity {
     }
 
     public boolean checkIfEmailExistInKnownList(final String email){
-        boolean existInList = false;
 
         for(int i=0;i<suggestedUsers.size();i++) {
             if (suggestedUsers.get(i).getEmail().equals(email)){
@@ -156,7 +155,7 @@ public class InviteFriendActivity extends AppCompatActivity {
             }
         }
         Log.d(tag,"THERE IS NO USER IN KNOWNLIST");
-        return existInList;
+        return false;
 
     }
 
