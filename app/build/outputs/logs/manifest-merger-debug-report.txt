@@ -11,6 +11,7 @@ MERGED from [com.github.mancj:MaterialSearchBar:0.8.5] /home/kataizz/.gradle/cac
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/kataizz/.gradle/caches/transforms-2/files-2.1/7078fc890a0fc6103451f98d0b28886c/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
 MERGED from [com.google.android.libraries.places:places:2.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/3fc4170a7d931066d98175bdb9d38ef1/jetified-places-2.4.0/AndroidManifest.xml:2:1-23:12
 MERGED from [androidx.appcompat:appcompat:1.2.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/994d5787a0c5e3a9050593b6e3088631/appcompat-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.sothree.slidinguppanel:library:3.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/2b6bdc985fd6ce2fcd858b6f82dceaca/jetified-library-3.4.0/AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/fcf5af611bc33846b591cd77e4d0a38c/jetified-viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/06bdd8e905652ff2ad1e1ea1ee0aa01a/recyclerview-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.navigation:navigation-fragment:2.2.2] /home/kataizz/.gradle/caches/transforms-2/files-2.1/c12c67ce0bfe447c30260a3352c8807c/navigation-fragment-2.2.2/AndroidManifest.xml:17:1-24:12
@@ -174,6 +175,8 @@ MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/kataizz/.gr
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/kataizz/.gradle/caches/transforms-2/files-2.1/7078fc890a0fc6103451f98d0b28886c/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
 MERGED from [com.google.android.libraries.places:places:2.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/3fc4170a7d931066d98175bdb9d38ef1/jetified-places-2.4.0/AndroidManifest.xml:13:5-21:19
 MERGED from [com.google.android.libraries.places:places:2.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/3fc4170a7d931066d98175bdb9d38ef1/jetified-places-2.4.0/AndroidManifest.xml:13:5-21:19
+MERGED from [com.sothree.slidinguppanel:library:3.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/2b6bdc985fd6ce2fcd858b6f82dceaca/jetified-library-3.4.0/AndroidManifest.xml:9:5-20
+MERGED from [com.sothree.slidinguppanel:library:3.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/2b6bdc985fd6ce2fcd858b6f82dceaca/jetified-library-3.4.0/AndroidManifest.xml:9:5-20
 MERGED from [com.google.android.gms:play-services-maps:17.0.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/8584395d637b6ec6e70bcbc794772af4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:30:5-36:19
 MERGED from [com.google.android.gms:play-services-maps:17.0.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/8584395d637b6ec6e70bcbc794772af4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:30:5-36:19
 MERGED from [de.hdodenhof:circleimageview:3.1.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/54fb852e5096b279f5f014a17dcea39d/jetified-circleimageview-3.1.0/AndroidManifest.xml:9:5-20
@@ -450,6 +453,8 @@ MERGED from [com.google.android.libraries.places:places:2.4.0] /home/kataizz/.gr
 MERGED from [com.google.android.libraries.places:places:2.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/3fc4170a7d931066d98175bdb9d38ef1/jetified-places-2.4.0/AndroidManifest.xml:7:5-44
 MERGED from [androidx.appcompat:appcompat:1.2.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/994d5787a0c5e3a9050593b6e3088631/appcompat-1.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.appcompat:appcompat:1.2.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/994d5787a0c5e3a9050593b6e3088631/appcompat-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.sothree.slidinguppanel:library:3.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/2b6bdc985fd6ce2fcd858b6f82dceaca/jetified-library-3.4.0/AndroidManifest.xml:7:5-44
+MERGED from [com.sothree.slidinguppanel:library:3.4.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/2b6bdc985fd6ce2fcd858b6f82dceaca/jetified-library-3.4.0/AndroidManifest.xml:7:5-44
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/fcf5af611bc33846b591cd77e4d0a38c/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/fcf5af611bc33846b591cd77e4d0a38c/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/kataizz/.gradle/caches/transforms-2/files-2.1/06bdd8e905652ff2ad1e1ea1ee0aa01a/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41

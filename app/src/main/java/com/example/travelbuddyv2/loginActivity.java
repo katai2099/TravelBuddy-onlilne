@@ -35,6 +35,13 @@ public class loginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        boolean toNotification = false;
+        if(bundle!=null){
+            toNotification = Boolean.parseBoolean(bundle.getString("changeToNotificationFragment")) ;
+        }
+
+        authentication(toNotification);
         setContentView(R.layout.activity_login);
         btnSignIn = findViewById(R.id.btnLoginSignIn);
         btnSignUp = findViewById(R.id.btnLoginSignUp);
@@ -43,13 +50,7 @@ public class loginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etLoginPassword);
         auth = FirebaseAuth.getInstance();
 
-        Bundle bundle = getIntent().getExtras();
-        boolean toNotification = false;
-        if(bundle!=null){
-            toNotification = Boolean.parseBoolean(bundle.getString("changeToNotificationFragment")) ;
-        }
 
-        authentication(toNotification);
 
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {

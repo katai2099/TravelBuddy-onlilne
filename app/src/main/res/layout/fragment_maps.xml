@@ -7,7 +7,308 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <fragment xmlns:tools="http://schemas.android.com/tools"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="200dp"
+       >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <fragment xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MapsFragment" />
+
+            <com.mancj.materialsearchbar.MaterialSearchBar
+                style="@style/MaterialSearchBarLight"
+                app:mt_speechMode="true"
+                app:mt_hint="Search a place"
+                app:mt_maxSuggestionsCount="10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:id="@+id/searchBar"
+                app:mt_navIconEnabled="true"
+                android:elevation="5dp"
+                android:outlineProvider="bounds"
+                app:mt_placeholder="Search a place"
+                />
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_centerInParent="true"
+                android:layout_alignParentBottom="true"
+                app:cardCornerRadius="20dp"
+                android:layout_marginBottom="@dimen/floating_above_bottom_navigation_bar"
+                android:background="?android:attr/selectableItemBackground">
+
+                <Button
+                    android:id="@+id/btnSearchForAttraction"
+                    android:text="@string/search_for_attraction"
+                    android:textAllCaps="false"
+                    android:textColor="@color/quantum_black_100"
+                    android:textSize="12sp"
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    />
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/dragView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                app:cardCornerRadius="1dp"
+                app:cardElevation="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                       >
+
+                        <TextView
+                            android:id="@+id/locationName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_xxlarge"
+                            android:gravity="center_vertical"
+                            android:minHeight="50dp"
+                            android:paddingEnd="@dimen/spacing_large"
+                            android:paddingLeft="@dimen/spacing_large"
+                            android:paddingRight="@dimen/spacing_large"
+                            android:paddingStart="@dimen/spacing_large"
+                            android:text="Dandelion Chocolate"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+                        <ImageView
+                            android:id="@+id/locationSinglePic"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_toEndOf="@id/locationName"
+                            android:layout_alignParentEnd="true"
+                            android:background="@drawable/ic_baseline_local_phone_24"
+                            android:layout_marginRight="20dp"/>
+
+                        <TextView
+
+                            android:text="NongThatai"
+                            android:id="@+id/locationAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/locationName"
+                            android:layout_marginStart="@dimen/spacing_xxlarge"/>
+
+                        <RatingBar
+                            android:id="@+id/locationStarRating"
+                            style="@style/Yellow.Small.AppCompatRatingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:numStars="5"
+                            android:rating="3.5"
+                            android:stepSize="0.5"
+                            android:theme="@style/Yellow.Small.AppCompatRatingBar"
+                            android:layout_below="@id/locationAddress"
+                            android:layout_marginStart="@dimen/spacing_xxlarge"/>
+
+                        <TextView
+                            android:id="@+id/locationRating"
+                            android:layout_below="@id/locationAddress"
+                            android:layout_toEndOf="@id/locationStarRating"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="4.7 (51)"
+                            android:paddingLeft="5dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                        <Button
+                            android:id="@+id/mapFragmentBtnAddTripDetail"
+                            android:layout_below="@id/locationRating"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/add_to_trip"
+                            android:textColor="@color/quantum_black_100"
+                            android:layout_centerInParent="true"
+                            android:background="@color/white"
+                            />
+
+                    </RelativeLayout>
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_large">
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/spacing_xxlarge"
+                            android:background="@color/grey_10" />
+
+
+                        <TextView
+                            android:text="working hour"
+                            android:layout_marginStart="@dimen/spacing_xxlarge"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:text="12:00 - 20:00"
+                            android:id="@+id/locationWorkingHour"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_xxlarge"
+                            />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+
+                            android:layout_marginStart="@dimen/spacing_xxlarge"
+                            android:background="@color/grey_10" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_middle"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:text="Contacts"
+                                android:layout_marginStart="@dimen/spacing_xxlarge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="?attr/actionBarSize"
+                                    android:background="@android:color/transparent"
+                                    android:tint="@color/grey_20"
+                                    app:srcCompat="@drawable/ic_baseline_local_phone_24" />
+
+                                <View
+                                    android:layout_width="@dimen/spacing_mxlarge"
+                                    android:layout_height="0dp" />
+
+                                <TextView
+                                    android:id="@+id/locationPhoneNumber"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:text="(415) 349-0942"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/grey_90" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="?attr/actionBarSize"
+                                    android:background="@android:color/transparent"
+                                    android:tint="@color/grey_20"
+                                    app:srcCompat="@drawable/ic_baseline_email_24" />
+
+                                <View
+                                    android:layout_width="@dimen/spacing_mxlarge"
+                                    android:layout_height="0dp" />
+
+                                <TextView
+                                    android:id="@+id/locationWebsite"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:text="kataix2@gmail.com"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/grey_90" />
+
+                            </LinearLayout>
+
+
+                            <TextView
+
+                                android:text="online source"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/spacing_xxlarge"/>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:layout_marginTop="10dp"
+                                android:layout_marginStart="@dimen/spacing_xxlarge"
+                                android:id="@+id/googleMapPicturesRecyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"/>
+
+                            <Button
+                                android:id="@+id/mapFragmentBtnAddTripDetailOnSwipeUp"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/add_to_trip"
+                                android:textColor="@color/quantum_black_100"
+                                android:background="@color/white"
+                                />
+
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+  <!--  <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
@@ -57,8 +358,9 @@
         </androidx.cardview.widget.CardView>
 
 
-        <include
-            layout="@layout/map_bottom_sheet_layout" />
+        &lt;!&ndash;<include
+            layout="@layout/map_bottom_sheet_layout" />&ndash;&gt;
+    <include layout="@layout/map_umano_bottom_sheet"/>
 
 
 
@@ -73,7 +375,7 @@
             android:textColor="@color/quantum_black_100"
             android:layout_gravity="bottom"
             android:background="@color/white"
-            />
+            />-->
 
 
 

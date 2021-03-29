@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.slidingpanelayout.widget.SlidingPaneLayout;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -17,6 +18,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -51,6 +53,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -73,6 +76,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -81,11 +85,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -94,6 +109,8 @@ public class MapsFragment extends Fragment {
 
     private BottomSheetBehavior bottomSheetBehavior;
     LinearLayout llBottomSheet;
+
+    private SlidingUpPanelLayout googleMapInformationLayout;
 
     private final String tag = "MAP_FRAGMENT";
 
@@ -119,19 +136,20 @@ public class MapsFragment extends Fragment {
 
     private GoogleMap map;
 
-    private View googleMapInformationLayout;
 
     private GoogleMapPictureAdapter googleMapPictureAdapter;
 
     private RecyclerView rcvGoogleMapPics;
 
-    private Button btnAddTrip;
+    private Button btnAddTrip , btnSearchForAttraction , btnAddAttractionOnSwipeUp;
 
     private List<Bitmap> bitmapList;
 
     private TextView locationName , locationAddress , locationRating , locationWorkingHour , locationPhoneNumber , locationWebsite;
 
     private RatingBar locationStarRating;
+
+    private double currentLat, currentLng;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -148,7 +166,7 @@ public class MapsFragment extends Fragment {
 
 
         @Override
-        public void onMapReady(GoogleMap googleMap) {
+        public void onMapReady(final GoogleMap googleMap) {
             map = googleMap;
             LatLng sydney = new LatLng(-34, 151);
             googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
@@ -168,6 +186,8 @@ public class MapsFragment extends Fragment {
 
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
+            }else{
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
 
             googleMap.setMyLocationEnabled(true);
@@ -218,8 +238,7 @@ public class MapsFragment extends Fragment {
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
-                    btnAddTrip.setVisibility(View.GONE);
-                    googleMapInformationLayout.setVisibility(View.GONE);
+                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
             });
 
@@ -239,151 +258,35 @@ public class MapsFragment extends Fragment {
             googleMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
                 @Override
                 public void onPoiClick(PointOfInterest pointOfInterest) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    if(imm!=null){
+                        imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(),0);
+                    }
+                    materialSearchBar.closeSearch();
+                    materialSearchBar.clearSuggestions();
                     final String placeName = pointOfInterest.name;
                     final String placeId = pointOfInterest.placeId;
                     final LatLng placeLatLng = pointOfInterest.latLng;
+
                     Toast.makeText(getActivity(), placeName, Toast.LENGTH_SHORT).show();
 
 
-                    final List<Place.Field> placeInformation = Arrays.asList(Place.Field.ADDRESS,Place.Field.RATING,Place.Field.OPENING_HOURS,
-                                                                            Place.Field.PHONE_NUMBER,Place.Field.RATING, Place.Field.WEBSITE_URI);
-
-                    final FetchPlaceRequest placeInformationRequest = FetchPlaceRequest.newInstance(placeId,placeInformation);
-
-                    placesClient.fetchPlace(placeInformationRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
-                        @Override
-                        public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
-                            final Place place = fetchPlaceResponse.getPlace();
-
-                            locationAddress.setText("N/A");
-                            locationRating.setText("N/A");
-                            locationWorkingHour.setText("N/A");
-                            locationPhoneNumber.setText("N/A");
-                            locationStarRating.setNumStars(0);
-                            locationWebsite.setText("N/A");
-
-
-                            if(place.getAddress()!=null){
-                                String address = place.getAddress();
-                                locationAddress.setText(address);
-                            }
-                            if(place.getRating()!=null && place.getUserRatingsTotal()!=null){
-                                Double rating = place.getRating();
-                                int numberOfRater = place.getUserRatingsTotal();
-                                locationStarRating.setRating(rating.floatValue());
-                                locationRating.setText(String.format("%s %d", rating, numberOfRater));
-                            }
-                            if(place.getOpeningHours()!=null){
-                                OpeningHours workingHour = place.getOpeningHours();
-                                Calendar cal = Calendar.getInstance();
-                                int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-                                System.out.println("kataikataikatai" + today);
-                                locationWorkingHour.setText(workingHour.getWeekdayText().get(today));
-                            }
-                            if(place.getPhoneNumber()!=null){
-                                String phone = place.getPhoneNumber();
-                                locationPhoneNumber.setText(phone);
-                            }
-                            if(place.getWebsiteUri()!=null){
-                                Uri website = place.getWebsiteUri();
-                                locationWebsite.setText(website.toString());
-
-                            }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            locationAddress.setText("N/A");
-                            locationRating.setText("N/A");
-                            locationWorkingHour.setText("N/A");
-                            locationPhoneNumber.setText("N/A");
-                            locationStarRating.setNumStars(0);
-                            locationWebsite.setText("N/A");
-                        }
-                    });
-
-                    //clear list to display new image every time user click on POI
-                    bitmapList.clear();
-
-                    // Specify fields. Requests for photos must always have the PHOTO_METADATAS field.
-                    final List<Place.Field> fields = Collections.singletonList(Place.Field.PHOTO_METADATAS);
-
-                    // Get a Place object (this example uses fetchPlace(), but you can also use findCurrentPlace())
-                    final FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeId, fields);
-
-                    placesClient.fetchPlace(placeRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
-                        @Override
-                        public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
-                            final Place place = fetchPlaceResponse.getPlace();
-                            // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
-                            final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-                            if (metadata == null || metadata.isEmpty()) {
-                                Toast.makeText(getContext(), "No metadata", Toast.LENGTH_SHORT).show();
-                            }
-                            if (metadata!=null && metadata.size() != 0) {
-
-                                for (int i = 0; i < metadata.size(); i++) {
-                                    if (i == 5)
-                                        break;
-                                    final PhotoMetadata photoMetadata = metadata.get(i);
-                                    final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                                            .setMaxWidth(300)
-                                            .setMaxHeight(300)
-                                            .build();
-
-                                    placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
-                                        @Override
-                                        public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
-                                            Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                                            bitmapList.add(bitmap);
-                                            googleMapPictureAdapter.notifyDataSetChanged();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            if (e instanceof ApiException) {
-                                                final ApiException apiException = (ApiException) e;
-                                                Log.e(tag, "Place not found: " + e.getMessage());
-                                                final int statusCode = apiException.getStatusCode();
-                                                Log.e(tag, String.valueOf(statusCode));
-
-                                            }
-                                        }
-                                    });
-
-
-                                }
-
-
-                            }
-
-                        }
-                    });
-
-
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
-                    googleMapInformationLayout.setVisibility(View.VISIBLE);
-                    btnAddTrip.setVisibility(View.VISIBLE);
-                 /*   TextView tv = googleMapInformationLayout.findViewById(R.id.tvPlaceName);
-                    tv.setText(placeName);*/
-
-                    locationName.setText(placeName);
-
-                    btnAddTrip.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(getContext(),TripSelectionActivity.class);
-                            i.putExtra("googleMapPlaceName",placeName);
-                            i.putExtra("googleMapPlaceID",placeId);
-                            i.putExtra("googleMapPlaceLat",placeLatLng.latitude);
-                            i.putExtra("googleMapPlaceLong",placeLatLng.longitude);
-                            startActivity(i);
-                        }
-                    });
-
+                    showBottomLayoutWithDetail(placeId,placeName,placeLatLng);
 
                 }
             });
+
+            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Log.d(tag,marker.getSnippet());
+                    showBottomLayoutWithDetail(marker.getSnippet(),marker.getTitle(),marker.getPosition());
+                   // googleMap.clear();
+                    return true;
+                }
+            });
+
 
         }
     };
@@ -397,16 +300,21 @@ public class MapsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_maps, container, false);
 
-        initComponent(root);
+     //   initComponent(root);
 
         materialSearchBar = root.findViewById(R.id.searchBar);
+        googleMapInformationLayout = (SlidingUpPanelLayout)root.findViewById(R.id.sliding_layout);
+
+
 
 //        getCurrentTripDetailIdFromFirebaseDatabase();
 
-        googleMapInformationLayout = root.findViewById(R.id.bottom_sheet);
-        initPlaceInformationLayout(googleMapInformationLayout);
+      //  googleMapInformationLayout = root.findViewById(R.id.bottom_sheet);
+        initPlaceInformationLayout(root);
+        bottomSheetBehavior();
 
-        googleMapInformationLayout.setVisibility(View.GONE);
+
+      //  googleMapInformationLayout.setVisibility(View.GONE);
         bitmapList = new ArrayList<>();
         googleMapPictureAdapter = new GoogleMapPictureAdapter(bitmapList);
         rcvGoogleMapPics = googleMapInformationLayout.findViewById(R.id.googleMapPicturesRecyclerView);
@@ -414,7 +322,9 @@ public class MapsFragment extends Fragment {
         rcvGoogleMapPics.setAdapter(googleMapPictureAdapter);
 
         btnAddTrip = root.findViewById(R.id.mapFragmentBtnAddTripDetail);
-        btnAddTrip.setVisibility(View.GONE);
+        btnSearchForAttraction = root.findViewById(R.id.btnSearchForAttraction);
+        btnAddAttractionOnSwipeUp = root.findViewById(R.id.mapFragmentBtnAddTripDetailOnSwipeUp);
+       // btnAddTrip.setVisibility(View.GONE);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -424,13 +334,22 @@ public class MapsFragment extends Fragment {
 
         final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
+        btnSearchForAttraction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findNearByAttraction();
+            }
+        });
 
 
 
         materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
-
+                if(enabled && (googleMapInformationLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED ||
+                        googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)){
+                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                }
             }
 
             @Override
@@ -442,10 +361,16 @@ public class MapsFragment extends Fragment {
             public void onButtonClicked(int buttonCode) {
                 if (buttonCode == MaterialSearchBar.BUTTON_BACK) {
                     materialSearchBar.closeSearch();
+                    materialSearchBar.clearSuggestions();
                 }
+
 
             }
         });
+
+
+
+
 
         materialSearchBar.addTextChangeListener(new TextWatcher() {
             @Override
@@ -503,49 +428,38 @@ public class MapsFragment extends Fragment {
                     return;
                 }
                 AutocompletePrediction selectedPrediction = predictionList.get(position);
-                String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
+              /*  String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
                 materialSearchBar.setText(suggestion);
+*/
+                materialSearchBar.clearSuggestions();
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        materialSearchBar.clearSuggestions();
-                    }
-                },1000);
 
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
                 if(imm!=null){
-                    imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(),InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(),InputMethodManager.HIDE_IMPLICIT_ONLY);
                 }
 
 
 
                 final String placeId = selectedPrediction.getPlaceId();
-                List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
+                List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG,Place.Field.NAME);
 
                 FetchPlaceRequest fetchPlaceRequest = FetchPlaceRequest.builder(placeId, placeFields).build();
                 placesClient.fetchPlace(fetchPlaceRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
                     @Override
                     public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
                         Place place = fetchPlaceResponse.getPlace();
-
                         LatLng latLngOfPlace = place.getLatLng();
-                        if (latLngOfPlace != null) {
+                        String placeName = place.getName();
+                        if (latLngOfPlace != null && placeName!=null) {
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOfPlace, 15));
+
+                            showBottomLayoutWithDetail(placeId,placeName,latLngOfPlace);
+
                         }
-                        map.addMarker(new MarkerOptions().position(latLngOfPlace).title("Marker"));
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (e instanceof ApiException) {
-                            ApiException apiException = (ApiException) e;
-                            apiException.printStackTrace();
-                            int statusCode = apiException.getStatusCode();
-                          //  Log.i("mytag", "place not found: " + e.getMessage());
-                         //   Log.i("mytag", "status code: " + statusCode);
-                        }
+
+
                     }
                 });
 
@@ -554,8 +468,11 @@ public class MapsFragment extends Fragment {
             @Override
             public void OnItemDeleteListener(int position, View v) {
 
+
             }
         });
+
+
 
 
 
@@ -607,6 +524,8 @@ public class MapsFragment extends Fragment {
                     lastKnownLocation = task.getResult();
                     if(lastKnownLocation!=null){
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude()),15));
+                        currentLat = lastKnownLocation.getLatitude();
+                        currentLng = lastKnownLocation.getLongitude();
                     }
                 } else {
                     Toast.makeText(getContext(), "Unable to get last location", Toast.LENGTH_SHORT).show();
@@ -703,8 +622,301 @@ public class MapsFragment extends Fragment {
         locationWebsite = googleMapInformationLayout.findViewById(R.id.locationWebsite);
         locationStarRating = googleMapInformationLayout.findViewById(R.id.locationStarRating);
 
+    }
+
+
+
+    private void bottomSheetBehavior(){
+
+        //we hide when user first enter the map fragment
+        googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+
+        googleMapInformationLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                btnAddTrip.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED){
+                    btnAddTrip.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
     }
+
+    private void showBottomLayoutWithDetail(final String placeID, final String placeName, final LatLng placeLatLng){
+
+        final List<Place.Field> placeInformation = Arrays.asList(Place.Field.ADDRESS,Place.Field.RATING,Place.Field.OPENING_HOURS,
+                Place.Field.PHONE_NUMBER,Place.Field.RATING, Place.Field.WEBSITE_URI);
+
+        final FetchPlaceRequest placeInformationRequest = FetchPlaceRequest.newInstance(placeID,placeInformation);
+
+        placesClient.fetchPlace(placeInformationRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
+            @Override
+            public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
+                final Place place = fetchPlaceResponse.getPlace();
+
+                locationAddress.setText("N/A");
+                locationRating.setText("N/A");
+                locationWorkingHour.setText("N/A");
+                locationPhoneNumber.setText("N/A");
+                locationStarRating.setNumStars(0);
+                locationWebsite.setText("N/A");
+
+
+                if(place.getAddress()!=null){
+                    String address = place.getAddress();
+                    locationAddress.setText(address);
+                }
+                if(place.getRating()!=null && place.getUserRatingsTotal()!=null){
+                    Double rating = place.getRating();
+                    int numberOfRater = place.getUserRatingsTotal();
+                    locationStarRating.setRating(rating.floatValue());
+                    locationRating.setText(String.format("%s %d", rating, numberOfRater));
+                }
+                if(place.getOpeningHours()!=null){
+                    OpeningHours workingHour = place.getOpeningHours();
+                    Calendar cal = Calendar.getInstance();
+                    int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+                    System.out.println("kataikataikatai" + today);
+                    locationWorkingHour.setText(workingHour.getWeekdayText().get(today));
+                }
+                if(place.getPhoneNumber()!=null){
+                    String phone = place.getPhoneNumber();
+                    locationPhoneNumber.setText(phone);
+                }
+                if(place.getWebsiteUri()!=null){
+                    Uri website = place.getWebsiteUri();
+                    locationWebsite.setText(website.toString());
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                locationAddress.setText("N/A");
+                locationRating.setText("N/A");
+                locationWorkingHour.setText("N/A");
+                locationPhoneNumber.setText("N/A");
+                locationStarRating.setNumStars(0);
+                locationWebsite.setText("N/A");
+            }
+        });
+
+        //clear list to display new image every time user click on POI
+        bitmapList.clear();
+
+        // Specify fields. Requests for photos must always have the PHOTO_METADATAS field.
+        final List<Place.Field> fields = Collections.singletonList(Place.Field.PHOTO_METADATAS);
+
+        // Get a Place object (this example uses fetchPlace(), but you can also use findCurrentPlace())
+        final FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeID, fields);
+
+        placesClient.fetchPlace(placeRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
+            @Override
+            public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
+                final Place place = fetchPlaceResponse.getPlace();
+                // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
+                final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+                if (metadata == null || metadata.isEmpty()) {
+                    Toast.makeText(getContext(), "No metadata", Toast.LENGTH_SHORT).show();
+                }
+                if (metadata!=null && metadata.size() != 0) {
+
+                    for (int i = 0; i < metadata.size(); i++) {
+                        if (i == 5)
+                            break;
+                        final PhotoMetadata photoMetadata = metadata.get(i);
+                        final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                                .setMaxWidth(300)
+                                .setMaxHeight(300)
+                                .build();
+
+                        placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
+                            @Override
+                            public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
+                                Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                                bitmapList.add(bitmap);
+                                googleMapPictureAdapter.notifyDataSetChanged();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                if (e instanceof ApiException) {
+                                    final ApiException apiException = (ApiException) e;
+                                    Log.e(tag, "Place not found: " + e.getMessage());
+                                    final int statusCode = apiException.getStatusCode();
+                                    Log.e(tag, String.valueOf(statusCode));
+
+                                }
+                            }
+                        });
+
+
+                    }
+
+
+                }
+
+            }
+        });
+
+
+        googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+
+        locationName.setText(placeName);
+
+        btnAddTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(),TripSelectionActivity.class);
+                i.putExtra("googleMapPlaceName",placeName);
+                i.putExtra("googleMapPlaceID",placeID);
+                i.putExtra("googleMapPlaceLat",placeLatLng.latitude);
+                i.putExtra("googleMapPlaceLong",placeLatLng.longitude);
+                startActivity(i);
+            }
+        });
+
+        btnAddAttractionOnSwipeUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(),TripSelectionActivity.class);
+                i.putExtra("googleMapPlaceName",placeName);
+                i.putExtra("googleMapPlaceID",placeID);
+                i.putExtra("googleMapPlaceLat",placeLatLng.latitude);
+                i.putExtra("googleMapPlaceLong",placeLatLng.longitude);
+                startActivity(i);
+            }
+        });
+
+    }
+
+    private void findNearByAttraction(){
+
+       String url =  "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+               "location=" + currentLat + "," + currentLng +
+               "&radius=1000" +
+               "&type=tourist_attraction" +
+               "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
+
+       new PlaceTask().execute(url);
+
+    }
+
+    private class PlaceTask extends AsyncTask<String,Integer,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            String data = null;
+            try {
+               data = downloadUrl(strings[0]);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
+
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            new ParserTask().execute(s);
+        }
+    }
+
+    private String downloadUrl(String string) throws IOException {
+
+        URL url = new URL(string);
+
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.connect();
+
+        InputStream stream = connection.getInputStream();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+        StringBuilder builder = new StringBuilder();
+
+        String line = "";
+
+        while((line = reader.readLine())!= null){
+            builder.append(line);
+        }
+
+        String data = builder.toString();
+
+        reader.close();
+
+        Log.d(tag,"download url data " +data);
+
+        return data;
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class  ParserTask extends AsyncTask<String,Integer,List<HashMap<String,String>>>{
+
+        @Override
+        protected List<HashMap<String, String>> doInBackground(String... strings) {
+
+            //create json parser class
+            JsonParser jsonParser = new JsonParser();
+            //initialize hash map list
+            List<HashMap<String,String>> mapList = null;
+            //initialize json object
+            try {
+                JSONObject object = new JSONObject(strings[0]);
+                //parse json object
+                mapList = jsonParser.parseResult(object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            return mapList;
+        }
+
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
+            map.clear();
+
+            Log.d(tag,"I am here after clearing map");
+
+            for(int i=0;i<hashMaps.size();i++){
+                HashMap<String,String> hashMapList = hashMaps.get(i);
+
+                double lat = Double.parseDouble(hashMapList.get("lat"));
+                double lng = Double.parseDouble(hashMapList.get("lng"));
+                String name = hashMapList.get("name");
+                String placeID = hashMapList.get("placeID");
+
+                LatLng latLng = new LatLng(lat,lng);
+
+                MarkerOptions options = new MarkerOptions();
+
+                options.position(latLng);
+
+                options.title(name);
+
+                options.snippet(placeID);
+
+                map.addMarker(options);
+
+                Log.d(tag,"I am here adding marker");
+
+
+            }
+
+        }
+    }
+
+
 
 
 
