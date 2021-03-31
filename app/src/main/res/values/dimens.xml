@@ -24,4 +24,6 @@
     <dimen name="bottom_navigation_bar_height">48dp</dimen>
     <dimen name="floating_above_bottom_navigation_bar">68dp</dimen>
 
+    <dimen name="default_margin">24dp</dimen>
+
 </resources>

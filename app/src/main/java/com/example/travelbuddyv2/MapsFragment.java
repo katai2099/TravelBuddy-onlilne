@@ -6,7 +6,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.slidingpanelayout.widget.SlidingPaneLayout;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,11 +15,9 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.location.LocationListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -107,9 +104,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment {
 
-    private BottomSheetBehavior bottomSheetBehavior;
-    LinearLayout llBottomSheet;
 
+    private boolean isHideAttractionTriggered = false;
     private SlidingUpPanelLayout googleMapInformationLayout;
 
     private final String tag = "MAP_FRAGMENT";
@@ -141,7 +137,7 @@ public class MapsFragment extends Fragment {
 
     private RecyclerView rcvGoogleMapPics;
 
-    private Button btnAddTrip , btnSearchForAttraction , btnAddAttractionOnSwipeUp;
+    private Button btnAddTrip , btnSearchForAttraction , btnAddAttractionOnSwipeUp , btnHideAttraction;
 
     private List<Bitmap> bitmapList;
 
@@ -150,6 +146,8 @@ public class MapsFragment extends Fragment {
     private RatingBar locationStarRating;
 
     private double currentLat, currentLng;
+
+    private View locationButton;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -168,9 +166,6 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(final GoogleMap googleMap) {
             map = googleMap;
-            LatLng sydney = new LatLng(-34, 151);
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
 
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -196,8 +191,8 @@ public class MapsFragment extends Fragment {
             if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
 
 
+                 locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
 
-                View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
@@ -239,6 +234,13 @@ public class MapsFragment extends Fragment {
                 @Override
                 public void onMapClick(LatLng latLng) {
                     googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                  //  btnSearchForAttraction.setVisibility(View.VISIBLE);
+                    setButtonVisible();
+                    if(materialSearchBar.isSearchOpened()){
+                        materialSearchBar.clearSuggestions();
+                        materialSearchBar.closeSearch();
+                    }
+
                 }
             });
 
@@ -255,9 +257,12 @@ public class MapsFragment extends Fragment {
                 }
             });
 
+
             googleMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
                 @Override
                 public void onPoiClick(PointOfInterest pointOfInterest) {
+                  //  btnSearchForAttraction.setVisibility(View.GONE);
+                    setButtonGone();
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
                     if(imm!=null){
@@ -281,7 +286,10 @@ public class MapsFragment extends Fragment {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
                     Log.d(tag,marker.getSnippet());
+                 //   btnSearchForAttraction.setVisibility(View.GONE);
+                    setButtonGone();
                     showBottomLayoutWithDetail(marker.getSnippet(),marker.getTitle(),marker.getPosition());
+
                    // googleMap.clear();
                     return true;
                 }
@@ -300,21 +308,15 @@ public class MapsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_maps, container, false);
 
-     //   initComponent(root);
 
         materialSearchBar = root.findViewById(R.id.searchBar);
-        googleMapInformationLayout = (SlidingUpPanelLayout)root.findViewById(R.id.sliding_layout);
+        googleMapInformationLayout = root.findViewById(R.id.sliding_layout);
 
 
-
-//        getCurrentTripDetailIdFromFirebaseDatabase();
-
-      //  googleMapInformationLayout = root.findViewById(R.id.bottom_sheet);
         initPlaceInformationLayout(root);
         bottomSheetBehavior();
 
 
-      //  googleMapInformationLayout.setVisibility(View.GONE);
         bitmapList = new ArrayList<>();
         googleMapPictureAdapter = new GoogleMapPictureAdapter(bitmapList);
         rcvGoogleMapPics = googleMapInformationLayout.findViewById(R.id.googleMapPicturesRecyclerView);
@@ -323,8 +325,8 @@ public class MapsFragment extends Fragment {
 
         btnAddTrip = root.findViewById(R.id.mapFragmentBtnAddTripDetail);
         btnSearchForAttraction = root.findViewById(R.id.btnSearchForAttraction);
+        btnHideAttraction = root.findViewById(R.id.btnHideAttraction);
         btnAddAttractionOnSwipeUp = root.findViewById(R.id.mapFragmentBtnAddTripDetailOnSwipeUp);
-       // btnAddTrip.setVisibility(View.GONE);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -337,7 +339,21 @@ public class MapsFragment extends Fragment {
         btnSearchForAttraction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                locationButton.performClick();
                 findNearByAttraction();
+                btnSearchForAttraction.setVisibility(View.GONE);
+                btnHideAttraction.setVisibility(View.VISIBLE);
+                isHideAttractionTriggered = true;
+            }
+        });
+
+        btnHideAttraction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.clear();
+                btnHideAttraction.setVisibility(View.GONE);
+                btnSearchForAttraction.setVisibility(View.VISIBLE);
+                isHideAttractionTriggered = false;
             }
         });
 
@@ -348,13 +364,17 @@ public class MapsFragment extends Fragment {
             public void onSearchStateChanged(boolean enabled) {
                 if(enabled && (googleMapInformationLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED ||
                         googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)){
+                    Log.d(tag,"Search typed");
                     googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                }
+                if(enabled && (btnHideAttraction.getVisibility() == View.VISIBLE || btnSearchForAttraction.getVisibility() == View.VISIBLE)){
+                    setButtonGone();
                 }
             }
 
             @Override
             public void onSearchConfirmed(CharSequence text) {
-                Toast.makeText(getContext(),text.toString(),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),text.toString(),Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -432,6 +452,8 @@ public class MapsFragment extends Fragment {
                 materialSearchBar.setText(suggestion);
 */
                 materialSearchBar.clearSuggestions();
+            //    btnSearchForAttraction.setVisibility(View.GONE);
+                setButtonGone();
 
 
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -453,6 +475,12 @@ public class MapsFragment extends Fragment {
                         LatLng latLngOfPlace = place.getLatLng();
                         String placeName = place.getName();
                         if (latLngOfPlace != null && placeName!=null) {
+                            map.clear();
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.title(placeName);
+                            markerOptions.snippet(placeId);
+                            markerOptions.position(latLngOfPlace);
+                            map.addMarker(markerOptions);
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOfPlace, 15));
 
                             showBottomLayoutWithDetail(placeId,placeName,latLngOfPlace);
@@ -471,8 +499,6 @@ public class MapsFragment extends Fragment {
 
             }
         });
-
-
 
 
 
@@ -594,22 +620,6 @@ public class MapsFragment extends Fragment {
 
     }
 
-    private void initComponent(View root){
-
-        llBottomSheet =  root.findViewById(R.id.bottom_sheet);
-
-        bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
-
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
-
-        bottomSheetBehavior.setHideable(false);
-        bottomSheetBehavior.setFitToContents(true);
-
-      //  bottomSheetBehavior.setHalfExpandedRatio(0.5f);
-     //   bottomSheetBehavior.setHalfExpandedRatio(0.4f);
-
-
-    }
 
     private void initPlaceInformationLayout(View googleMapInformationLayout){
 
@@ -679,7 +689,6 @@ public class MapsFragment extends Fragment {
                 }
                 if(place.getOpeningHours()!=null){
                     OpeningHours workingHour = place.getOpeningHours();
-                    Calendar cal = Calendar.getInstance();
                     int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
                     System.out.println("kataikataikatai" + today);
                     locationWorkingHour.setText(workingHour.getWeekdayText().get(today));
@@ -912,9 +921,25 @@ public class MapsFragment extends Fragment {
 
 
             }
-
         }
     }
+
+    private void setButtonVisible(){
+        if(btnSearchForAttraction.getVisibility() == View.GONE && !isHideAttractionTriggered){
+            btnSearchForAttraction.setVisibility(View.VISIBLE);
+        }else if(btnHideAttraction.getVisibility() == View.GONE){
+            btnHideAttraction.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setButtonGone(){
+        if(btnSearchForAttraction.getVisibility() == View.VISIBLE){
+            btnSearchForAttraction.setVisibility(View.GONE);
+        }else if(btnHideAttraction.getVisibility() == View.VISIBLE){
+            btnHideAttraction.setVisibility(View.GONE);
+        }
+    }
+
 
 
 

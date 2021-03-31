@@ -18,4 +18,17 @@
     <string name="title_activity_group_trip_detail">GroupTripDetailActivity</string>
     <string name="search_for_attraction">Search for attraction</string>
     <string name="add_to_trip">Add to trip</string>
+    <string name="enter_you_name">Enter you name</string>
+    <string name="cancel">cancel</string>
+    <string name="save">Save</string>
+    <string name="hide_attraction">Hide attraction</string>
+
+    <string name="forgot_your_password">Forgot your Password?</string>
+    <string name="password_reset_instruction">Enter your associate email below \n to receive password reset instruction</string>
+    <string name="send">send</string>
+    <string name="email">Email</string>
+    <string name="password_reset_link_sent">Password Reset Link Sent to Email</string>
+    <string name="no_user_associated_with_email">No User is Associated with that Email</string>
+    <string name="email_sent">Email has been sent!</string>
+    <string name="login">Login</string>
 </resources>

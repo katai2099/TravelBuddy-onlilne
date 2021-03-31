@@ -87,20 +87,8 @@ public class loginActivity extends AppCompatActivity {
         btnPasswordReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-
-                if(user!=null) {
-                    Boolean check = user.isEmailVerified();
-                    Toast.makeText(loginActivity.this, check.toString(), Toast.LENGTH_SHORT).show();
-                    auth.signOut();
-                    user.reload();
-                }
-
-
+                Intent i = new Intent(loginActivity.this,ResetPasswordActivity.class);
+                startActivity(i);
             }
         });
 

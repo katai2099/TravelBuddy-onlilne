@@ -27,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import com.example.travelbuddyv2.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,10 +59,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserProfileFragment extends Fragment {
 
     final private String tag = "USER_PROFILE_FRAGMENT";
-    TextView tvUserEmail;
-    EditText etUserName;
-    Button btnLogOut , btnEditUserName;
-  //  ImageView imgUserProfileImage;
+    TextView tvUserEmail, tvUserName;
+    Button btnLogOut , btnSave,btnCancel;
+    private  BottomSheetDialog bottomSheetDialog;
+    private View bottomSheetView;
+    private EditText etEditProfileName;
     CircleImageView imgUserProfileImage;
     User user;
     private static final int GalleryPick = 1;
@@ -76,46 +79,26 @@ public class UserProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
-        etUserName = root.findViewById(R.id.etProfileName);
+        tvUserName = root.findViewById(R.id.tvProfileName);
         tvUserEmail = root.findViewById(R.id.tvProfileEmail);
         btnLogOut = root.findViewById(R.id.btnUserLogOut);
         imgUserProfileImage = root.findViewById(R.id.imgProfilePic);
-        btnEditUserName = root.findViewById(R.id.btnEditProfileName);
         loadingBar = new ProgressDialog(getContext());
         user = new User();
         getCurrentUserInformation();
 
         imgUserProfileImage.setImageResource(R.drawable.ic_baseline_person_24);
 
+        initBottomSheet(root);
 
-        btnEditUserName.setOnClickListener(new View.OnClickListener() {
+        tvUserName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etUserName.setEnabled(true);
-                etUserName.setFocusable(true);
-                btnEditUserName.setVisibility(View.GONE);
-                etUserName.setSelection(etUserName.getText().toString().length());
-                etUserName.requestFocus();
-                getContext();
-                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                bottomSheetDialog.show();
             }
         });
 
-       etUserName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-           @Override
-           public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-               if(actionId== EditorInfo.IME_ACTION_DONE){
-
-                   final String newName = etUserName.getText().toString();
-
-                  changeUserName(newName,v);
-
-                   return true;
-               }
-               return false;
-           }
-       });
+       // changeUserName(newName,v);
 
        imgUserProfileImage.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -129,28 +112,74 @@ public class UserProfileFragment extends Fragment {
            }
        });
 
-
-
-
-
-
-      /*  root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnEditUserName.setVisibility(View.VISIBLE);
-                etUserName.setEnabled(false);
-            }
-        });*/
-
         btnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signOut(getActivity());
             }
         });
-
         return root;
     }
+
+    private void initBottomSheet(View root){
+       bottomSheetDialog =  new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
+       bottomSheetView = LayoutInflater.from(getContext())
+                .inflate(R.layout.edit_profile_name_bottom_layout,
+                        (LinearLayout)root.findViewById(R.id.bottomSheetContainer));
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.setCanceledOnTouchOutside(true);
+
+        btnCancel = bottomSheetView.findViewById(R.id.btnEditProfileCancel);
+        btnSave = bottomSheetView.findViewById(R.id.btnEditProfileSave);
+        etEditProfileName = bottomSheetView.findViewById(R.id.etEditProfileName);
+
+        etEditProfileName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId==EditorInfo.IME_ACTION_DONE){
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelButtonBehavior();
+            }
+        });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveButtonBehavior();
+            }
+        });
+    }
+
+    private void cancelButtonBehavior(){
+        bottomSheetDialog.dismiss();
+    }
+    private void saveButtonBehavior(){
+        String previousName = tvUserName.getText().toString();
+        String newName = etEditProfileName.getText().toString();
+
+        if(!previousName.equals(newName)){
+            changeUserName(newName);
+            refreshUserName();
+        }
+
+        bottomSheetDialog.dismiss();
+    }
+
+    private void refreshUserName(){
+        tvUserName.setText(etEditProfileName.getText().toString());
+    }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -320,10 +349,9 @@ public class UserProfileFragment extends Fragment {
                 user.setUser_id(tmp.getUser_id());
                 user.setProfile_image(tmp.getProfile_image());
 
-                etUserName.setText(user.getName());
+                tvUserName.setText(user.getName());
                 tvUserEmail.setText(user.getEmail());
-
-
+                etEditProfileName.setText(user.getName());
 
                 if(user.getProfile_image()!=null && !(TextUtils.isEmpty(user.getProfile_image()))){
                     Toast.makeText(getContext(),user.getProfile_image(),Toast.LENGTH_SHORT).show();
@@ -336,7 +364,7 @@ public class UserProfileFragment extends Fragment {
         });
     }
 
-    private void changeUserName(final String newName, final View v){
+    private void changeUserName(final String newName){
         //update current user
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -408,11 +436,6 @@ public class UserProfileFragment extends Fragment {
                     }
                 });
 
-
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(),0);
-                btnEditUserName.setVisibility(View.VISIBLE);
-                etUserName.setEnabled(false);
             }
         });
 
