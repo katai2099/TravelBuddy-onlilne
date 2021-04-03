@@ -6,88 +6,101 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.example.travelbuddyv2.retrofit.Client;
+import com.example.travelbuddyv2.retrofit.MyResponse;
+import com.example.travelbuddyv2.retrofit.NotificationAPI;
+import com.example.travelbuddyv2.retrofit.NotificationData;
+import com.example.travelbuddyv2.retrofit.PushNotification;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Calendar;
 import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class ReminderBroadcast extends BroadcastReceiver {
 
     private static final String tag="ReminderBroadcast";
+    private NotificationAPI notificationAPI;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        DatabaseHelper db = new DatabaseHelper(context);
+        notificationAPI = Client.getClient("https://fcm.googleapis.com/").create(NotificationAPI.class);
+
 
         Log.i(tag,"I trigger set alarm");
         Bundle bundle = intent.getExtras();
 
-        String extraTripName = bundle.getString("Extra_tripName");
-        int k = bundle.getInt("Extra_tripID");
+        String tripName = bundle.getString("tripName");
+        String tripStringID = bundle.getString("tripStringID");
+        String tripStartDate = bundle.getString("tripStartDate");
 
-        Intent [] intents = new Intent[2];
-        intents[0] = new Intent(context, MainActivityOld.class);
-        intents[0].setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intents[1] = new Intent(context,tripDetail.class);
-        intents[1].setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intents[1].putExtra("TripID",k);
-       // intents[1].setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-      //  Intent resultIntent = new Intent(context,myTrip.class);
-       // TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        // Adds the back stack
-      //  stackBuilder.addParentStack(MainActivity.class);
 
-        // Adds the Intent to the top of the stack
-        //stackBuilder.addNextIntentWithParentStack(resultIntent);
-        // Gets a PendingIntent containing the entire back stack
-      //  PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, 0);
-
-      //  PendingIntent pendingIntent = PendingIntent.getActivities(context,0,intents,0);
-
-        PendingIntent pendingIntent = PendingIntent.getActivities(context,k,intents,0);
-
-  //      PendingIntent DeletePendingIntent = PendingIntent.getActivities(context,k,intents,pendingIntent.FLAG_UPDATE_CURRENT);
-
-//        DeletePendingIntent.cancel();
         String toNotified="";
         Date d = new Date();
-        Date startDate = Helper.stringToDate(db.getStartDateOfTrip(k));
-        Date endDate = Helper.stringToDate(db.getEndDateOfTrip(k));
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(endDate);
-        cal.set(Calendar.SECOND,59);
-        cal.set(Calendar.MINUTE,59);
-        cal.set(Calendar.HOUR,23);
-        Date ModifiedEndDate = cal.getTime();
-        if(startDate.before(d) && ModifiedEndDate.before(d))
-            toNotified = "You missed your " + extraTripName + " Trip !!";
-        else if(d.before(startDate))
-            toNotified = "You have " + extraTripName + " Trip Tomorrow";
+        Date startDate = Helper.stringToDate(tripStartDate);
+        if(d.before(startDate))
+            toNotified = "You have " + tripName + " Trip Tomorrow";
         else if(startDate.before(d))
-            toNotified = "You have " + extraTripName + " Trip Today";
+            toNotified = "You have " + tripName + " Trip Today";
+
+        final String endResult = toNotified;
 
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"NotifyTrip")
-                .setSmallIcon(R.drawable.weirdicon)
-                .setContentTitle("Trip Reminder")
-                .setContentText(toNotified)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("upcomingTripNotification")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(tripStringID);
 
-                ;
+        reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot mobileToken: dataSnapshot.getChildren()){
+                        sendNotification(endResult,mobileToken.getKey());
+                    }
+                }
+            }
+        });
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(k,builder.build());
 
 
-        db.updateIsNotifiedAfterNotificationShowed(k);
 
+    }
+
+    private void sendNotification(String body,String recipient){
+        NotificationData data = new NotificationData("Trip Upcoming!",body);
+        PushNotification pushNotification = new PushNotification(data,recipient);
+        notificationAPI.sendNotification(pushNotification).enqueue(new Callback<MyResponse>() {
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                if(response.code()==200){
+                    assert response.body() != null;
+                    if(response.body().success!=1){
+                       Log.d(tag,"FAIL TO SEND REQUEST");
+                    }
+                }
+                Log.d(tag, String.valueOf(response.code()));
+            }
+
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+
+            }
+        });
     }
 
 

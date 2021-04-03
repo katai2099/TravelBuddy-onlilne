@@ -22,6 +22,11 @@ import android.widget.Toast;
 import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.User;
 import com.example.travelbuddyv2.model.tripModel;
+import com.example.travelbuddyv2.retrofit.Client;
+import com.example.travelbuddyv2.retrofit.MyResponse;
+import com.example.travelbuddyv2.retrofit.NotificationAPI;
+import com.example.travelbuddyv2.retrofit.NotificationData;
+import com.example.travelbuddyv2.retrofit.PushNotification;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -31,6 +36,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,6 +47,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class addNewTrip extends AppCompatActivity {
 
@@ -57,6 +68,8 @@ public class addNewTrip extends AppCompatActivity {
     DatabaseHelper databaseHelper;
     User currentUserInfo;
 
+    private NotificationAPI notificationAPI;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +80,8 @@ public class addNewTrip extends AppCompatActivity {
         getCurrentUserInfo();
         tripName = findViewById(R.id.etTripName);
 
-       // setAlarmTime = findViewById(R.id.etSetAlarmTime);
+        //testing retrofit
+       notificationAPI = Client.getClient(getString(R.string.baseUrl)).create(NotificationAPI.class);
 
         startDate = findViewById(R.id.etDepartDate);
         startDate.setInputType(InputType.TYPE_NULL);
@@ -83,19 +97,9 @@ public class addNewTrip extends AppCompatActivity {
                 if(!hasFocus){
                     hideKeyboard(v);
                 }
-
             }
         });
 
-        /*
-        setAlarmTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    hideKeyboard(v);
-                }
-            }
-        }); */
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +125,7 @@ public class addNewTrip extends AppCompatActivity {
                     Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                   tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
+                   final tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
                     tmpTripModel.setStringID("t" + ID);
                     tmpTripModel.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -153,17 +157,14 @@ public class addNewTrip extends AppCompatActivity {
                                         public void onSuccess(Void aVoid) {
                                             addOwnerToMemberNode(lastInsertedID);
                                             Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
+                                            setNotificationTime(tmpTripModel);
+                                            subscribeToUpcomingTripNotification(tmpTripModel.getStringID());
                                             toTripFragment();
                                         }
                                     });
 
                                 }
                             });
-
-
-
-
-
                    // databaseHelper = new DatabaseHelper(addNewTrip.this);
                    // databaseHelper.addNewTrip(tmpTripModel);
                    // int Time = Integer.parseInt(setAlarmTime.getText().toString());
@@ -230,7 +231,6 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tripName.clearFocus();
-             //   setAlarmTime.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -292,18 +292,30 @@ public class addNewTrip extends AppCompatActivity {
             }
         });
 
+    }
 
+    private void subscribeToUpcomingTripNotification(final String tripStringID){
+
+
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("upcomingTripNotification")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child(tripStringID)
+                        .child(s);
+
+                reference.setValue("");
+            }
+        });
 
 
     }
 
     private void getCurrentUserInfo() {
-
         currentUserInfo = new User();
-
         DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("User")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         currentUserReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
@@ -315,9 +327,31 @@ public class addNewTrip extends AppCompatActivity {
                 currentUserInfo.setUser_id(tmp.getUser_id());
             }
         });
-
-
     }
+
+
+    private void sendNotification(){
+        NotificationData data = new NotificationData("Trip Upcoming","You have new trip");
+        PushNotification pushNotification = new PushNotification(data,"dY1a908eSFeI_fmq6fmXmB:APA91bFgTQ3QYlauJZJ7J1qHGoAJ-_MTAIQlBmQ4yw_FXj7Goa04F3GD2YDho1qdRjfDwPIVd0XbsBsBOdYkDwgxuxJ44bPWgrui9HHG3GdCXvVeIL6xovqX0e1j8eYVtP0ljQLDh4j7");
+        notificationAPI.sendNotification(pushNotification).enqueue(new Callback<MyResponse>() {
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                if(response.code()==200){
+                    assert response.body() != null;
+                    if(response.body().success!=1){
+                        Toast.makeText(addNewTrip.this,"FAILED",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                Log.d(tag, String.valueOf(response.code()));
+            }
+
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -328,41 +362,31 @@ public class addNewTrip extends AppCompatActivity {
 
 
 
-    public void setNotificationTime(long milli, tripModel passingData) // milli needed just for debug
+    public void setNotificationTime(tripModel passingData) // milli needed just for debug
     {
         Intent intent = new Intent(addNewTrip.this,ReminderBroadcast.class);
         Bundle extras = new Bundle();
-        extras.putString("Extra_tripName",passingData.getTripName());
-        extras.putInt("Extra_tripID",passingData.getId());
+        extras.putString("tripStringID",passingData.getStringID());
+        extras.putString("tripName",passingData.getTripName());
+        extras.putString("tripStartDate",passingData.getStartDate());
         intent.putExtras(extras);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(addNewTrip.this,passingData.getId(),intent,0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(addNewTrip.this,Helper.tripStringIDToInt(passingData.getStringID()),intent,0);
         long timeToFireAnAlarm = Helper.getStartDateInMilli(passingData.getStartDate());
-        Date tmp = new Date(timeToFireAnAlarm);
+
+       // Calendar calendar = Calendar.getInstance();
+      //  calendar.add(Calendar.SECOND,30);
+       // long timeToFireAnAlarm = calendar.getTimeInMillis();
+
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
-          // alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent); //for debugging purpose
-           // Toast.makeText(getApplicationContext(),"I AM USING NEW VERSION ALARM",Toast.LENGTH_SHORT).show();
         } else{
             alarmManager.set(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
-          // alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+milli*1000,pendingIntent);// for debugging purpose
-           // Toast.makeText(getApplicationContext(),"I AM USING OLD VERSION ALARM",Toast.LENGTH_SHORT).show();
         }
 
-        /*Date alarmFiredDate = new Date(System.currentTimeMillis() + milli*1000);
-        Log.d("ADD NEW TRIP", "Time alarm will fired: " + alarmFiredDate.toString());
-        long whatever = timeToFireAnAlarm-System.currentTimeMillis();
-        Log.d("ADD NEW TRIP", "Time in miili "+whatever);
-        long reminder = Helper.milliToHour(timeToFireAnAlarm-System.currentTimeMillis());
-        Log.d("ADD NEW TRIP", "Time in Hour: "+reminder);
-        Toast.makeText(this,"Send Notification in " + reminder + " Hour",Toast.LENGTH_SHORT).show(); */
     }
 
 
-    private void idIncrement(){
-        ID++;
-    }
 
     private void getCurrentIdFromFirebaseDatabase(){
 

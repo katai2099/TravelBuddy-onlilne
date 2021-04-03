@@ -134,7 +134,7 @@ public class Helper {
     }
 
 
-    //to set notification alarm fired at 7 . minus one day and set hour to 7
+    //to set notification alarm fired at 8 . minus one day and set hour to 8
     public static long getStartDateInMilli(String timeStartDate)
     {
         long res;//TimeUnit
@@ -144,7 +144,7 @@ public class Helper {
         epoch.add(Calendar.DATE,-1);
         epoch.set(Calendar.MINUTE, 0);
         epoch.set(Calendar.SECOND,0);
-        epoch.set(Calendar.HOUR,7);
+        epoch.set(Calendar.HOUR,8);
         Date dateInmilli = epoch.getTime();
         return dateInmilli.getTime();
     }

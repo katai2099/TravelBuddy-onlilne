@@ -34,4 +34,9 @@
     <string name="log_out">Log out</string>
 
     <string name="appSharedPref">appSharedPref</string>
+
+    <string name="serverKey">AAAAjja6Wk0:APA91bHTVxN7b50NBS7QwAPuJSOnxnrw6HmyHG6lXR5v6zb3SDMbSvENisfzjyo4SSWlkDIjKC86LDMBPyx3pSAOGBUrLGfrteU4jOvhpuGjh0XI-5uNEFxRRZqbrR89wgvB1zNGV5_b</string>
+    <string name="baseUrl">https://fcm.googleapis.com/</string>
+    <string name="content_type">application/json</string>
+
 </resources>
