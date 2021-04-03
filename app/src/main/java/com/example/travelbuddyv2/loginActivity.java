@@ -4,14 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -29,19 +32,21 @@ public class loginActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
 
-    private FirebaseAuth.AuthStateListener authStateListener;
+    private final String tag = "LOGIN_ACTIVITY";
 
+    private FirebaseAuth.AuthStateListener authStateListener;
+    boolean toNotification = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
-        boolean toNotification = false;
+
         if(bundle!=null){
             toNotification = Boolean.parseBoolean(bundle.getString("changeToNotificationFragment")) ;
         }
 
-        authentication(toNotification);
+       // authentication(toNotification);
         setContentView(R.layout.activity_login);
         btnSignIn = findViewById(R.id.btnLoginSignIn);
         btnSignUp = findViewById(R.id.btnLoginSignUp);
@@ -69,17 +74,6 @@ public class loginActivity extends AppCompatActivity {
                 auth = FirebaseAuth.getInstance();
                 loginUser(txtEmail,txtPassword);
 
-                FirebaseUser user = auth.getCurrentUser();
-
-
-                if( user!=null&&!user.isEmailVerified() ){
-                    Toast.makeText(loginActivity.this,"Please validate your email first",Toast.LENGTH_SHORT).show();
-                    sendValidationEmail();
-                    auth.signOut();
-
-                }
-
-
 
             }
         });
@@ -102,10 +96,27 @@ public class loginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(loginActivity.this,"Log in successful",Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(loginActivity.this,Main2Activity.class);
-                    startActivity(i);
-                    finish();
+                    Log.d(tag,"I am here logging in");
+                    if(isEmailVerified()) {
+//                        Intent i = new Intent(loginActivity.this, Main2Activity.class);
+//                        startActivity(i);
+//                        finish();
+
+                    //    authentication(toNotification);
+
+                        registerDeviceToken(toNotification);
+
+                    }else{
+                        Toast.makeText(loginActivity.this,"Please validate your email first",Toast.LENGTH_SHORT).show();
+                        if(task.getResult().getUser()!=null){
+                            task.getResult().getUser().sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    auth.signOut();
+                                }
+                            });
+                        }
+                    }
                 }
                 else{
                     Toast.makeText(loginActivity.this,"Authentication failed",Toast.LENGTH_SHORT).show();
@@ -115,19 +126,39 @@ public class loginActivity extends AppCompatActivity {
 
     }
 
-    private void sendValidationEmail(){
-
+    private void registerDeviceToken(final boolean payload){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(loginActivity.this,"Verification email sent to " + user.getEmail(),Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(loginActivity.this,"Fail to send verification email",Toast.LENGTH_SHORT).show();
-                }
+            public void onSuccess(String s) {
+
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
+                        .child(user.getUid())
+                        .child("deviceToken");
+
+                reference.setValue(s).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.appSharedPref),MODE_PRIVATE);
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("token",user.getUid());
+                        editor.apply();
+
+                        Intent intent = new Intent(loginActivity.this, Main2Activity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        if(payload){
+                            intent.putExtra("changeToNotificationFragment",true);
+                        }
+                        startActivity(intent);
+                        finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(loginActivity.this,"CANT GET DEVICE TOKEN",Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
@@ -161,6 +192,11 @@ public class loginActivity extends AppCompatActivity {
                                         startActivity(intent);
                                         finish();
                                     }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(loginActivity.this,"CANT GET DEVICE TOKEN",Toast.LENGTH_SHORT).show();
+                                    }
                                 });
                             }
                         });
@@ -180,15 +216,21 @@ public class loginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
+       // FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (authStateListener != null) {
-            FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
-        }
+//        if (authStateListener != null) {
+//            FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
+//        }
+    }
+
+    private boolean isEmailVerified(){
+        FirebaseUser user = auth.getCurrentUser();
+        Log.d(tag,"I am here to check if email is verified");
+        return user != null && user.isEmailVerified();
     }
 
 

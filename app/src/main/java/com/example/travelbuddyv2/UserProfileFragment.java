@@ -55,12 +55,14 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class UserProfileFragment extends Fragment {
 
     final private String tag = "USER_PROFILE_FRAGMENT";
-    TextView tvUserEmail, tvUserName;
-    Button btnLogOut , btnSave,btnCancel;
+    TextView tvUserEmail, tvUserName , tvLogOut;
+    Button  btnSave,btnCancel;
     private  BottomSheetDialog bottomSheetDialog;
     private View bottomSheetView;
     private EditText etEditProfileName;
@@ -81,7 +83,7 @@ public class UserProfileFragment extends Fragment {
 
         tvUserName = root.findViewById(R.id.tvProfileName);
         tvUserEmail = root.findViewById(R.id.tvProfileEmail);
-        btnLogOut = root.findViewById(R.id.btnUserLogOut);
+        tvLogOut = root.findViewById(R.id.tvUserLogOut);
         imgUserProfileImage = root.findViewById(R.id.imgProfilePic);
         loadingBar = new ProgressDialog(getContext());
         user = new User();
@@ -112,7 +114,7 @@ public class UserProfileFragment extends Fragment {
            }
        });
 
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
+        tvLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signOut(getActivity());
@@ -329,6 +331,8 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void signOut(final Activity activity){
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(getString(R.string.appSharedPref),MODE_PRIVATE);
+        sharedPreferences.edit().remove("token").apply();
         Intent i = new Intent(getActivity(), loginActivity.class);
         startActivity(i);
         activity.finishAffinity();

@@ -88,7 +88,7 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
 
     class ParentGroupTripDetailHolder extends RecyclerView.ViewHolder {
 
-        TextView sectionTextview,sectionStartTime;;
+        TextView sectionTextview,sectionStartTime ;
         RecyclerView childRecyclerView;
         Button btnAddTripDetail;
 

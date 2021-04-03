@@ -57,6 +57,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
             destination.setPlaceId(bundle.getString("googleMapPlaceID"));
             destination.setLatitude(bundle.getDouble("googleMapPlaceLat"));
             destination.setLongitude(bundle.getDouble("googleMapPlaceLong"));
+            destination.setAddress(bundle.getString("googleMapAddress"));
             isFromPersonalTrip = bundle.getBoolean("isFromPersonalTrip");
         }
 

@@ -120,6 +120,7 @@
                             android:paddingRight="@dimen/spacing_large"
                             android:paddingStart="@dimen/spacing_large"
                             android:text="Dandelion Chocolate"
+                            android:maxLines="1"
                             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
                         <ImageView

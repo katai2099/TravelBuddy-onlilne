@@ -144,7 +144,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
                     dayList.add(day);
                     dayCount++;
                 }
-               parentGroupTripDetailAdapter.notifyDataSetChanged();
+                parentGroupTripDetailAdapter.notifyDataSetChanged();
                 dayAdapter.notifyDataSetChanged();
             }
 

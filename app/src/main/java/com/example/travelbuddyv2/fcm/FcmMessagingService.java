@@ -9,6 +9,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.travelbuddyv2.Main2Activity;
 import com.example.travelbuddyv2.R;
@@ -32,7 +33,8 @@ public class FcmMessagingService extends FirebaseMessagingService {
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"NotifyTripInvitationRequest")
-                .setSmallIcon(R.drawable.weirdicon)
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setColor(ContextCompat.getColor(getApplicationContext(),R.color.colorAccent))
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

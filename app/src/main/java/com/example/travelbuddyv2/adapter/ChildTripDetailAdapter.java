@@ -40,6 +40,8 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
     @Override
     public void onBindViewHolder(@NonNull ChildTripDetailHolder holder, final int position) {
         holder.itemTextView.setText(destinations.get(position).getName());
+        System.out.println(destinations.get(position).getAddress());
+        holder.address.setText(destinations.get(position).getAddress());
         holder.startTime.setText(destinations.get(position).getStartTime());
         holder.endTime.setText(destinations.get(position).getEndTime());
 
@@ -80,13 +82,14 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
 
     class ChildTripDetailHolder extends RecyclerView.ViewHolder {
 
-        TextView itemTextView , startTime , endTime , extraDay;
+        TextView itemTextView , startTime , endTime , extraDay , address;
         Button btnRemoveDestination;
         View editDuration ;
 
         public ChildTripDetailHolder(@NonNull View itemView) {
             super(itemView);
-            itemTextView = itemView.findViewById(R.id.itemTextView);
+            itemTextView = itemView.findViewById(R.id.itemName);
+            address = itemView.findViewById(R.id.itemAddress);
             startTime = itemView.findViewById(R.id.tvStartTime);
             endTime = itemView.findViewById(R.id.tvEndTime);
             extraDay = itemView.findViewById(R.id.tvExtraDay);

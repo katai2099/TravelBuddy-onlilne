@@ -333,6 +333,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
         invitationRequest.put("from",senderUUID);
         invitationRequest.put("type","request");
+        invitationRequest.put("tripName",name);
 
         DatabaseReference notificationNode = FirebaseDatabase.getInstance().getReference().child("Notifications");
         notificationNode.child(receiverUUID).push().setValue(invitationRequest);

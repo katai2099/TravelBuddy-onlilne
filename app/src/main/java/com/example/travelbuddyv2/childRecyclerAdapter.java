@@ -30,7 +30,7 @@ public class childRecyclerAdapter extends RecyclerView.Adapter<childRecyclerAdap
 
         public ViewHolder(@NonNull View itemView,final ChildAdapterListener childAdapterListener) {
             super(itemView);
-            itemTextView =itemView.findViewById(R.id.itemTextView);
+            itemTextView =itemView.findViewById(R.id.itemName);
             this.childAdapterListener = childAdapterListener;
 
             itemView.setOnClickListener(new View.OnClickListener() {

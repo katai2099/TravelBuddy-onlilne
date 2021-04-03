@@ -51,6 +51,7 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
         String googleMapPlaceID = bundle.getString("googleMapPlaceID");
         double googleMapPlaceLat = bundle.getDouble("googleMapPlaceLat");
         double googleMapPlaceLong = bundle.getDouble("googleMapPlaceLong");
+        String googleMapAddress = bundle.getString("googleMapAddress");
         Log.d(tag, googleMapPlaceName);
         Log.d(tag, googleMapPlaceID);
         Log.d(tag, String.valueOf(googleMapPlaceLat));
@@ -62,6 +63,7 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
         destination.setPlaceId(googleMapPlaceID);
         destination.setLatitude(googleMapPlaceLat);
         destination.setLongitude(googleMapPlaceLong);
+        destination.setAddress(googleMapAddress);
 
         tripModelList = new ArrayList<>();
         tripSelectionAdapter = new TripSelectionAdapter(tripModelList,this);
@@ -103,6 +105,7 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
         i.putExtra("googleMapPlaceID",destination.getPlaceId());
         i.putExtra("googleMapPlaceLat",destination.getLatitude());
         i.putExtra("googleMapPlaceLong",destination.getLongitude());
+        i.putExtra("googleMapAddress",destination.getAddress());
         i.putExtra("isFromPersonalTrip",true);
         startActivity(i);
     }

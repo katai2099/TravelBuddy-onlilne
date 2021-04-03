@@ -54,6 +54,7 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
         String googleMapPlaceID = bundle.getString("googleMapPlaceID");
         double googleMapPlaceLat = bundle.getDouble("googleMapPlaceLat");
         double googleMapPlaceLong = bundle.getDouble("googleMapPlaceLong");
+        String googleMapAddress = bundle.getString("googleMapAddress");
         Log.d(tag,googleMapPlaceName);
         Log.d(tag,googleMapPlaceID);
         Log.d(tag,String.valueOf(googleMapPlaceLat));
@@ -65,6 +66,7 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
         destination.setPlaceId(googleMapPlaceID);
         destination.setLatitude(googleMapPlaceLat);
         destination.setLongitude(googleMapPlaceLong);
+        destination.setAddress(googleMapAddress);
 
         groupTripList = new ArrayList<>();
         tripSelectionAdapter = new TripSelectionAdapter(groupTripList,this);
@@ -117,6 +119,7 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
         i.putExtra("googleMapPlaceID",destination.getPlaceId());
         i.putExtra("googleMapPlaceLat",destination.getLatitude());
         i.putExtra("googleMapPlaceLong",destination.getLongitude());
+        i.putExtra("googleMapAddress",destination.getAddress());
         i.putExtra("isFromPersonalTrip",false);
         i.putExtra("tripOwnerUUID",trip.getOwner());
         startActivity(i);

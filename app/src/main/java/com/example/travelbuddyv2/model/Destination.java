@@ -16,6 +16,7 @@ public class Destination {
     private long duration;
     private boolean isIncreased ;
     private boolean isDecreased;
+    private String address;
 
     public Destination() {
         extraDay=0;
@@ -134,6 +135,14 @@ public class Destination {
 
     public void setDecreased(boolean decreased) {
         isDecreased = decreased;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

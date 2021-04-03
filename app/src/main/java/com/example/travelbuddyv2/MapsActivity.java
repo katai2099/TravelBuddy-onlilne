@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +25,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,17 +75,19 @@ import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private final String tag = "MAP_ACTIVITY";
 
-    private boolean isHideAttractionTriggered = false;
+    private boolean isHideAttractionButtonHide = true;
     List<Bitmap> bitmapList;
     private SlidingUpPanelLayout googleMapInformationLayout;
     private MaterialSearchBar materialSearchBar;
@@ -154,7 +157,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 findNearByAttraction();
                 btnSearchForAttraction.setVisibility(View.GONE);
                 btnHideAttraction.setVisibility(View.VISIBLE);
-                isHideAttractionTriggered = true;
+                isHideAttractionButtonHide = false;
             }
         });
 
@@ -164,7 +167,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.clear();
                 btnHideAttraction.setVisibility(View.GONE);
                 btnSearchForAttraction.setVisibility(View.VISIBLE);
-                isHideAttractionTriggered = false;
+                isHideAttractionButtonHide = true;
             }
         });
 
@@ -230,8 +233,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                String countryCode="HU";
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(currentLat, currentLng, 1);
+                    Address obj = addresses.get(0);
+                    countryCode = obj.getCountryCode();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(tag,countryCode);
+
+
+
                 FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-                        .setCountry("HU")
+                        .setCountry(countryCode)
                         .setTypeFilter(TypeFilter.ESTABLISHMENT)
                         .setSessionToken(token)
                         .setQuery(s.toString())
@@ -583,6 +602,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(place.getOpeningHours()!=null){
                     OpeningHours workingHour = place.getOpeningHours();
                     int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+                    today= today-2;
+                    if(today == -1){
+                        today = 6;
+                    }
                     System.out.println("kataikataikatai" + today);
                     locationWorkingHour.setText(workingHour.getWeekdayText().get(today));
                 }
@@ -674,12 +697,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnAddTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String address = locationAddress.getText().toString();
                 if(!isCurrentUserAMember){
 
-                    addAttractionToDatabase(placeID,placeName,placeLatLng,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    addAttractionToDatabase(placeID,placeName,placeLatLng,FirebaseAuth.getInstance().getCurrentUser().getUid(),address);
                 }else{
 
-                    addAttractionToDatabase(placeID,placeName,placeLatLng,tripOwner);
+                    addAttractionToDatabase(placeID,placeName,placeLatLng,tripOwner,address);
                 }
             }
         });
@@ -687,12 +711,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnAddAttractionOnSwipeUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String address = locationAddress.getText().toString();
                 if(!isCurrentUserAMember){
 
-                    addAttractionToDatabase(placeID,placeName,placeLatLng,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    addAttractionToDatabase(placeID,placeName,placeLatLng,FirebaseAuth.getInstance().getCurrentUser().getUid(),address);
                 }else{
 
-                    addAttractionToDatabase(placeID,placeName,placeLatLng,tripOwner);
+                    addAttractionToDatabase(placeID,placeName,placeLatLng,tripOwner,address);
                 }
             }
         });
@@ -727,7 +752,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void addAttractionToDatabase(String placeId,String placeName,LatLng placeLatLng,String owner){
+    private void addAttractionToDatabase(String placeId,String placeName,LatLng placeLatLng,String owner,String address){
 
 
 
@@ -754,6 +779,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         destination.setLongitude(placeLatLng.longitude);
         destination.setLatitude(placeLatLng.latitude);
         destination.setStartDate(dateFromTripDetail);
+        destination.setAddress(address);
 
 
         /*reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -833,9 +859,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setButtonVisible(){
-        if(btnSearchForAttraction.getVisibility() == View.GONE && !isHideAttractionTriggered){
+        if(btnSearchForAttraction.getVisibility() == View.GONE && !isHideAttractionButtonHide){
             btnSearchForAttraction.setVisibility(View.VISIBLE);
-        }else if(btnHideAttraction.getVisibility() == View.GONE){
+        }else if(btnHideAttraction.getVisibility() == View.GONE && btnSearchForAttraction.getVisibility() == View.GONE){
             btnHideAttraction.setVisibility(View.VISIBLE);
         }
     }

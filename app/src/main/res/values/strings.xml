@@ -31,4 +31,7 @@
     <string name="no_user_associated_with_email">No User is Associated with that Email</string>
     <string name="email_sent">Email has been sent!</string>
     <string name="login">Login</string>
+    <string name="log_out">Log out</string>
+
+    <string name="appSharedPref">appSharedPref</string>
 </resources>

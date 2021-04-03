@@ -16,6 +16,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/rcvFragmentTripDetailToSelectedList"
         android:layout_marginTop="2dp"
+        android:layout_marginBottom="@dimen/bottom_navigation_bar_height"
         android:paddingBottom="5dp"/>
 
 

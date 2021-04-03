@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -99,13 +101,14 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment {
 
 
-    private boolean isHideAttractionTriggered = false;
+    private boolean isHideAttractionButtonHide = true;
     private SlidingUpPanelLayout googleMapInformationLayout;
 
     private final String tag = "MAP_FRAGMENT";
@@ -343,7 +346,7 @@ public class MapsFragment extends Fragment {
                 findNearByAttraction();
                 btnSearchForAttraction.setVisibility(View.GONE);
                 btnHideAttraction.setVisibility(View.VISIBLE);
-                isHideAttractionTriggered = true;
+                isHideAttractionButtonHide = false;
             }
         });
 
@@ -353,7 +356,7 @@ public class MapsFragment extends Fragment {
                 map.clear();
                 btnHideAttraction.setVisibility(View.GONE);
                 btnSearchForAttraction.setVisibility(View.VISIBLE);
-                isHideAttractionTriggered = false;
+                isHideAttractionButtonHide = true;
             }
         });
 
@@ -400,8 +403,22 @@ public class MapsFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                String countryCode="HU";
+                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(currentLat, currentLng, 1);
+                    Address obj = addresses.get(0);
+                    countryCode = obj.getCountryCode();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(tag,countryCode);
+
                 FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-                        .setCountry("HU")
+                        .setCountry(countryCode)
                         .setTypeFilter(TypeFilter.ESTABLISHMENT)
                         .setSessionToken(token)
                         .setQuery(s.toString())
@@ -690,6 +707,10 @@ public class MapsFragment extends Fragment {
                 if(place.getOpeningHours()!=null){
                     OpeningHours workingHour = place.getOpeningHours();
                     int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+                    today= today-2;
+                    if(today == -1){
+                        today = 6;
+                    }
                     System.out.println("kataikataikatai" + today);
                     locationWorkingHour.setText(workingHour.getWeekdayText().get(today));
                 }
@@ -786,6 +807,7 @@ public class MapsFragment extends Fragment {
                 i.putExtra("googleMapPlaceID",placeID);
                 i.putExtra("googleMapPlaceLat",placeLatLng.latitude);
                 i.putExtra("googleMapPlaceLong",placeLatLng.longitude);
+                i.putExtra("googleMapAddress",locationAddress.getText().toString());
                 startActivity(i);
             }
         });
@@ -798,6 +820,7 @@ public class MapsFragment extends Fragment {
                 i.putExtra("googleMapPlaceID",placeID);
                 i.putExtra("googleMapPlaceLat",placeLatLng.latitude);
                 i.putExtra("googleMapPlaceLong",placeLatLng.longitude);
+                i.putExtra("googleMapAddress",locationAddress.getText().toString());
                 startActivity(i);
             }
         });
@@ -925,9 +948,9 @@ public class MapsFragment extends Fragment {
     }
 
     private void setButtonVisible(){
-        if(btnSearchForAttraction.getVisibility() == View.GONE && !isHideAttractionTriggered){
+        if(btnSearchForAttraction.getVisibility() == View.GONE && isHideAttractionButtonHide){
             btnSearchForAttraction.setVisibility(View.VISIBLE);
-        }else if(btnHideAttraction.getVisibility() == View.GONE){
+        }else if(btnHideAttraction.getVisibility() == View.GONE && btnSearchForAttraction.getVisibility() == View.GONE){
             btnHideAttraction.setVisibility(View.VISIBLE);
         }
     }
