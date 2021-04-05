@@ -2,12 +2,20 @@ package com.example.travelbuddyv2;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.example.travelbuddyv2.model.tripModel;
 import com.example.travelbuddyv2.ui.home.HomeFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +32,10 @@ import androidx.navigation.ui.NavigationUI;
 
 public class Main2Activity extends AppCompatActivity {
 
+    private final String tag = "MAIN_2_ACTIVITY";
+
+    alarmHandler handler;
+
     boolean changeToGroupTripFragment=false;
     boolean changeToMapFragment=false;
     boolean changeToNotificationFragment=false;
@@ -32,7 +44,13 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.appSharedPref),MODE_PRIVATE);
+        if(sharedPreferences.getBoolean("isFirstRetrievePendingNotification",true)){
+            retrievePendingNotificationFromFirebaseDatabase();
+        }else{
+            handler = new alarmHandler(Main2Activity.this);
+            Log.d(tag,"SKIP RETRIEVE PENDING NOTIFICATION");
+        }
         createNotificationChannel();
 
         Bundle bundle = getIntent().getExtras();
@@ -42,7 +60,6 @@ public class Main2Activity extends AppCompatActivity {
             changeToMapFragment = bundle.getBoolean("changeToMapFragment");
             changeToNotificationFragment = bundle.getBoolean("changeToNotificationFragment");
         }
-
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -87,6 +104,32 @@ public class Main2Activity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
             //    Toast.makeText(MainActivity.this,"Function Trigger!",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void retrievePendingNotificationFromFirebaseDatabase(){
+        Log.d(tag,"RETRIEVE_PENDING_NOTIFICATION");
+        final DatabaseHelper db = new DatabaseHelper(Main2Activity.this);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Pending_notification_backup")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot notificationData: dataSnapshot.getChildren()){
+                    tripModel currentTripModel = notificationData.getValue(tripModel.class);
+                    db.addNewPendingNotification(currentTripModel.getTripName(),currentTripModel.getStringID(),currentTripModel.getStartDate());
+                }
+                handler = new alarmHandler(Main2Activity.this);
+                SharedPreferences sharedPreferences =  getSharedPreferences(getString(R.string.appSharedPref),MODE_PRIVATE);
+                sharedPreferences.edit().putBoolean("isFirstRetrievePendingNotification",false).apply();
+                deletePendingNotificationNode();
+            }
+        });
+    }
+
+    private void deletePendingNotificationNode(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Pending_notification_backup")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.removeValue();
     }
 
 }

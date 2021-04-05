@@ -29,11 +29,13 @@ public class SplashScreenActivity extends AppCompatActivity {
             if(payload)
                 i.putExtra("changeToNotificationFragment",true);
             startActivity(i);
+            finish();
         }else{
             Intent i  = new Intent(SplashScreenActivity.this,loginActivity.class);
             if(payload)
                 i.putExtra("changeToNotificationFragment",true);
             startActivity(i);
+            finish();
         }
     }
 }

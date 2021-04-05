@@ -28,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.InventoryGridViewAdapter;
@@ -75,6 +76,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
     LinearLayoutManager listLayout;
     private String currentUserUUID;
     User currentOwnerOfItem;
+    DividerItemDecoration listViewDecor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,7 +95,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         gridLayout = new GridLayoutManager(getContext(),2);
         currentOwnerOfItem = new User();
         currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
+        listViewDecor = new DividerItemDecoration(getContext(), LinearLayout.VERTICAL);
 
         Bundle bundle = getArguments();
         if(bundle!=null){
@@ -107,7 +109,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         inventoryList = new ArrayList<>();
         rcvItems = root.findViewById(R.id.rcvItems);
         rcvItems.setLayoutManager(listLayout);
-        rcvItems.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
+        rcvItems.addItemDecoration(listViewDecor);
         inventoryAdapter = new InventoryListViewAdapter(inventoryList,this);
         inventoryGridViewAdapter = new InventoryGridViewAdapter(inventoryList,this);
 
@@ -318,18 +320,11 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
 
         @Override
         public void onPrivacyClicked(int position) {
-
             final Inventory inventory = inventoryList.get(position);
-
-
             final CharSequence[] choices = {"Private","Shared"};
             int checked = 1;
-
             if(inventory.getPermission().toUpperCase().equals("PRIVATE")) checked = 0 ;
-
-
             if(inventory.getOwner().equals(currentUserUUID)){
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Please Select Privacy")
                .setSingleChoiceItems(choices, checked, new DialogInterface.OnClickListener() {
@@ -343,7 +338,6 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                         }
                    }
                })
-
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -374,40 +368,35 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         public void onDeleteClicked(int position) {
            final Inventory inventory = inventoryList.get(position);
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             if(currentUserUUID.equals(inventory.getOwner())){
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setMessage("are you sure you want to delete this item?");
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(isPersonal){
                             removeItem(currentUserUUID,inventory);
+                            removeItemFromCloudStorage(currentUserUUID,inventory);
                         }else{
                             removeItem(tripOwner,inventory);
+                            removeItemFromCloudStorage(tripOwner,inventory);
                         }
                     }
                 });
                 builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                     }
                 });
-
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
             }else{
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 getCurrentItemOwnerName(inventory.getOwner(),builder,inventory);
-
             }
         }
 
         @Override
         public void onItemToEnlargeClicked(int position) {
-
             Inventory itemToPassToNextActivity = inventoryList.get(position);
             Intent i = new Intent(getContext(),ClickedItemActivity.class);
             i.putExtra("itemName",itemToPassToNextActivity.getFileName());
@@ -423,21 +412,16 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
             }
             startActivity(i);
         }
-
         @Override
         public void onDownloadClicked(int position) {
             Inventory tmp = inventoryList.get(position);
-
             DownloadManager downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
             Uri uri = Uri.parse(tmp.getFileUri());
             DownloadManager.Request request = new DownloadManager.Request(uri);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
             request.setDestinationInExternalFilesDir(getContext(),Environment.DIRECTORY_DOWNLOADS,tmp.getFileName());
             downloadManager.enqueue(request);
-
-
         }
-
         private void getCurrentItemOwnerName(String ownerUUID, final AlertDialog.Builder builder, final Inventory inventory){
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
                     .child(ownerUUID);
@@ -469,38 +453,28 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 }
             });
         }
-
         private void changeItemPermission(final Inventory inventory, String owner){
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Inventory")
                     .child(owner)
                     .child(tripID);
-
-
-
             reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     for(DataSnapshot item:dataSnapshot.getChildren()){
                         Inventory tmp = item.getValue(Inventory.class);
-
                         if(tmp.getFileName().equals(inventory.getFileName()) && tmp.getOwner().equals(inventory.getOwner())){
                             DatabaseReference toUpdate = item.getRef();
                             toUpdate.child("permission").setValue(inventory.getPermission());
                             break;
                         }
-
                     }
                 }
             });
-
         }
-
         private void removeItem(String owner, final Inventory inventory){
-
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Inventory")
                     .child(owner)
                     .child(tripID);
-
             reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
@@ -515,8 +489,13 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 }
             });
         }
-
-
+        private void removeItemFromCloudStorage(String owner,Inventory inventory){
+            StorageReference itemLocationReference = FirebaseStorage.getInstance().getReference().child("trip_file")
+                    .child(owner)
+                    .child(tripID)
+                    .child(inventory.getFileName());
+            itemLocationReference.delete();
+        }
         @Override
         public void gridOnPrivacyGClicked(int position) {
             onPrivacyClicked(position);

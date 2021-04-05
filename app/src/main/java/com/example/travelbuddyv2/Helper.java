@@ -145,8 +145,9 @@ public class Helper {
         epoch.set(Calendar.MINUTE, 0);
         epoch.set(Calendar.SECOND,0);
         epoch.set(Calendar.HOUR,8);
-        Date dateInmilli = epoch.getTime();
-        return dateInmilli.getTime();
+        Date dateInMilli = epoch.getTime();
+        Log.d(tag, String.valueOf(dateInMilli));
+        return dateInMilli.getTime();
     }
 
 

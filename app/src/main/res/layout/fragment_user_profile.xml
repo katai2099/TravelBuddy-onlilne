@@ -94,20 +94,10 @@
         android:layout_toEndOf="@+id/img1"
         android:textSize="16sp"
         android:textColor="@color/quantum_black_100"/>
-<!--
-    <Button
-        android:id="@+id/btnUserLogOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvProfileEmail"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="30dp"
-        android:text="@string/log_out"
-        android:textAlignment="gravity"/>-->
 
     <TextView
         android:id="@+id/tvUserLogOut"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:text="@string/log_out"

@@ -25,9 +25,9 @@ public class ResetAlarmBroadcast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String ja = intent.getAction();
-        if(ja!=null){
-        if(ja.equals(BOOT_COMPLETED) || ja.equals(UPDATE_COMPLETED)){
+        String intentCode = intent.getAction();
+        if(intentCode!=null){
+        if(intentCode.equals(BOOT_COMPLETED) || intentCode.equals(UPDATE_COMPLETED)){
             Log.d(tag,"I trigger reset alarm from device restart");
             resetAlarmWhenDeviceReboot(context);
         }
@@ -42,26 +42,24 @@ public class ResetAlarmBroadcast extends BroadcastReceiver {
 
 
     public void resetAlarmWhenDeviceReboot(Context context){
-
         DatabaseHelper db = new DatabaseHelper(context);
         List<tripModel> trips;
-        trips = db.getTripWhereNotificatonHasNotBeenFired();
-
+        trips = db.getPendingNotificationList();
         for(int i=0;i<trips.size();i++){
             Intent intent = new Intent(context,ReminderBroadcast.class);
             Bundle extras = new Bundle();
-            extras.putString("Extra_tripName",trips.get(i).getTripName());
-            extras.putInt("Extra_tripID",trips.get(i).getId());
+            extras.putString("tripName",trips.get(i).getTripName());
+            extras.putString("tripStringID",trips.get(i).getStringID());
+            extras.putString("tripStartDate",trips.get(i).getStartDate());
             intent.putExtras(extras);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,trips.get(i).getId(),intent,0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,Helper.tripStringIDToInt(trips.get(i).getStringID()),intent,0);
             AlarmManager alarmManager = (AlarmManager)context.getSystemService(ALARM_SERVICE);
             long timeToFireAnAlarm = Helper.getStartDateInMilli(trips.get(i).getStartDate());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
               //  alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+1000*30,pendingIntent); // Debuggin purpose
             }
-
         }
-
     }
+
 }

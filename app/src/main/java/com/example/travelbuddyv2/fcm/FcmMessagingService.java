@@ -60,6 +60,7 @@ public class FcmMessagingService extends FirebaseMessagingService {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .setDeleteIntent(pendingIntent)
                 ;
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);

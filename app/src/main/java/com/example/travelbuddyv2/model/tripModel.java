@@ -21,6 +21,12 @@ public class tripModel {
 
     }
 
+    public tripModel(String tripName,String tripStringID,String startDate){
+        this.tripName = tripName;
+        this.StringID = tripStringID;
+        this.startDate = startDate;
+    }
+
     //To Retrieve Date from database
     public tripModel(int id, String tripName, String startDate, String endDate) {
         this.id = id;
@@ -54,13 +60,13 @@ public class tripModel {
 
 
 
-    //To insert into database addNewTrip.class
-    public tripModel(String tripName, String startDate, String endDate) {
-        this.tripName = tripName;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.is_notified = 0;
-    }
+//    //To insert into database addNewTrip.class
+//    public tripModel(String tripName, String startDate, String endDate) {
+//        this.tripName = tripName;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//        this.is_notified = 0;
+//    }
 
     //To insert into database
 
@@ -84,6 +90,18 @@ public class tripModel {
                 ", endTime='" + endTime + '\'' +
                 ", destination='" + destination + '\'' +
                 '}';
+    }
+
+    public void setTripName(String tripName) {
+        this.tripName = tripName;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public int getIdforListDetail() {

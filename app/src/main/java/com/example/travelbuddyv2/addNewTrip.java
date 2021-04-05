@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.model.Member;
@@ -61,14 +62,13 @@ public class addNewTrip extends AppCompatActivity {
 
     List<Integer> tmp;
 
-    EditText tripName , startDate , endDate, setAlarmTime;
+    EditText tripName , startDate , endDate;
     Button btnSave;
     DatePickerDialog datePickerDialogStartDate,datePickerDialogEndDate;
     Calendar calendar ;
     DatabaseHelper databaseHelper;
     User currentUserInfo;
-
-    private NotificationAPI notificationAPI;
+    ProgressBar progressBar;
 
 
     @Override
@@ -79,9 +79,9 @@ public class addNewTrip extends AppCompatActivity {
         getCurrentIdFromFirebaseDatabase();
         getCurrentUserInfo();
         tripName = findViewById(R.id.etTripName);
+        progressBar = findViewById(R.id.simpleProgressBar);
+        progressBar.setVisibility(View.VISIBLE);
 
-        //testing retrofit
-       notificationAPI = Client.getClient(getString(R.string.baseUrl)).create(NotificationAPI.class);
 
         startDate = findViewById(R.id.etDepartDate);
         startDate.setInputType(InputType.TYPE_NULL);
@@ -125,22 +125,20 @@ public class addNewTrip extends AppCompatActivity {
                     Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                   final tripModel tmpTripModel = new tripModel(tripName.getText().toString(), tmpStartDate, tmpEndDate);
+                   final tripModel tmpTripModel = new tripModel();
+                   tmpTripModel.setTripName(tripName.getText().toString());
+                   tmpTripModel.setStartDate(tmpStartDate);
+                   tmpTripModel.setEndDate(tmpEndDate);
                     tmpTripModel.setStringID("t" + ID);
                     tmpTripModel.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
                     //adding date to TripDetail NODE
                     //Still need to get it cleaned
-
                     final List<String> dateList = getDateInterval(tmpStartDate,tmpEndDate);
                     final HashMap<String,String> res = new HashMap<>();
                     for(int i=0;i<dateList.size();i++){
                         res.put(dateList.get(i),"");
                     }
-
                     final int lastInsertedID = ID;
-
                     FirebaseDatabase.getInstance().getReference()
                             .child("Trips")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -159,27 +157,16 @@ public class addNewTrip extends AppCompatActivity {
                                             Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
                                             setNotificationTime(tmpTripModel);
                                             subscribeToUpcomingTripNotification(tmpTripModel.getStringID());
+                                            savePendingNotificationToOfflineDatabase(tmpTripModel);
                                             toTripFragment();
                                         }
                                     });
 
                                 }
                             });
-                   // databaseHelper = new DatabaseHelper(addNewTrip.this);
-                   // databaseHelper.addNewTrip(tmpTripModel);
-                   // int Time = Integer.parseInt(setAlarmTime.getText().toString());
-                   // int ID = databaseHelper.getID();
-                   // Toast.makeText(addNewTrip.this, String.valueOf(ID),Toast.LENGTH_SHORT).show();
-                   // tmpTripModel.setId(ID);
-                   // setNotificationTime(0,tmpTripModel);
-                   //  Intent i = new Intent(addNewTrip.this, myTrip.class);
-                   // startActivity(i);
-                   // finish();
                 }
             }
         });
-
-
 
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,6 +281,11 @@ public class addNewTrip extends AppCompatActivity {
 
     }
 
+    private void savePendingNotificationToOfflineDatabase(tripModel model){
+        databaseHelper = new DatabaseHelper(addNewTrip.this);
+        databaseHelper.addNewPendingNotification(model.getTripName(),model.getStringID(),model.getStartDate());
+    }
+
     private void subscribeToUpcomingTripNotification(final String tripStringID){
 
 
@@ -304,7 +296,6 @@ public class addNewTrip extends AppCompatActivity {
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child(tripStringID)
                         .child(s);
-
                 reference.setValue("");
             }
         });
@@ -330,35 +321,12 @@ public class addNewTrip extends AppCompatActivity {
     }
 
 
-    private void sendNotification(){
-        NotificationData data = new NotificationData("Trip Upcoming","You have new trip");
-        PushNotification pushNotification = new PushNotification(data,"dY1a908eSFeI_fmq6fmXmB:APA91bFgTQ3QYlauJZJ7J1qHGoAJ-_MTAIQlBmQ4yw_FXj7Goa04F3GD2YDho1qdRjfDwPIVd0XbsBsBOdYkDwgxuxJ44bPWgrui9HHG3GdCXvVeIL6xovqX0e1j8eYVtP0ljQLDh4j7");
-        notificationAPI.sendNotification(pushNotification).enqueue(new Callback<MyResponse>() {
-            @Override
-            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                if(response.code()==200){
-                    assert response.body() != null;
-                    if(response.body().success!=1){
-                        Toast.makeText(addNewTrip.this,"FAILED",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                Log.d(tag, String.valueOf(response.code()));
-            }
-
-            @Override
-            public void onFailure(Call<MyResponse> call, Throwable t) {
-
-            }
-        });
-    }
-
 
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         //Toast.makeText(this,"I hide keyboard",Toast.LENGTH_SHORT).show();
     }
-
 
 
 

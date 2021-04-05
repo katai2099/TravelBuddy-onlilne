@@ -1,6 +1,8 @@
 package com.example.travelbuddyv2;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +35,9 @@ import android.widget.Toast;
 
 import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.User;
+import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -51,10 +55,12 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -333,10 +339,12 @@ public class UserProfileFragment extends Fragment {
     private void signOut(final Activity activity){
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(getString(R.string.appSharedPref),MODE_PRIVATE);
         sharedPreferences.edit().remove("token").apply();
-        Intent i = new Intent(getActivity(), loginActivity.class);
-        startActivity(i);
-        activity.finishAffinity();
-        FirebaseAuth.getInstance().signOut();
+        sharedPreferences.edit().remove("isFirstRetrievePendingNotification").apply();
+
+        cancelAllPendingIntentOfAlarm();
+
+        savePendingNotificationIntoFirebaseDatabase(activity);
+
 
     }
 
@@ -358,12 +366,8 @@ public class UserProfileFragment extends Fragment {
                 etEditProfileName.setText(user.getName());
 
                 if(user.getProfile_image()!=null && !(TextUtils.isEmpty(user.getProfile_image()))){
-                    Toast.makeText(getContext(),user.getProfile_image(),Toast.LENGTH_SHORT).show();
-                    Picasso.get().load(user.getProfile_image()).resize(200,0).memoryPolicy(MemoryPolicy.NO_CACHE).into(imgUserProfileImage);
-
-
+                    Picasso.get().load(user.getProfile_image()).resize(200,0).into(imgUserProfileImage);
                 }
-
             }
         });
     }
@@ -444,5 +448,67 @@ public class UserProfileFragment extends Fragment {
         });
 
     }
+
+    private void savePendingNotificationIntoFirebaseDatabase(final Activity activity){
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Pending_notification_backup")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
+        final DatabaseHelper db = new DatabaseHelper(getContext());
+
+        List<tripModel> tripModels = db.getPendingNotificationList();
+
+        final int size = tripModels.size()-1;
+
+        if(!tripModels.isEmpty()){
+            for(int i=0;i<tripModels.size();i++){
+
+                final int cnt = i;
+
+                reference.child(tripModels.get(i).getStringID()).setValue(tripModels.get(i)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if(cnt == size){
+                            //we clear offline database before signOut so next user wont use the same data as previous user
+                            db.deleteAllPendingNotification();
+                            Intent i = new Intent(getContext(), loginActivity.class);
+                            startActivity(i);
+                            activity.finishAffinity();
+                            FirebaseAuth.getInstance().signOut();
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(),"SOMETHING WENT WRONG",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }else{
+            Intent i = new Intent(getContext(), loginActivity.class);
+            startActivity(i);
+            activity.finishAffinity();
+            FirebaseAuth.getInstance().signOut();
+        }
+    }
+
+    private void cancelAllPendingIntentOfAlarm(){
+        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(getContext(),ReminderBroadcast.class);
+
+        DatabaseHelper db = new DatabaseHelper(getContext());
+
+        List<tripModel> tripModels = db.getPendingNotificationList();
+
+        for(int i=0;i<tripModels.size();i++){
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),Helper.tripStringIDToInt(tripModels.get(i).getStringID()),intent,0);
+            pendingIntent.cancel();
+            alarmManager.cancel(pendingIntent);
+        }
+    }
+
 
 }

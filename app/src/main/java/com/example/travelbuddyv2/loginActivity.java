@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +35,6 @@ public class loginActivity extends AppCompatActivity {
 
     private final String tag = "LOGIN_ACTIVITY";
 
-    private FirebaseAuth.AuthStateListener authStateListener;
     boolean toNotification = false;
 
     @Override
@@ -45,8 +45,6 @@ public class loginActivity extends AppCompatActivity {
         if(bundle!=null){
             toNotification = Boolean.parseBoolean(bundle.getString("changeToNotificationFragment")) ;
         }
-
-       // authentication(toNotification);
         setContentView(R.layout.activity_login);
         btnSignIn = findViewById(R.id.btnLoginSignIn);
         btnSignUp = findViewById(R.id.btnLoginSignUp);
@@ -55,9 +53,6 @@ public class loginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etLoginPassword);
         auth = FirebaseAuth.getInstance();
 
-
-
-
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,19 +60,20 @@ public class loginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String txtEmail = etEmail.getText().toString();
+                String txtEmail = etEmail.getText().toString().trim();
                 String txtPassword = etPassword.getText().toString();
                 auth = FirebaseAuth.getInstance();
-                loginUser(txtEmail,txtPassword);
-
+                if(validateForm(txtEmail,txtPassword)){
+                    loginUser(txtEmail,txtPassword);
+                }else{
+                    Toast.makeText(loginActivity.this,"Please fill all the field",Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
-
         btnPasswordReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,27 +81,20 @@ public class loginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
 
-
+    private boolean validateForm(String txtEmail,String txtPassword){
+        return !TextUtils.isEmpty(txtEmail) && !TextUtils.isEmpty(txtPassword) ;
     }
 
     private void loginUser(String email,String password){
-
-
         auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Log.d(tag,"I am here logging in");
                     if(isEmailVerified()) {
-//                        Intent i = new Intent(loginActivity.this, Main2Activity.class);
-//                        startActivity(i);
-//                        finish();
-
-                    //    authentication(toNotification);
-
                         registerDeviceToken(toNotification);
-
                     }else{
                         Toast.makeText(loginActivity.this,"Please validate your email first",Toast.LENGTH_SHORT).show();
                         if(task.getResult().getUser()!=null){
@@ -123,9 +112,7 @@ public class loginActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
-
     private void registerDeviceToken(final boolean payload){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
@@ -135,16 +122,13 @@ public class loginActivity extends AppCompatActivity {
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
                         .child(user.getUid())
                         .child("deviceToken");
-
                 reference.setValue(s).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.appSharedPref),MODE_PRIVATE);
-
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("token",user.getUid());
                         editor.apply();
-
                         Intent intent = new Intent(loginActivity.this, Main2Activity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         if(payload){
@@ -162,71 +146,6 @@ public class loginActivity extends AppCompatActivity {
             }
         });
     }
-
-    private  void authentication(final boolean payload){
-        Toast.makeText(loginActivity.this,"This is called",Toast.LENGTH_SHORT).show();
-       authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                final FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    //user registered, check if user is verified
-                    if (user.isEmailVerified()) {
-
-                        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
-                            @Override
-                            public void onSuccess(String s) {
-
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
-                                        .child(user.getUid())
-                                        .child("deviceToken");
-
-                                reference.setValue(s).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Intent intent = new Intent(loginActivity.this, Main2Activity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        if(payload){
-                                            intent.putExtra("changeToNotificationFragment",true);
-                                        }
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(loginActivity.this,"CANT GET DEVICE TOKEN",Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        // user is registered, but not verified yet through email
-                        FirebaseAuth.getInstance().signOut();
-                    }
-                } else {
-                    // User is signed out
-                }
-            }
-        };
-
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-       // FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-//        if (authStateListener != null) {
-//            FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
-//        }
-    }
-
     private boolean isEmailVerified(){
         FirebaseUser user = auth.getCurrentUser();
         Log.d(tag,"I am here to check if email is verified");

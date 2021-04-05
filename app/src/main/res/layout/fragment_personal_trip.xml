@@ -6,10 +6,13 @@
     tools:context=".PersonalTripFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="8dp"
         android:id="@+id/rcvFragmentPersonalTrip"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="55dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,7 +23,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="80dp"
         android:src="@drawable/ic_baseline_add_24"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="13dp"
         android:contentDescription="TODO" />
 
 </RelativeLayout>

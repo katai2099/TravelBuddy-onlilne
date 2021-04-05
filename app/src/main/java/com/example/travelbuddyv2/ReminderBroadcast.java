@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +35,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
     private static final String tag="ReminderBroadcast";
     private NotificationAPI notificationAPI;
+    private DatabaseHelper db ;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -62,7 +64,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("upcomingTripNotification")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
                 .child(tripStringID);
 
         reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -76,8 +78,8 @@ public class ReminderBroadcast extends BroadcastReceiver {
             }
         });
 
-
-
+        db = new DatabaseHelper(context);
+        db.deletePendingNotification(tripStringID);
 
     }
 
@@ -95,7 +97,6 @@ public class ReminderBroadcast extends BroadcastReceiver {
                 }
                 Log.d(tag, String.valueOf(response.code()));
             }
-
             @Override
             public void onFailure(Call<MyResponse> call, Throwable t) {
 

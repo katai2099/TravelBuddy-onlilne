@@ -15,6 +15,11 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    private final String tripName = "TRIP_NAME";
+    private final String tripStringID = "TRIP_STRING_ID";
+    private final String tripStareDate = "START_DATE";
+    private final String tripNotificationTable = "TRIP_NOTIFICATION" ;
+
     public DatabaseHelper(@Nullable Context context) {
         super(context, "Trip.db", null, 1);
     }
@@ -23,14 +28,88 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTripTable = "CREATE TABLE TRIP (ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,START_DATE DATE,END_DATE DATE,IS_NOTIFIED INTEGER)";
         String createTripDetailTable = "CREATE TABLE TRIP_DETAIL (ID INTEGER,TRIP_ID INTEGER PRIMARY KEY AUTOINCREMENT,TRIP_NAME TEXT,CUR_DATE DATE,START_TIME TIME,END_TIME TIME,DESTINATION TEXT)";
+        String createUpcomingTripNotification = "CREATE TABLE TRIP_NOTIFICATION (ID INTEGER PRIMARY KEY AUTOINCREMENT, TRIP_NAME TEXT,TRIP_STRING_ID NAME,START_DATE TIME)";
         db.execSQL(createTripTable);
         db.execSQL(createTripDetailTable);
+        db.execSQL(createUpcomingTripNotification);
+
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+
+    public boolean addNewPendingNotification(String tripName,String tripStringID,String startDate){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(this.tripName,tripName);
+        cv.put(this.tripStringID,tripStringID);
+        cv.put(this.tripStareDate,startDate);
+
+        long insert = db.insert(tripNotificationTable,null,cv);
+
+        return insert != -1;
+    }
+
+
+    public List<tripModel> getPendingNotificationList() {
+        List<tripModel> returnlist = new ArrayList<>();
+
+        String queryString = "SELECT * FROM " + tripNotificationTable;
+        //get data from database
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String tmpTripName = cursor.getString(1);
+                String tmpTripStringID = cursor.getString(2);
+                String tmpStartDate = cursor.getString(3);
+                tripModel tmp = new tripModel(tmpTripName, tmpTripStringID, tmpStartDate);
+                returnlist.add(tmp);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return returnlist;
+    }
+
+    public boolean deletePendingNotification(String tripStringID){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String whereClause = this.tripStringID + " = ?";
+        String [] whereArgs = new String[] {tripStringID};
+
+        long res = db.delete(tripNotificationTable,whereClause,whereArgs);
+
+        return res != -1;
+    }
+
+    public boolean isAllHasBeenNotified()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QueryString = "SELECT * FROM " + tripNotificationTable ;
+        Cursor cursor  = db.rawQuery(QueryString,null,null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count == 0;
+    }
+
+    public boolean deleteAllPendingNotification(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        long res = db.delete(tripNotificationTable,null,null);
+
+        return res != -1;
+
+    }
+
+
+
 
     //function to be called to add new trip in addNewTrip.class
     public boolean addNewTrip(tripModel trip) {
@@ -294,13 +373,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return lists;
     }
 
-    public boolean isAllHasBeenNotified()
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String QueryString = "SELECT ID,TRIP_NAME,START_DATE,END_DATE FROM TRIP WHERE IS_NOTIFIED = " + 0;
-        Cursor cursor  = db.rawQuery(QueryString,null,null);
-        return cursor.getCount() == 0;
-    }
 
     public boolean checkIfTimeOverlappingExistingTrip(String time,int id,String curdate)
     {

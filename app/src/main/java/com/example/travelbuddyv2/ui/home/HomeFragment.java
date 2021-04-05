@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment implements myTripAdapter.OnListListen
 
         rcvTriplist = root.findViewById(R.id.rcvFragmentHomeTriplist);
         rcvTriplist.setLayoutManager(new LinearLayoutManager(getActivity()));
-        tripAdapter = new TripAdapter(tripLists);
+       // tripAdapter = new TripAdapter(tripLists);
 
         rcvTriplist.setAdapter(tripAdapter);
 
