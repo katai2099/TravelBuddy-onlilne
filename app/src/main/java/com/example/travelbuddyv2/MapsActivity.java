@@ -3,11 +3,13 @@ package com.example.travelbuddyv2;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,7 +89,7 @@ import java.util.Locale;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private final String tag = "MAP_ACTIVITY";
-
+    private boolean isWorkingButton = true;
     private boolean isHideAttractionButtonHide = true;
     List<Bitmap> bitmapList;
     private SlidingUpPanelLayout googleMapInformationLayout;
@@ -123,7 +126,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mapFragment.getMapAsync(this);
 
         }
-
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             tripStringID = bundle.getString("tripStringID");
@@ -239,16 +241,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 try {
                     List<Address> addresses = geocoder.getFromLocation(currentLat, currentLng, 1);
-                    Address obj = addresses.get(0);
-                    countryCode = obj.getCountryCode();
+                    if (addresses.size() != 0) {
+                        Address obj = addresses.get(0);
+                        countryCode = obj.getCountryCode();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
                 Log.d(tag,countryCode);
-
-
-
                 FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                         .setCountry(countryCode)
                         .setTypeFilter(TypeFilter.ESTABLISHMENT)
@@ -288,8 +289,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
-
         materialSearchBar.setSuggestionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
             @Override
             public void OnItemClickListener(int position, View v) {
@@ -310,8 +309,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(imm!=null){
                     imm.hideSoftInputFromWindow(v.getWindowToken(),InputMethodManager.HIDE_IMPLICIT_ONLY);
                 }
-
-
 
                 final String placeId = selectedPrediction.getPlaceId();
                 List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG,Place.Field.NAME);
@@ -335,8 +332,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             showBottomLayoutWithDetail(placeId,placeName,latLngOfPlace);
 
                         }
-
-
                     }
                 });
 
@@ -374,43 +369,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }else{
+            behaviorWhenLocationPermissionIsGiven(googleMap);
         }
-        mMap.setMyLocationEnabled(true);
-        Log.d(tag, String.valueOf(mMap.isMyLocationEnabled()));
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
 
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-
-        SettingsClient settingsClient = LocationServices.getSettingsClient(MapsActivity.this);
-        Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
-
-        task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                Log.d(tag,"TRY TO GET DEVICE LOCATION");
-                getDeviceLocation();
-            }
-        });
-
-        task.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                if (e instanceof ResolvableApiException) {
-                    ResolvableApiException resolvable = (ResolvableApiException) e;
-                    try {
-                        resolvable.startResolutionForResult(MapsActivity.this, 51);
-                    } catch (IntentSender.SendIntentException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        });
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -478,7 +441,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    @Override
+ /*   @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 51) {
@@ -487,6 +450,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
+    }*/
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(tag, "GET PERMISSION RESULT");
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(tag, "PERMISSION GRANTED");
+                    if (ContextCompat.checkSelfPermission(MapsActivity.this,
+                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        Log.d(tag, "ACCESS_FIND_LOCATION GRANTED");
+                        getDeviceLocation();
+                    }
+                } else {
+                    Log.d(tag, "PERMISSION DENIED");
+                    behaviorWhenLocationPermissionIsNotGiven();
+                }
+        }
     }
 
     public void getDeviceLocation() {
@@ -501,22 +483,71 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
-        }
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if (task.isSuccessful()) {
-                    Log.d(tag,"GET DEVICE LOCATION SUCCESSFUL");
-                    lastKnownLocation = task.getResult();
-                    if(lastKnownLocation!=null){
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude()),15));
-                        currentLat = lastKnownLocation.getLatitude();
-                        currentLng = lastKnownLocation.getLongitude();
+        }else{
+            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(tag,"GET DEVICE LOCATION SUCCESSFUL");
+                        lastKnownLocation = task.getResult();
+                        if(lastKnownLocation!=null){
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude()),15));
+                            currentLat = lastKnownLocation.getLatitude();
+                            currentLng = lastKnownLocation.getLongitude();
+                        }
+                    } else {
+                        Toast.makeText(MapsActivity.this, "Unable to get last location", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(MapsActivity.this, "Unable to get last location", Toast.LENGTH_SHORT).show();
                 }
+            });
+        }
 
+    }
+
+    private void behaviorWhenLocationPermissionIsNotGiven() {
+        Log.d(tag, "PERMISSION IS NOT GIVEN PROCEED WITH HIDE BUTTON");
+        btnSearchForAttraction.setVisibility(View.GONE);
+        isWorkingButton = false;
+    }
+
+    @SuppressLint("MissingPermission")
+    private void behaviorWhenLocationPermissionIsGiven(GoogleMap googleMap) {
+        googleMap.setMyLocationEnabled(true);
+        Log.d(tag, String.valueOf(googleMap.isMyLocationEnabled()));
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
+            locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            layoutParams.setMargins(0, 0, 40, 180);
+        }
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
+        SettingsClient settingsClient = LocationServices.getSettingsClient(MapsActivity.this);
+        Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
+        task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                Log.d(tag,"TRY TO GET DEVICE LOCATION");
+                getDeviceLocation();
+            }
+        });
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    ResolvableApiException resolvable = (ResolvableApiException) e;
+                    try {
+                        resolvable.startResolutionForResult(MapsActivity.this, 51);
+                    } catch (IntentSender.SendIntentException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             }
         });
     }
@@ -530,7 +561,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
 
         new PlaceTask(mMap).execute(url);
-
     }
 
     private void initPlaceInformationLayout(){
@@ -859,9 +889,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setButtonVisible(){
-        if(btnSearchForAttraction.getVisibility() == View.GONE && !isHideAttractionButtonHide){
+        if(btnSearchForAttraction.getVisibility() == View.GONE && !isHideAttractionButtonHide && isWorkingButton){
             btnSearchForAttraction.setVisibility(View.VISIBLE);
-        }else if(btnHideAttraction.getVisibility() == View.GONE && btnSearchForAttraction.getVisibility() == View.GONE){
+        }else if(btnHideAttraction.getVisibility() == View.GONE && btnSearchForAttraction.getVisibility() == View.GONE && isWorkingButton){
             btnHideAttraction.setVisibility(View.VISIBLE);
         }
     }

@@ -19,7 +19,7 @@
     <string name="search_for_attraction">Search for attraction</string>
     <string name="add_to_trip">Add to trip</string>
     <string name="enter_you_name">Enter you name</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="hide_attraction">Hide attraction</string>
 
@@ -38,5 +38,6 @@
     <string name="serverKey">AAAAjja6Wk0:APA91bHTVxN7b50NBS7QwAPuJSOnxnrw6HmyHG6lXR5v6zb3SDMbSvENisfzjyo4SSWlkDIjKC86LDMBPyx3pSAOGBUrLGfrteU4jOvhpuGjh0XI-5uNEFxRRZqbrR89wgvB1zNGV5_b</string>
     <string name="baseUrl">https://fcm.googleapis.com/</string>
     <string name="content_type">application/json</string>
+    <string name="password">Password</string>
 
 </resources>

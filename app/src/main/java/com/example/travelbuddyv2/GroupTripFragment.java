@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.GroupTripAdapter;
+import com.example.travelbuddyv2.model.User;
 import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -131,12 +132,27 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
                 .child(currentUserUUID)
                 .child(trip.getOwner())
                 .child(trip.getStringID());
-
         //remove user from memberNode
         final DatabaseReference userMemberNode = FirebaseDatabase.getInstance().getReference().child("Member")
                 .child(trip.getOwner())
                 .child(trip.getStringID())
                 .child(currentUserUUID);
+        DatabaseReference userNode; // we need to get deletingMemberDeviceToken;
+        final DatabaseReference upcomingNotificationNode = FirebaseDatabase.getInstance().getReference().child("upcomingTripNotification")
+                .child(trip.getOwner())
+                .child(trip.getStringID());
+        userNode = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(currentUserUUID);
+        userNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User deleteMember = dataSnapshot.getValue(User.class);
+                if(deleteMember!=null){
+                    upcomingNotificationNode.child(deleteMember.getDeviceToken()).removeValue();
+                    Log.d(tag,deleteMember.getDeviceToken());
+                }
+            }
+        });
 
 
         userGroupNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {

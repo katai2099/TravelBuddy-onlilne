@@ -52,6 +52,7 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
         String positionString = String.valueOf(position+1);
         holder.sectionTextview.setText("Day " + positionString + ":   "+ date);
         if(tripSectionList.get(position).getDestinations().size()>0){
+            holder.sectionStartTime.setVisibility(View.VISIBLE);
             holder.sectionStartTime.setText("Start : " + tripSectionList.get(position).getDestinations().get(0).getStartTime());
             holder.sectionStartTime.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -59,6 +60,8 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
                     parentGroupTripDetailAdapterCallback.changeStartTimeClicked(position);
                 }
             });
+        }else{
+            holder.sectionStartTime.setVisibility(View.GONE);
         }
 
         List<Destination> destinationList = tripSection.getDestinations();

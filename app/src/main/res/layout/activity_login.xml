@@ -6,83 +6,104 @@
     android:layout_height="match_parent"
     tools:context=".loginActivity">
 
-    <EditText
-        android:id="@+id/etLoginEmail"
+    <com.google.android.material.textfield.TextInputLayout
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:id="@+id/emailToggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:hint="Email"
-        android:layout_marginTop="300dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        />
+        app:errorEnabled="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etLoginEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_baseline_email_24"
+            android:drawablePadding="10dp"
+            android:hint="@string/email"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"/>
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- <EditText
+         android:id="@+id/etLoginEmail"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintRight_toRightOf="parent"
+         android:hint="Email"
+         android:layout_marginTop="300dp"
+         android:layout_marginEnd="10dp"
+         android:layout_marginStart="10dp"
+         />
+ -->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_toggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-
-    app:passwordToggleEnabled="true"
-
-    app:passwordToggleTint="@color/colorPrimary"
-
-    android:scrollbarSize="25dp"
-    app:layout_constraintBottom_toTopOf="@+id/btnLoginSignIn"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/etLoginEmail" >
-
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etLoginPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/etLoginEmail"
+        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toTopOf="@+id/btnLoginSignIn"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:ems="15"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailToggle"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/colorPrimary"
+        app:errorEnabled="true">
 
-</com.google.android.material.textfield.TextInputLayout>
 
-<Button
+        <com.google.android.material.textfield.TextInputEditText
+            android:drawableStart="@drawable/ic_baseline_lock_24"
+            android:drawablePadding="10dp"
+            android:id="@+id/etLoginPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:ems="15"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toTopOf="@+id/btnLoginSignIn"
+            app:layout_constraintTop_toBottomOf="@+id/etLoginEmail" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
         android:id="@+id/btnLoginSignIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/password_toggle"
-        android:text="Sign in"
-        android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        />
+        android:layout_marginEnd="10dp"
+        android:text="Sign in"
+        app:layout_constraintTop_toBottomOf="@+id/password_toggle" />
 
     <Button
         android:id="@+id/btnLoginSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/btnLoginSignIn"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:text="Sign up"
-        android:background="@android:color/transparent"
+        android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"/>
+        android:background="@android:color/transparent"
+        android:text="Sign up"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginSignIn" />
 
     <Button
         android:id="@+id/btnLoginResetPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/btnLoginSignIn"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="Password Reset"
-        android:background="@android:color/transparent"
+        android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"/>
-
+        android:background="@android:color/transparent"
+        android:text="Password Reset"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginSignIn" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

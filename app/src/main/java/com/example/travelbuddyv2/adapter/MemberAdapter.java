@@ -23,10 +23,12 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
 
     List<Member> memberList;
     MemberAdapterCallBack memberAdapterCallBack;
+    boolean isMember ;
 
-    public MemberAdapter(List<Member> memberList,MemberAdapterCallBack memberAdapterCallBack) {
+    public MemberAdapter(List<Member> memberList,MemberAdapterCallBack memberAdapterCallBack,boolean isMember) {
         this.memberList = memberList;
         this.memberAdapterCallBack = memberAdapterCallBack;
+        this.isMember = isMember;
     }
 
     @NonNull
@@ -55,6 +57,9 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
             Picasso.get().load(member.getProfileImg()).fit().into(holder.imgMemberProfile);
         }
 
+        if(isMember){
+            holder.btnMemberDelete.setVisibility(View.GONE);
+        }
         holder.btnMemberDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

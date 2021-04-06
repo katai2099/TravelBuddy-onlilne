@@ -52,6 +52,7 @@
 
             <LinearLayout
                 android:id="@+id/linear2"
+                android:layout_toStartOf="@+id/btnMemberDelete"
                 android:layout_below="@+id/linear1"
                 android:layout_toEndOf="@id/imgMemberProfile"
                 android:layout_width="270dp"
@@ -80,7 +81,7 @@
 
             <Button
                 android:background="@drawable/ic_baseline_delete_forever_24"
-                android:layout_toEndOf="@id/linear2"
+                android:layout_alignParentEnd="true"
                 android:id="@+id/btnMemberDelete"
                 android:layout_width="40dp"
                 android:layout_height="40dp"

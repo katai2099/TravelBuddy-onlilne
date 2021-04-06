@@ -67,11 +67,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
         holder.btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //get inviter node
-                //This is older version
-               /* DatabaseReference inviterReference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                        .child(request.getInviter())
-                        .child(request.getTripID());*/
 
                 //get inviter node
                 DatabaseReference inviterReference = FirebaseDatabase.getInstance().getReference().child("Trips")
@@ -94,6 +89,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
                                 removeInvitationRequest(request);
                                 addToMemberNode(request);
+                                subscribeToUpcomingTripNotification(request);
                                 addToKnownList();
                             }
                         });
@@ -139,7 +135,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(request.getInviter())
                 .child(request.getRequestID());
-        //get inviter Reqeust Node
+        //get inviter Request Node
         final DatabaseReference inviterRequest = FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                 .child(request.getInviter())
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -160,10 +156,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
                                 break;
                             }
                             Log.d(tag, item.getRef().toString());
-
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
@@ -175,9 +169,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
     }
 
     private void addToMemberNode(Request request){
-
         //get Inviter Member Node
-
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
                 .child(request.getInviter())
                 .child(request.getTripID())
@@ -213,6 +205,28 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
             }
         });
+    }
+
+    private void subscribeToUpcomingTripNotification(Request request){
+
+
+
+        final DatabaseReference upcomingTripNotificationNode = FirebaseDatabase.getInstance().getReference().child("upcomingTripNotification")
+                .child(inviter.getUser_id())
+                .child(request.getTripID());
+
+        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        userNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.getValue(User.class);
+
+                upcomingTripNotificationNode.child(currentUser.getDeviceToken()).setValue("");
+            }
+        });
+
     }
 
 

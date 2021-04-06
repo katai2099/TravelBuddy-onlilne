@@ -28,6 +28,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -59,12 +61,11 @@ import java.util.List;
 public class InventoryFragment extends Fragment implements InventoryListViewAdapter.InventoryAdapterCallBack ,
             InventoryGridViewAdapter.InventoryGridViewAdapterCallBack {
 
-    Boolean isListView = true , onCreateOptionMenuCalled = false;
+    Boolean isListView = true ;
+    ImageButton btnListView,btnGridView;
     RecyclerView rcvItems;
     private static final int PICK_IMAGE = 3;
     private static final int PICK_PDF_FILE = 2;
-    private MenuItem listView;
-    private MenuItem gridView;
     String tripID , tripOwner;
     boolean isPersonal;
     private ProgressDialog loadingBar ;
@@ -96,7 +97,6 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         currentOwnerOfItem = new User();
         currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         listViewDecor = new DividerItemDecoration(getContext(), LinearLayout.VERTICAL);
-
         Bundle bundle = getArguments();
         if(bundle!=null){
             isPersonal = bundle.getBoolean("isPersonal");
@@ -106,21 +106,35 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 tripOwner = bundle.getString("TRIP_OWNER");
             }
         }
+        btnGridView = root.findViewById(R.id.btnGridView);
+        btnListView = root.findViewById(R.id.btnListView);
+
+        btnListView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeToListView();
+            }
+        });
+
+        btnGridView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeToGridView();
+            }
+        });
+
         inventoryList = new ArrayList<>();
         rcvItems = root.findViewById(R.id.rcvItems);
         rcvItems.setLayoutManager(listLayout);
         rcvItems.addItemDecoration(listViewDecor);
         inventoryAdapter = new InventoryListViewAdapter(inventoryList,this);
         inventoryGridViewAdapter = new InventoryGridViewAdapter(inventoryList,this);
-
         rcvItems.setAdapter(inventoryAdapter);
-
         if(isPersonal){
             fillInventoryList(currentUserUUID,tripID);
         }else{
             fillInventoryList(tripOwner,tripID);
         }
-
         return root;
     }
 
@@ -136,7 +150,6 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
         startActivityForResult(intent, PICK_PDF_FILE);
     }
-
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             if (requestCode == PICK_PDF_FILE
@@ -162,45 +175,35 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.inventory_menu,menu);
-        listView = menu.findItem(R.id.optionListView);
-        gridView = menu.findItem(R.id.optionGridView);
-        listView.setVisible(false);
-        onCreateOptionMenuCalled = true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        switch (item.getItemId())
-        {
-            case R.id.optionAddItem:
-                openFile();
-                return true;
-            case R.id.optionListView:
-                changeToListView();
-                return true;
-            case R.id.optionGridView:
-                changeToGridView();
-                return true;
-            default:
-               return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.optionAddItem) {
+            openFile();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
 
     }
-
         private void changeToListView() {
+        Log.d(tag,"CHANGE TO LIST VIEW");
         rcvItems.setLayoutManager(listLayout);
         rcvItems.setAdapter(inventoryAdapter);
-        gridView.setVisible(true);
-        listView.setVisible(false);
+        rcvItems.addItemDecoration(listViewDecor);
+        btnGridView.setVisibility(View.VISIBLE);
+        btnListView.setVisibility(View.GONE);
         isListView = true;
         }
 
         private void changeToGridView(){
+        Log.d(tag,"CHANGE TO GRID VIEW");
         rcvItems.setLayoutManager(gridLayout);
         rcvItems.setAdapter(inventoryGridViewAdapter);
-        listView.setVisible(true);
-        gridView.setVisible(false);
+        rcvItems.removeItemDecoration(listViewDecor);
+        btnGridView.setVisibility(View.GONE);
+        btnListView.setVisibility(View.VISIBLE);
         isListView = false;
         }
 
@@ -359,7 +362,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 dialog.show();
 
             }else{
-               Toast.makeText(getContext(),"You cannot set Permission to another group member item",Toast.LENGTH_SHORT).show();
+               Toast.makeText(getContext(),"You cannot set Permission group member's item",Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -391,7 +394,8 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }else{
-                getCurrentItemOwnerName(inventory.getOwner(),builder,inventory);
+               // getCurrentItemOwnerName(inventory.getOwner(),builder,inventory);
+                Toast.makeText(getContext(),"This file does not belong to you",Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -422,37 +426,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
             request.setDestinationInExternalFilesDir(getContext(),Environment.DIRECTORY_DOWNLOADS,tmp.getFileName());
             downloadManager.enqueue(request);
         }
-        private void getCurrentItemOwnerName(String ownerUUID, final AlertDialog.Builder builder, final Inventory inventory){
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
-                    .child(ownerUUID);
 
-            reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    User tmp = dataSnapshot.getValue(User.class);
-                    currentOwnerOfItem.setName(tmp.getName());
-                    builder.setMessage("This item belongs to \"" + currentOwnerOfItem.getName() + "\" are you sure you want to delete?");
-                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if(isPersonal){
-                                removeItem(currentUserUUID,inventory);
-                            }else{
-                                removeItem(tripOwner,inventory);
-                            }
-                        }
-                    });
-                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
-            });
-        }
         private void changeItemPermission(final Inventory inventory, String owner){
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Inventory")
                     .child(owner)
@@ -519,13 +493,14 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
     @Override
     public void onResume() {
         super.onResume();
-        if(isListView && onCreateOptionMenuCalled) {
-            gridView.setVisible(true);
-            listView.setVisible(false);
-        }else if(onCreateOptionMenuCalled){
-            gridView.setVisible(false);
-            listView.setVisible(true);
-        }
-
+       /* if(isListView) {
+            btnGridView.setVisibility(View.VISIBLE);
+            btnListView.setVisibility(View.GONE);
+            Log.d(tag,"grid View visible");
+        }else{
+            btnGridView.setVisibility(View.GONE);
+            btnListView.setVisibility(View.VISIBLE);
+            Log.d(tag,"list View visible");
+        }*/
     }
 }

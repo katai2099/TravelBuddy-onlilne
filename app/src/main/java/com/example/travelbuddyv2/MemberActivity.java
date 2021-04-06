@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.MemberAdapter;
 import com.example.travelbuddyv2.model.Member;
+import com.example.travelbuddyv2.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +42,8 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
     List<Member> memberList;
     MemberAdapter memberAdapter;
     MenuItem leave ;
+    boolean isMember = false;
+    String ownerUUID ;
 
 
     @Override
@@ -54,18 +58,6 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
             fromWho = extra.getString("fromWho");
             tripOwnerID = extra.getString("TripOwnerID");
         }
-        //Log.d(tag,tripName+'\n'+tripStringID+'\n'+fromWho);
-       // Toast.makeText(getBaseContext(),tripName,Toast.LENGTH_SHORT).show();
-       // Toast.makeText(getBaseContext(),tripStringID,Toast.LENGTH_SHORT).show();
-       // Toast.makeText(getBaseContext(),fromWho,Toast.LENGTH_SHORT).show();
-
-        memberList = new ArrayList<>();
-        memberAdapter = new MemberAdapter(memberList,this);
-        rcvMemberView = findViewById(R.id.rcvMemberActivity);
-        rcvMemberView.setLayoutManager(new LinearLayoutManager(this));
-        rcvMemberView.setAdapter(memberAdapter);
-        fillMemberList();
-
         ownerLayout = findViewById(R.id.layoutForOwner);
         ownerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,8 +69,19 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
 
             }
         });
-        if(!isFromPersonalTripFragment())
+        if(!isFromPersonalTripFragment()){
             ownerLayout.setVisibility(View.GONE);
+            isMember = true;
+        }
+        ownerUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        memberList = new ArrayList<>();
+        memberAdapter = new MemberAdapter(memberList,this,isMember);
+        rcvMemberView = findViewById(R.id.rcvMemberActivity);
+        rcvMemberView.setLayoutManager(new LinearLayoutManager(this));
+        rcvMemberView.setAdapter(memberAdapter);
+        fillMemberList();
+
+
 
 
     }
@@ -195,6 +198,23 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                 .child(tripStringID)
                 .child(currentUserUUID);
 
+        DatabaseReference userNode; // we need to get deletingMemberDeviceToken;
+        final DatabaseReference upcomingNotificationNode = FirebaseDatabase.getInstance().getReference().child("upcomingTripNotification")
+                .child(tripOwnerID)
+                .child(tripStringID);
+        userNode = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(currentUserUUID);
+        userNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User deleteMember = dataSnapshot.getValue(User.class);
+                if(deleteMember!=null){
+                    upcomingNotificationNode.child(deleteMember.getDeviceToken()).removeValue();
+                    Log.d(tag,deleteMember.getDeviceToken());
+                }
+            }
+        });
+
 
         userGroupNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -268,33 +288,50 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
 
     private void removeFromGroup(int position){
 
+        removeFromMemberNode(position);
+        removeGroupNode(position);
+        removeFromUpcomingNotificationNode(position);
+
+    }
+
+    private void removeGroupNode(int position){
         Member deletingMember = memberList.get(position);
-
-        String ownerUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         DatabaseReference groupNode ;
-        DatabaseReference memberNode ;
-
         groupNode = FirebaseDatabase.getInstance().getReference().child("Group")
                 .child(deletingMember.getID())
                 .child(ownerUUID)
                 .child(tripStringID);
         groupNode.removeValue();
+    }
 
+    private void removeFromMemberNode(int position){
+        Member deletingMember = memberList.get(position);
+        DatabaseReference memberNode ;
         memberNode = FirebaseDatabase.getInstance().getReference().child("Member")
                 .child(ownerUUID)
                 .child(tripStringID)
                 .child(deletingMember.getID());
+        memberNode.removeValue();
+    }
 
-        memberNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+    private void removeFromUpcomingNotificationNode(int position){
+        final Member deletingMember = memberList.get(position);
+        DatabaseReference userNode; // we need to get deletingMemberDeviceToken;
+        final DatabaseReference upcomingNotificationNode = FirebaseDatabase.getInstance().getReference().child("upcomingTripNotification")
+                .child(ownerUUID)
+                .child(tripStringID);
+        userNode = FirebaseDatabase.getInstance().getReference().child("User")
+                .child(deletingMember.getID());
+        userNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(MemberActivity.this,"Remove Success",Toast.LENGTH_SHORT).show();
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User deleteMember = dataSnapshot.getValue(User.class);
+                if(deleteMember!=null){
+                    upcomingNotificationNode.child(deleteMember.getDeviceToken()).removeValue();
+                    Log.d(tag,deleteMember.getDeviceToken());
+                }
             }
         });
-
-
-
 
     }
 

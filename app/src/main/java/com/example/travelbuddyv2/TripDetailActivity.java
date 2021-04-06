@@ -35,7 +35,7 @@ public class TripDetailActivity extends AppCompatActivity {
         Bundle extra = getIntent().getExtras();
         Log.d(tag,extra.getString("TRIP_STRING_ID"));
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(),extra);
-        ViewPager viewPager = findViewById(R.id.view_pager);
+        final ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);

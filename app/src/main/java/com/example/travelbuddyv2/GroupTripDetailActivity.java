@@ -32,10 +32,11 @@ public class GroupTripDetailActivity extends AppCompatActivity {
         Log.d(tag,extra.getString("TRIP_STRING_ID"));
         Log.d(tag,extra.getString("TRIP_OWNER"));
         GroupSectionsPagerAdapter groupSectionsPagerAdapter = new GroupSectionsPagerAdapter(this, getSupportFragmentManager(),extra);
-        ViewPager viewPager = findViewById(R.id.view_pager);
+        final ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(groupSectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
 
     }
 }

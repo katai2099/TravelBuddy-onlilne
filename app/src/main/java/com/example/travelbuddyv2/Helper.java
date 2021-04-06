@@ -152,33 +152,6 @@ public class Helper {
 
 
 
-
-    public static long milliToSecond(long milli) {
-
-        long res = TimeUnit.MILLISECONDS.toSeconds(milli) % 60; // if not modulo we will get the exact second difference of Time
-        return res;
-    }
-
-    public static long milliToMinute(long milli){
-        long res = TimeUnit.MILLISECONDS.toMinutes(milli) % 60;
-        return res;
-    }
-
-    public static long milliToHour(long milli){
-        long res = TimeUnit.MILLISECONDS.toHours(milli) ;
-        return res;
-    }
-
-    public static long milliToDay(long milli){
-        long res = TimeUnit.MILLISECONDS.toDays(milli) % 365;
-        return res;
-    }
-
-    public static long milliToyear(long milli){
-        long res = TimeUnit.MILLISECONDS.toDays(milli)/365l;
-        return res;
-    }
-
     public static int tripStringIDToInt(String ID){
 
         StringBuilder tmp = new StringBuilder();
@@ -412,44 +385,10 @@ public class Helper {
 
         }
 
-      /*  if(extraDayAfterPeriodChanged==1 ) {
-            if(!destination.isIncreased()) {
-                Log.d(tag,"!isIncrease and extraDay == 1");
-                extraDayAfterPeriodChanged += extraDay;
-            }
-            else{
-                Log.d(tag,"isIncrease and extraDay == 1");
-                extraDayAfterPeriodChanged = extraDay;
-            }
-            destination.setIncreased(true);
-            destination.setDecreased(false);
-        }else {
-            if(extraDayAfterPeriodChanged!=0 && !destination.isDecreased()) {
-                Log.d(tag,"!isDecease and extraDay != 0");
-                if(extraDay == 0){
-                    extraDayAfterPeriodChanged = 0;
-                }else{
-                    extraDayAfterPeriodChanged = (extraDay - 1);
-                }
-                destination.setIncreased(false);
-                destination.setDecreased(true);
-            }
-            else if(destination.isDecreased() && extraDayAfterPeriodChanged==0){
-                Log.d(tag,"isDecease and extraDay == 0");
-                extraDayAfterPeriodChanged = extraDay;
-                destination.setIncreased(false);
-                destination.setDecreased(true);
-            }
-            else {
-                extraDayAfterPeriodChanged = extraDay;
-                destination.setIncreased(false);
-                destination.setDecreased(true);
-            }
-        }*/
-
-//        extraDayAfterPeriodChanged += extraDay;
-
         Log.d(tag,"Extra day after if else " + extraDayAfterPeriodChanged);
+
+        if(extraDayAfterPeriodChanged<0)
+            extraDayAfterPeriodChanged = 0;
 
         destination.setEndTime( finalTime) ;
         destination.setDuration((hour*60) + minute);
