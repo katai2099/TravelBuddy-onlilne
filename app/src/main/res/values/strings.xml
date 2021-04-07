@@ -39,5 +39,6 @@
     <string name="baseUrl">https://fcm.googleapis.com/</string>
     <string name="content_type">application/json</string>
     <string name="password">Password</string>
+    <string name="noInternet">Network Unavailable. Please try again later.</string>
 
 </resources>

@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.GoogleMapPictureAdapter;
+import com.example.travelbuddyv2.googleMapAPICall.PlaceTask;
 import com.example.travelbuddyv2.model.Destination;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -615,80 +616,9 @@ public class MapsFragment extends Fragment {
                 "&radius=1000" +
                 "&type=tourist_attraction" +
                 "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
-        new PlaceTask().execute(url);
-    }
-    private class PlaceTask extends AsyncTask<String, Integer, String> {
-        @Override
-        protected String doInBackground(String... strings) {
-            String data = null;
-            try {
-                data = downloadUrl(strings[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return data;
-        }
-        @Override
-        protected void onPostExecute(String s) {
-            new ParserTask().execute(s);
-        }
-    }
-    private String downloadUrl(String string) throws IOException {
-        URL url = new URL(string);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.connect();
-        InputStream stream = connection.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        StringBuilder builder = new StringBuilder();
-        String line = "";
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-        }
-        String data = builder.toString();
-        reader.close();
-        Log.d(tag, "download url data " + data);
-        return data;
+        new PlaceTask(map).execute(url);
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
-        @Override
-        protected List<HashMap<String, String>> doInBackground(String... strings) {
-            //create json parser class
-            JsonParser jsonParser = new JsonParser();
-            //initialize hash map list
-            List<HashMap<String, String>> mapList = null;
-            //initialize json object
-            try {
-                JSONObject object = new JSONObject(strings[0]);
-                //parse json object
-                mapList = jsonParser.parseResult(object);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return mapList;
-        }
-
-        @Override
-        protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
-            map.clear();
-            Log.d(tag, "I am here after clearing map");
-            for (int i = 0; i < hashMaps.size(); i++) {
-                HashMap<String, String> hashMapList = hashMaps.get(i);
-                double lat = Double.parseDouble(hashMapList.get("lat"));
-                double lng = Double.parseDouble(hashMapList.get("lng"));
-                String name = hashMapList.get("name");
-                String placeID = hashMapList.get("placeID");
-                LatLng latLng = new LatLng(lat, lng);
-                MarkerOptions options = new MarkerOptions();
-                options.position(latLng);
-                options.title(name);
-                options.snippet(placeID);
-                map.addMarker(options);
-                Log.d(tag, "I am here adding marker");
-            }
-        }
-    }
     private void setButtonVisible() {
         if (btnSearchForAttraction.getVisibility() == View.GONE && isHideAttractionButtonHide && isWorkingButton) {
             btnSearchForAttraction.setVisibility(View.VISIBLE);

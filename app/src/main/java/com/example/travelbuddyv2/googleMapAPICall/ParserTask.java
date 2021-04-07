@@ -31,42 +31,43 @@ public class  ParserTask extends AsyncTask<String,Integer, List<HashMap<String,S
         List<HashMap<String,String>> mapList = null;
         //initialize json object
         try {
-            JSONObject object = new JSONObject(strings[0]);
+            JSONObject object ;
+            if(strings[0]!=null){
+               object = new JSONObject(strings[0]);
+                mapList = jsonParser.parseResult(object);
+            }
             //parse json object
-            mapList = jsonParser.parseResult(object);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
         return mapList;
     }
 
     @Override
     protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
         map.clear();
+        if(hashMaps!=null) {
+            for (int i = 0; i < hashMaps.size(); i++) {
+                HashMap<String, String> hashMapList = hashMaps.get(i);
 
-        for(int i=0;i<hashMaps.size();i++){
-            HashMap<String,String> hashMapList = hashMaps.get(i);
+                double lat = Double.parseDouble(hashMapList.get("lat"));
+                double lng = Double.parseDouble(hashMapList.get("lng"));
+                String name = hashMapList.get("name");
+                String placeID = hashMapList.get("placeID");
 
-            double lat = Double.parseDouble(hashMapList.get("lat"));
-            double lng = Double.parseDouble(hashMapList.get("lng"));
-            String name = hashMapList.get("name");
-            String placeID = hashMapList.get("placeID");
+                LatLng latLng = new LatLng(lat, lng);
 
-            LatLng latLng = new LatLng(lat,lng);
+                MarkerOptions options = new MarkerOptions();
 
-            MarkerOptions options = new MarkerOptions();
+                options.position(latLng);
 
-            options.position(latLng);
+                options.title(name);
 
-            options.title(name);
+                options.snippet(placeID);
 
-            options.snippet(placeID);
-
-            map.addMarker(options);
-
-
+                map.addMarker(options);
+            }
         }
     }
 }

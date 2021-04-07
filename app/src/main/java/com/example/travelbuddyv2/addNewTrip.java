@@ -23,11 +23,13 @@ import android.widget.Toast;
 import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.User;
 import com.example.travelbuddyv2.model.tripModel;
+import com.example.travelbuddyv2.networkManager.NetworkObserver;
 import com.example.travelbuddyv2.retrofit.Client;
 import com.example.travelbuddyv2.retrofit.MyResponse;
 import com.example.travelbuddyv2.retrofit.NotificationAPI;
 import com.example.travelbuddyv2.retrofit.NotificationData;
 import com.example.travelbuddyv2.retrofit.PushNotification;
+import com.example.travelbuddyv2.utils.Snack;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -105,66 +107,12 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String tmpStartDate = Helper.changeInputDateFormat(startDate.getText().toString());
-                String tmpEndDate = Helper.changeInputDateFormat(endDate.getText().toString());
+                if(NetworkObserver.isNetworkConnected){
+                    saveBehavior();
+                }else{
+                    new Snack(v, getString(R.string.noInternet));
+                }
 
-                if(Helper.isEditTextEmpty(tripName))
-                {
-                    Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
-                }
-                else if(Helper.isEditTextEmpty(startDate))
-                {
-                    Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
-                }
-                else if(Helper.isEditTextEmpty(endDate))
-                {
-                    Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
-                }
-                else if(!Helper.checkIfStartDateBeforeEndDate(tmpStartDate,tmpEndDate) && !Helper.checkIfStartDateSameDateAsEndDate(tmpStartDate,tmpEndDate))
-                {
-                    Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                   final tripModel tmpTripModel = new tripModel();
-                   tmpTripModel.setTripName(tripName.getText().toString());
-                   tmpTripModel.setStartDate(tmpStartDate);
-                   tmpTripModel.setEndDate(tmpEndDate);
-                    tmpTripModel.setStringID("t" + ID);
-                    tmpTripModel.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    //adding date to TripDetail NODE
-                    //Still need to get it cleaned
-                    final List<String> dateList = getDateInterval(tmpStartDate,tmpEndDate);
-                    final HashMap<String,String> res = new HashMap<>();
-                    for(int i=0;i<dateList.size();i++){
-                        res.put(dateList.get(i),"");
-                    }
-                    final int lastInsertedID = ID;
-                    FirebaseDatabase.getInstance().getReference()
-                            .child("Trips")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child("t" + ID)
-                            .setValue(tmpTripModel)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    FirebaseDatabase.getInstance().getReference().child("Trip_detail")
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .child("t" + lastInsertedID)
-                                            .setValue(res).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            addOwnerToMemberNode(lastInsertedID);
-                                            Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
-                                            setNotificationTime(tmpTripModel);
-                                            subscribeToUpcomingTripNotification(tmpTripModel.getStringID());
-                                            savePendingNotificationToOfflineDatabase(tmpTripModel);
-                                            toTripFragment();
-                                        }
-                                    });
-
-                                }
-                            });
-                }
             }
         });
 
@@ -284,6 +232,68 @@ public class addNewTrip extends AppCompatActivity {
     private void savePendingNotificationToOfflineDatabase(tripModel model){
         databaseHelper = new DatabaseHelper(addNewTrip.this);
         databaseHelper.addNewPendingNotification(model.getTripName(),model.getStringID(),model.getStartDate());
+    }
+
+    private void saveBehavior(){
+        String tmpStartDate = Helper.changeInputDateFormat(startDate.getText().toString());
+        String tmpEndDate = Helper.changeInputDateFormat(endDate.getText().toString());
+
+        if(Helper.isEditTextEmpty(tripName))
+        {
+            Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
+        }
+        else if(Helper.isEditTextEmpty(startDate))
+        {
+            Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
+        }
+        else if(Helper.isEditTextEmpty(endDate))
+        {
+            Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
+        }
+        else if(!Helper.checkIfStartDateBeforeEndDate(tmpStartDate,tmpEndDate) && !Helper.checkIfStartDateSameDateAsEndDate(tmpStartDate,tmpEndDate))
+        {
+            Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            final tripModel tmpTripModel = new tripModel();
+            tmpTripModel.setTripName(tripName.getText().toString());
+            tmpTripModel.setStartDate(tmpStartDate);
+            tmpTripModel.setEndDate(tmpEndDate);
+            tmpTripModel.setStringID("t" + ID);
+            tmpTripModel.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            //adding date to TripDetail NODE
+            //Still need to get it cleaned
+            final List<String> dateList = getDateInterval(tmpStartDate,tmpEndDate);
+            final HashMap<String,String> res = new HashMap<>();
+            for(int i=0;i<dateList.size();i++){
+                res.put(dateList.get(i),"");
+            }
+            final int lastInsertedID = ID;
+            FirebaseDatabase.getInstance().getReference()
+                    .child("Trips")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child("t" + ID)
+                    .setValue(tmpTripModel)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            FirebaseDatabase.getInstance().getReference().child("Trip_detail")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child("t" + lastInsertedID)
+                                    .setValue(res).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    addOwnerToMemberNode(lastInsertedID);
+                                    Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
+                                    setNotificationTime(tmpTripModel);
+                                    subscribeToUpcomingTripNotification(tmpTripModel.getStringID());
+                                    savePendingNotificationToOfflineDatabase(tmpTripModel);
+                                    toTripFragment();
+                                }
+                            });
+                        }
+                    });
+        }
     }
 
     private void subscribeToUpcomingTripNotification(final String tripStringID){

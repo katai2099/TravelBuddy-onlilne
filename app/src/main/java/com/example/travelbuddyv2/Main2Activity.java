@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.model.tripModel;
+import com.example.travelbuddyv2.networkManager.NetworkObserver;
 import com.example.travelbuddyv2.ui.home.HomeFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -52,7 +53,8 @@ public class Main2Activity extends AppCompatActivity {
             Log.d(tag,"SKIP RETRIEVE PENDING NOTIFICATION");
         }
         createNotificationChannel();
-
+        NetworkObserver networkObserver = new NetworkObserver(getApplicationContext());
+        networkObserver.registerNetworkCallback();
         Bundle bundle = getIntent().getExtras();
 
         if(bundle!=null){

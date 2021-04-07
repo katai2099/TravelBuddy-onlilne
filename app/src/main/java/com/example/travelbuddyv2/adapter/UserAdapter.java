@@ -17,6 +17,7 @@ import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.Request;
 import com.example.travelbuddyv2.model.User;
+import com.example.travelbuddyv2.networkManager.NetworkObserver;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +42,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     String name, id ;
     boolean isAlreadyAMember;
 
-
     public UserAdapter(List<User> users,String name,String id) {
         this.users = users;
         this.name  = name;
@@ -61,11 +61,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final UserHolder holder, int position) {
-
-
-
         final User user = users.get(position);
-
         holder.tvFriendName.setText(user.getName());
         holder.tvFriendEmail.setText(user.getEmail());
         holder.imgFriendProfile.setImageResource(R.drawable.ic_baseline_person_24);
@@ -75,7 +71,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
             Picasso.get().load(user.getProfile_image()).fit().into(holder.imgFriendProfile);
             Log.d(tag,"Picasso called");
         }
-
         final Request requester = new Request();
         requester.setRequestType("sent");
         requester.setTripID(holder.id);
@@ -86,7 +81,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         receiver.setTripID(holder.id);
         receiver.setTripName(holder.name);
         receiver.setInviter(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         checkIfAlreadyAMember(user);
 
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
@@ -133,8 +127,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     }
 
     private void addToKnownList(final User user){
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Known_lists")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -172,8 +164,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
     private void addRequest(final User user, final Request requester, final Request receiver, final UserHolder holder){
       //  List<Request> requests = new ArrayList<>();
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Invitation_Request")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(user.getUser_id());
@@ -320,7 +310,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

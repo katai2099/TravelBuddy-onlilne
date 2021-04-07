@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.example.travelbuddyv2.adapter.TripAdapter;
 import com.example.travelbuddyv2.model.Inventory;
 import com.example.travelbuddyv2.model.tripModel;
+import com.example.travelbuddyv2.networkManager.NetworkObserver;
+import com.example.travelbuddyv2.utils.Snack;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,6 +51,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
     TripAdapter tripAdapter;
     List<tripModel> tripLists  = new ArrayList<>();
     String userUUID ;
+    View currentView ;
     public PersonalTripFragment() {
         // Required empty public constructor
     }
@@ -59,6 +62,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_personal_trip, container, false);
+        currentView = root;
         userUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         fbtnAddNewTrip = root.findViewById(R.id.fbtnFragmentPersonalTrip);
         rcvTriplist = root.findViewById(R.id.rcvFragmentPersonalTrip);
@@ -103,15 +107,25 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         startActivity(i);
     }
 
+    public void showSnackBar(){
+        new Snack(this.getView(),getString(R.string.noInternet));
+    }
+
     @Override
     public void onDeleteTripClicked(int position) {
+
         final tripModel currentTrip = tripLists.get(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Are you sure you want to delete this trip?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteTrip(currentTrip);
+                if(NetworkObserver.isNetworkConnected){
+                    deleteTrip(currentTrip);
+                }else{
+                    showSnackBar();
+                }
+
             }
         });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {

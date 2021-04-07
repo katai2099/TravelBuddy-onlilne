@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.example.travelbuddyv2.adapter.UserAdapter;
 import com.example.travelbuddyv2.model.Request;
 import com.example.travelbuddyv2.model.User;
+import com.example.travelbuddyv2.networkManager.NetworkObserver;
+import com.example.travelbuddyv2.utils.Snack;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -76,17 +78,18 @@ public class InviteFriendActivity extends AppCompatActivity {
         btnSearchForFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(etInviteFriend.getText().toString())){
-                    Toast.makeText(getBaseContext(),"Please fill",Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    //check if User has Receiver in his/her known lists
-                    if(!checkIfEmailExistInKnownList(etInviteFriend.getText().toString()))
-                    {
-                        fillList(etInviteFriend.getText().toString());
+                if(NetworkObserver.isNetworkConnected) {
+
+                    if (TextUtils.isEmpty(etInviteFriend.getText().toString())) {
+                        Toast.makeText(getBaseContext(), "Please fill", Toast.LENGTH_SHORT).show();
+                    } else {
+                        //check if User has Receiver in his/her known lists
+                        if (!checkIfEmailExistInKnownList(etInviteFriend.getText().toString())) {
+                            fillList(etInviteFriend.getText().toString());
+                        }
                     }
-
-
+                }else{
+                    new Snack(rcvSuggestionFriendList,getString(R.string.noInternet));
                 }
             }
         });
