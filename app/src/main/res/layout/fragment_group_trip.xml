@@ -5,11 +5,23 @@
     android:layout_height="match_parent"
     tools:context=".GroupTripFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcvFragmentGroupTrip"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/groupTripRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="55dp"/>
+        android:layout_marginBottom="55dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvFragmentGroupTrip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="55dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
 
 </RelativeLayout>

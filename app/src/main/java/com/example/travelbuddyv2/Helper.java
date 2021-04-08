@@ -3,9 +3,11 @@ package com.example.travelbuddyv2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import com.example.travelbuddyv2.model.Destination;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,8 +22,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Helper {
 
-    static int uniqueNotificationID = 0;
     static private final String tag = "HELPER";
+
+    public static void showSnackBar(View view, String string){
+        Snackbar.make(view,string,Snackbar.LENGTH_SHORT).show();
+    }
 
     public static String changeInputTimeFormat(String time)
     {

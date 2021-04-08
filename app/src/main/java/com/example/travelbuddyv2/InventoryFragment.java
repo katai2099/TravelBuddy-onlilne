@@ -37,6 +37,7 @@ import com.example.travelbuddyv2.adapter.InventoryGridViewAdapter;
 import com.example.travelbuddyv2.adapter.InventoryListViewAdapter;
 import com.example.travelbuddyv2.model.Inventory;
 import com.example.travelbuddyv2.model.User;
+import com.example.travelbuddyv2.networkManager.NetworkObserver;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -161,15 +162,17 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                     uri = data.getData();
                    String type = getContext().getContentResolver().getType(uri);
                     Toast.makeText(getContext(),type,Toast.LENGTH_SHORT).show();
-                    if(isPersonal){
-                        uploadToFirebaseCloudStorage(uri,currentUserUUID);
+                    if(NetworkObserver.isNetworkConnected) {
+                        if (isPersonal) {
+                            uploadToFirebaseCloudStorage(uri, currentUserUUID);
+                        } else {
+                            uploadToFirebaseCloudStorage(uri, tripOwner);
+                        }
                     }else{
-                        uploadToFirebaseCloudStorage(uri,tripOwner);
+                        Helper.showSnackBar(rcvItems,getString(R.string.noInternet));
                     }
-
                 }
             }
-
         }
 
         @Override
@@ -179,13 +182,11 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         if (item.getItemId() == R.id.optionAddItem) {
             openFile();
             return true;
         }
         return super.onOptionsItemSelected(item);
-
     }
         private void changeToListView() {
         Log.d(tag,"CHANGE TO LIST VIEW");
@@ -208,38 +209,27 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         }
 
         private void uploadToFirebaseCloudStorage(Uri uri,String owner){
-
         Cursor returnCursor = getContext()
                 .getContentResolver().query(uri, null, null, null, null);
-
         int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
         int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
         returnCursor.moveToFirst();
-
         final String fileName = returnCursor.getString(nameIndex);
-
-
         Log.d(tag,returnCursor.getString(nameIndex));
         //Log.d(tag,String.valueOf(returnCursor.getLong(sizeIndex)));
-
         loadingBar.show();
         loadingBar.setCanceledOnTouchOutside(false);
         StorageReference UserProfileImageReference = FirebaseStorage.getInstance().getReference().child("trip_file")
                 .child(owner)
                 .child(tripID);
-
         StorageReference path = UserProfileImageReference.child(fileName);
-
         path.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()){
                  //   loadingBar.dismiss();
-
                     final Task<Uri> firebaseUri = task.getResult().getStorage().getDownloadUrl();
-
                     final Inventory inventory = new Inventory();
-
                     firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -271,15 +261,11 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
     }
 
     private void updateFirebaseDatabaseInventoryNode(Inventory inventory,String owner){
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Inventory")
                 .child(owner)
                 .child(tripID);
-
         String key = reference.push().getKey();
-
         DatabaseReference endRes = reference.child(key);
-
         endRes.setValue(inventory).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -287,19 +273,16 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 Toast.makeText(getContext(),"Upload success",Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void fillInventoryList(String owner,String tripID){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Inventory")
                 .child(owner)
                 .child(tripID);
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 inventoryList.clear();
-
                 for (DataSnapshot data:snapshot.getChildren()) {
                     Inventory tmp = data.getValue(Inventory.class);
                     //inventoryList.add(tmp);
@@ -344,10 +327,14 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(isPersonal){
-                            changeItemPermission(inventory,currentUserUUID);
+                        if(NetworkObserver.isNetworkConnected) {
+                            if (isPersonal) {
+                                changeItemPermission(inventory, currentUserUUID);
+                            } else {
+                                changeItemPermission(inventory, tripOwner);
+                            }
                         }else{
-                            changeItemPermission(inventory,tripOwner);
+                            Helper.showSnackBar(rcvItems,getString(R.string.noInternet));
                         }
                     }
                 })
@@ -357,10 +344,8 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
 
                     }
                 });
-
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
             }else{
                Toast.makeText(getContext(),"You cannot set Permission group member's item",Toast.LENGTH_SHORT).show();
             }
@@ -370,19 +355,22 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         @Override
         public void onDeleteClicked(int position) {
            final Inventory inventory = inventoryList.get(position);
-
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             if(currentUserUUID.equals(inventory.getOwner())){
                 builder.setMessage("are you sure you want to delete this item?");
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(isPersonal){
-                            removeItem(currentUserUUID,inventory);
-                            removeItemFromCloudStorage(currentUserUUID,inventory);
+                        if(NetworkObserver.isNetworkConnected) {
+                            if (isPersonal) {
+                                removeItem(currentUserUUID, inventory);
+                                removeItemFromCloudStorage(currentUserUUID, inventory);
+                            } else {
+                                removeItem(tripOwner, inventory);
+                                removeItemFromCloudStorage(tripOwner, inventory);
+                            }
                         }else{
-                            removeItem(tripOwner,inventory);
-                            removeItemFromCloudStorage(tripOwner,inventory);
+                            Helper.showSnackBar(rcvItems,getString(R.string.noInternet));
                         }
                     }
                 });
@@ -418,13 +406,17 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         }
         @Override
         public void onDownloadClicked(int position) {
-            Inventory tmp = inventoryList.get(position);
-            DownloadManager downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
-            Uri uri = Uri.parse(tmp.getFileUri());
-            DownloadManager.Request request = new DownloadManager.Request(uri);
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-            request.setDestinationInExternalFilesDir(getContext(),Environment.DIRECTORY_DOWNLOADS,tmp.getFileName());
-            downloadManager.enqueue(request);
+            if(NetworkObserver.isNetworkConnected) {
+                Inventory tmp = inventoryList.get(position);
+                DownloadManager downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri uri = Uri.parse(tmp.getFileUri());
+                DownloadManager.Request request = new DownloadManager.Request(uri);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalFilesDir(getContext(), Environment.DIRECTORY_DOWNLOADS, tmp.getFileName());
+                downloadManager.enqueue(request);
+            }else{
+                Helper.showSnackBar(rcvItems,getString(R.string.noInternet));
+            }
         }
 
         private void changeItemPermission(final Inventory inventory, String owner){

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelbuddyv2.Helper;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.Request;
@@ -88,12 +89,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
             @Override
             public void onClick(View v) {
                 Log.d(tag,String.valueOf(isAlreadyAMember));
-             if(!isAlreadyAMember)
-                 addRequest(user,requester,receiver,holder);
-             else{
-                 holder.tvPending.setVisibility(View.VISIBLE);
-                 holder.btnInviteFriend.setVisibility(View.GONE);
-             }
+                if(NetworkObserver.isNetworkConnected) {
+                    if (!isAlreadyAMember)
+                        addRequest(user, requester, receiver, holder);
+                    else {
+                        holder.tvPending.setVisibility(View.VISIBLE);
+                        holder.btnInviteFriend.setVisibility(View.GONE);
+                    }
+                }else{
+                    Helper.showSnackBar(v,holder.itemView.getContext().getString(R.string.noInternet));
+                }
 
             }
         });

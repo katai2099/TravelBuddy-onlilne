@@ -192,7 +192,7 @@ public class UserProfileFragment extends Fragment {
             changeUserName(newName);
             refreshUserName();
         }else{
-            new Snack(getView(),getString(R.string.noInternet));
+            Helper.showSnackBar(imgUserProfileImage,getString(R.string.noInternet));
         }
         bottomSheetDialog.dismiss();
     }
@@ -217,7 +217,7 @@ public class UserProfileFragment extends Fragment {
             if(NetworkObserver.isNetworkConnected){
                 updateProfileImage(data);
             }else{
-                new Snack(getView(),getString(R.string.noInternet));
+                Helper.showSnackBar(imgUserProfileImage,getString(R.string.noInternet));
             }
 
 

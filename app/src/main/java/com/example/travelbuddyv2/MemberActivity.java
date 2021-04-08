@@ -110,8 +110,13 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        leaveGroup();
-                        toGroupTripFragment();
+                        if(NetworkObserver.isNetworkConnected){
+                            leaveGroup();
+                            toGroupTripFragment();
+                        }else{
+                            Helper.showSnackBar(rcvMemberView,getString(R.string.noInternet));
+                        }
+
                     }
                 });
                 builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -249,11 +254,16 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
             if (position == 0) {
                 Toast.makeText(getBaseContext(), "Owner permission cannot be changed", Toast.LENGTH_SHORT).show();
             } else {
-                Intent i = new Intent(this, PermissionModificationActivity.class);
-                i.putExtra("TripOwnerID", tripOwnerID);
-                i.putExtra("TripStringID", tripStringID);
-                i.putExtra("MemberID", memberList.get(position).getID());
-                startActivity(i);
+                if(NetworkObserver.isNetworkConnected){
+                    Intent i = new Intent(this, PermissionModificationActivity.class);
+                    i.putExtra("TripOwnerID", tripOwnerID);
+                    i.putExtra("TripStringID", tripStringID);
+                    i.putExtra("MemberID", memberList.get(position).getID());
+                    startActivity(i);
+                }else{
+                    Helper.showSnackBar(rcvMemberView,getString(R.string.noInternet));
+                }
+
             }
         }
     }
@@ -275,7 +285,12 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                removeFromGroup(position);
+                if(NetworkObserver.isNetworkConnected){
+                    removeFromGroup(position);
+                }else{
+                    Helper.showSnackBar(rcvMemberView,getString(R.string.noInternet));
+                }
+
             }
         });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,14 +45,14 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class PersonalTripFragment extends Fragment implements TripAdapter.TripAdapterCallBack{
 
-    int ID = 0;
     final String tag = "PERSONAL_TRIP_FRAGMENT";
     FloatingActionButton fbtnAddNewTrip;
-    RecyclerView rcvTriplist;
+    RecyclerView rcvTripList;
     TripAdapter tripAdapter;
     List<tripModel> tripLists  = new ArrayList<>();
     String userUUID ;
     View currentView ;
+    SwipeRefreshLayout swipeRefreshLayout;
     public PersonalTripFragment() {
         // Required empty public constructor
     }
@@ -62,30 +63,15 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_personal_trip, container, false);
-        currentView = root;
+        currentView = root.findViewById(R.id.personalTripLayout);
+        swipeRefreshLayout = root.findViewById(R.id.personalTripRefreshLayout);
         userUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         fbtnAddNewTrip = root.findViewById(R.id.fbtnFragmentPersonalTrip);
-        rcvTriplist = root.findViewById(R.id.rcvFragmentPersonalTrip);
-        rcvTriplist.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rcvTripList = root.findViewById(R.id.rcvFragmentPersonalTrip);
+        rcvTripList.setLayoutManager(new LinearLayoutManager(getActivity()));
         tripAdapter = new TripAdapter(tripLists,this);
-        rcvTriplist.setAdapter(tripAdapter);
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trips").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                tripLists.clear();
-                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    String key = dataSnapshot.getKey();
-                    Log.d(tag,key);
-                    tripModel trip = dataSnapshot.getValue(tripModel.class);
-                    tripLists.add(trip);
-                }
-                tripAdapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+        rcvTripList.setAdapter(tripAdapter);
+        initializeList();
         fbtnAddNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +79,40 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
                 startActivity(i);
             }
         });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initializeList();
+            }
+        });
         return root;
+    }
+
+    private void initializeList(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trips").
+                child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                tripLists.clear();
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    tripModel trip = data.getValue(tripModel.class);
+                    tripLists.add(trip);
+                }
+                tripAdapter.notifyDataSetChanged();
+                if(swipeRefreshLayout.isRefreshing()){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if(swipeRefreshLayout.isRefreshing()){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+               Helper.showSnackBar(getActivity().findViewById(R.id.nav_view),getString(R.string.unexpectedBehavior));
+            }
+        });
     }
 
     @Override
@@ -105,10 +124,6 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         i.putExtra("fromWho","personalTrip");
         i.putExtra("TripOwnerID",currentTrip.getOwner());
         startActivity(i);
-    }
-
-    public void showSnackBar(){
-        new Snack(this.getView(),getString(R.string.noInternet));
     }
 
     @Override
@@ -123,9 +138,8 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
                 if(NetworkObserver.isNetworkConnected){
                     deleteTrip(currentTrip);
                 }else{
-                    showSnackBar();
+                    Helper.showSnackBar(getActivity().findViewById(R.id.nav_view),getString(R.string.noInternet));
                 }
-
             }
         });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {

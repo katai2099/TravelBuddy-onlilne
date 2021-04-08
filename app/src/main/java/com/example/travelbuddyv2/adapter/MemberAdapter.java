@@ -49,6 +49,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
         if(member.getPermission().equals("owner")){
             holder.tvMemberPermission.setText("edit");
             holder.tvMemberOwnership.setText(member.getPermission());
+            holder.btnMemberDelete.setVisibility(View.GONE);
         }
         else{
             holder.tvMemberPermission.setText(member.getPermission());

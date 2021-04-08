@@ -17,11 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.model.Inventory;
+import com.example.travelbuddyv2.networkManager.NetworkObserver;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 public class ClickedItemActivity extends AppCompatActivity {
@@ -49,27 +52,20 @@ public class ClickedItemActivity extends AppCompatActivity {
             itemInfoFromPreviousActivity.setOwner(bundle.getString("itemOwner"));
             itemInfoFromPreviousActivity.setFileName(bundle.getString("itemName"));
             itemInfoFromPreviousActivity.setFileUri(bundle.getString("itemUri"));
-
             isPersonal = bundle.getBoolean("isPersonal");
             if(!isPersonal){
                 tripOwner = bundle.getString("tripOwner");
             }
             tripID = bundle.getString("tripStringID");
-
         }
         String title = itemInfoFromPreviousActivity.getFileName().substring(0,itemInfoFromPreviousActivity.getFileName().length()-4);
         setTitle(title);
-
-
         tvItemName.setText(itemInfoFromPreviousActivity.getFileName());
         if(Helper.isPdf(itemInfoFromPreviousActivity.getFileName())){
             imgItemImage.setImageResource(R.drawable.ic_baseline_picture_as_pdf_24);
         }else{
-
             Picasso.get().load(itemInfoFromPreviousActivity.getFileUri()).fit().into(imgItemImage);
         }
-
-
     }
 
 
@@ -100,28 +96,43 @@ public class ClickedItemActivity extends AppCompatActivity {
     }
 
     private void deleteFile(){
-        if(isPersonal){
-            removeItem(currentUserUUID,itemInfoFromPreviousActivity);
+        if(NetworkObserver.isNetworkConnected) {
+            if (isPersonal) {
+                removeItem(currentUserUUID, itemInfoFromPreviousActivity);
+                removeItemFromCloudStorage(currentUserUUID,itemInfoFromPreviousActivity);
+            } else {
+                Toast.makeText(ClickedItemActivity.this,"This file does not belong to you",Toast.LENGTH_SHORT).show();
+            }
         }else{
-            removeItem(tripOwner,itemInfoFromPreviousActivity);
+            Helper.showSnackBar(imgItemImage,getString(R.string.noInternet));
         }
     }
 
     private void downloadFile(){
-        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri = Uri.parse(itemInfoFromPreviousActivity.getFileUri());
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalFilesDir(ClickedItemActivity.this, Environment.DIRECTORY_DOWNLOADS,itemInfoFromPreviousActivity.getFileName());
-        downloadManager.enqueue(request);
+        if(NetworkObserver.isNetworkConnected) {
+            DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            Uri uri = Uri.parse(itemInfoFromPreviousActivity.getFileUri());
+            DownloadManager.Request request = new DownloadManager.Request(uri);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalFilesDir(ClickedItemActivity.this, Environment.DIRECTORY_DOWNLOADS, itemInfoFromPreviousActivity.getFileName());
+            downloadManager.enqueue(request);
+        }else{
+            Helper.showSnackBar(imgItemImage,getString(R.string.noInternet));
+        }
+    }
+
+    private void removeItemFromCloudStorage(String owner,Inventory inventory){
+        StorageReference itemLocationReference = FirebaseStorage.getInstance().getReference().child("trip_file")
+                .child(owner)
+                .child(tripID)
+                .child(inventory.getFileName());
+        itemLocationReference.delete();
     }
 
     private void removeItem(String owner, final Inventory inventory){
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Inventory")
                 .child(owner)
                 .child(tripID);
-
         reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {

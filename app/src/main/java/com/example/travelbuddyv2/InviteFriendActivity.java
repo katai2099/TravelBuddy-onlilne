@@ -89,7 +89,7 @@ public class InviteFriendActivity extends AppCompatActivity {
                         }
                     }
                 }else{
-                    new Snack(rcvSuggestionFriendList,getString(R.string.noInternet));
+                    Helper.showSnackBar(rcvSuggestionFriendList,getString(R.string.noInternet));
                 }
             }
         });

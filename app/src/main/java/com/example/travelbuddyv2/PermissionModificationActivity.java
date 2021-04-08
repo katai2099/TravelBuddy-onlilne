@@ -30,8 +30,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
     DatabaseReference memberReference;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,8 +73,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
 
 
     private void getCurrentGroupMemberPermission(){
-
-
 
         memberReference.addValueEventListener(new ValueEventListener() {
             @Override

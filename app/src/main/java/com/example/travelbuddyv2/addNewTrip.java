@@ -77,12 +77,12 @@ public class addNewTrip extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_trip);
-        this.setTitle("New Trip");
+        this.setTitle("Create a new trip");
         getCurrentIdFromFirebaseDatabase();
         getCurrentUserInfo();
         tripName = findViewById(R.id.etTripName);
         progressBar = findViewById(R.id.simpleProgressBar);
-        progressBar.setVisibility(View.VISIBLE);
+       // progressBar.setVisibility(View.VISIBLE);
 
 
         startDate = findViewById(R.id.etDepartDate);
@@ -110,7 +110,7 @@ public class addNewTrip extends AppCompatActivity {
                 if(NetworkObserver.isNetworkConnected){
                     saveBehavior();
                 }else{
-                    new Snack(v, getString(R.string.noInternet));
+                    Helper.showSnackBar(v,getString(R.string.noInternet));
                 }
 
             }

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.travelbuddyv2.adapter.GroupTripAdapter;
 import com.example.travelbuddyv2.model.User;
 import com.example.travelbuddyv2.model.tripModel;
+import com.example.travelbuddyv2.networkManager.NetworkObserver;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -56,8 +57,6 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
         rcvGroupTripView.setAdapter(groupTripAdapter);
 
         initializeGroupTripList();
-
-
         return root ;
     }
 
@@ -101,26 +100,30 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
     public void onLeaveGroupClicked(int position) {
 
         final tripModel currentTrip = groupTripList.get(position);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Are you sure you want to leave this group?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                leaveGroup(currentTrip);
-                toGroupTripFragment();
+                if(NetworkObserver.isNetworkConnected){
+                    leaveGroup(currentTrip);
+                    toGroupTripFragment();
+                }else{
+                      Helper.showSnackBar(getActivity().findViewById(R.id.nav_view),getString(R.string.noInternet));
+                }
 
             }
         });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getContext(),"Nah, I am not leaving",Toast.LENGTH_SHORT).show();
+
             }
         });
 
         AlertDialog dialog = builder.create();
         dialog.show();
+
     }
 
     private void leaveGroup(final tripModel trip){

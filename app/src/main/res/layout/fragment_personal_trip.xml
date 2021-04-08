@@ -1,19 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/personalTripLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PersonalTripFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="8dp"
-        android:id="@+id/rcvFragmentPersonalTrip"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/personalTripRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="55dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        />
+        android:layout_marginBottom="55dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="8dp"
+            android:id="@+id/rcvFragmentPersonalTrip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="55dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            />
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fbtnFragmentPersonalTrip"
