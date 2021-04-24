@@ -1,16 +1,10 @@
 package com.example.travelbuddyv2;
 
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
 import com.example.travelbuddyv2.retrofit.Client;
 import com.example.travelbuddyv2.retrofit.MyResponse;
 import com.example.travelbuddyv2.retrofit.NotificationAPI;
@@ -21,37 +15,25 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
 public class ReminderBroadcast extends BroadcastReceiver {
-
     private static final String tag="ReminderBroadcast";
     private NotificationAPI notificationAPI;
-    private DatabaseHelper db ;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         notificationAPI = Client.getClient("https://fcm.googleapis.com/").create(NotificationAPI.class);
-
-
         Log.i(tag,"I trigger set alarm");
         Bundle bundle = intent.getExtras();
-
         String tripName = bundle.getString("tripName");
         String tripStringID = bundle.getString("tripStringID");
         String tripStartDate = bundle.getString("tripStartDate");
-
-
-
         String toNotified="";
         Date d = new Date();
         Date startDate = Helper.stringToDate(tripStartDate);
@@ -59,14 +41,10 @@ public class ReminderBroadcast extends BroadcastReceiver {
             toNotified = "You have " + tripName + " Trip Tomorrow";
         else if(startDate.before(d))
             toNotified = "You have " + tripName + " Trip Today";
-
         final String endResult = toNotified;
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("upcomingTripNotification")
                 .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
                 .child(tripStringID);
-
         reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
@@ -77,10 +55,8 @@ public class ReminderBroadcast extends BroadcastReceiver {
                 }
             }
         });
-
-        db = new DatabaseHelper(context);
+        DatabaseHelper db = new DatabaseHelper(context);
         db.deletePendingNotification(tripStringID);
-
     }
 
     private void sendNotification(String body,String recipient){
@@ -103,8 +79,6 @@ public class ReminderBroadcast extends BroadcastReceiver {
             }
         });
     }
-
-
 
 
 }

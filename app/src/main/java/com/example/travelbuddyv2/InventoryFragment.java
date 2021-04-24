@@ -209,14 +209,11 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         }
 
         private void uploadToFirebaseCloudStorage(Uri uri,String owner){
-        Cursor returnCursor = getContext()
-                .getContentResolver().query(uri, null, null, null, null);
+        Cursor returnCursor = getContext().getContentResolver().query(uri, null, null, null, null);
         int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
         int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
         returnCursor.moveToFirst();
         final String fileName = returnCursor.getString(nameIndex);
-        Log.d(tag,returnCursor.getString(nameIndex));
-        //Log.d(tag,String.valueOf(returnCursor.getLong(sizeIndex)));
         loadingBar.show();
         loadingBar.setCanceledOnTouchOutside(false);
         StorageReference UserProfileImageReference = FirebaseStorage.getInstance().getReference().child("trip_file")
@@ -227,7 +224,6 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()){
-                 //   loadingBar.dismiss();
                     final Task<Uri> firebaseUri = task.getResult().getStorage().getDownloadUrl();
                     final Inventory inventory = new Inventory();
                     firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -249,15 +245,13 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                             }
                         }
                     });
-
                 }
                 else{
                     loadingBar.dismiss();
                 }
             }
         });
-
-
+        returnCursor.close();
     }
 
     private void updateFirebaseDatabaseInventoryNode(Inventory inventory,String owner){
@@ -271,6 +265,11 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
             public void onSuccess(Void aVoid) {
                 loadingBar.dismiss();
                 Toast.makeText(getContext(),"Upload success",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                loadingBar.dismiss();
             }
         });
     }

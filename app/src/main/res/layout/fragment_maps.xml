@@ -307,6 +307,7 @@
                                 android:text="@string/add_to_trip"
                                 android:textColor="@color/quantum_black_100"
                                 android:background="@color/white"
+                                android:layout_marginBottom="@dimen/bottom_navigation_bar_height"
                                 />
 
 

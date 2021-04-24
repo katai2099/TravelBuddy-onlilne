@@ -2,7 +2,9 @@ package com.example.travelbuddyv2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,13 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ResetPasswordActivity extends AppCompatActivity {
+public class    ResetPasswordActivity extends AppCompatActivity {
 
     private final String tag = "RESET_PASSWORD_ACTIVITY" ;
     Button btnSend;
     EditText etEmail;
+    TextInputLayout toggleEmail;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private void initField(){
         btnSend = findViewById(R.id.btnResetPasswordSend);
         etEmail = findViewById(R.id.etResetPasswordEmail);
+        toggleEmail = findViewById(R.id.resetPasswordEmailToggle);
         behavior();
     }
 
@@ -40,10 +45,32 @@ public class ResetPasswordActivity extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = etEmail.getText().toString();
+                String email = etEmail.getText().toString().trim();
                 if(!TextUtils.isEmpty(email)){
                     sendPasswordResetEmail(email);
+                }else{
+                    toggleEmail.setError(getString(R.string.fieldRequired));
                 }
+            }
+        });
+        onTextChangedBehavior();
+    }
+
+    private void onTextChangedBehavior(){
+        etEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                toggleEmail.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -61,7 +88,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
                         } else {
                             Log.d(tag, "onComplete: No user associated with that email.");
                             Toast.makeText(ResetPasswordActivity.this, R.string.no_user_associated_with_email, Toast.LENGTH_SHORT).show();
-
                         }
                     }
                 });

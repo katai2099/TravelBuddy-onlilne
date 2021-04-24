@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -39,7 +42,9 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
     RecyclerView rcvGroupTripView;
     GroupTripAdapter groupTripAdapter;
     static final String tag = "GROUP_TRIP_FRAGMENT";
-
+    SwipeRefreshLayout swipeRefreshLayout;
+    ValueEventListener groupTripListener;
+    View placeholder;
     public GroupTripFragment() {
         // Required empty public constructor
     }
@@ -49,43 +54,29 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_group_trip, container, false);
-
         groupTripList = new ArrayList<>();
         groupTripAdapter = new GroupTripAdapter(groupTripList,this,getActivity());
         rcvGroupTripView = root.findViewById(R.id.rcvFragmentGroupTrip);
+        swipeRefreshLayout = root.findViewById(R.id.groupTripRefreshLayout);
+        placeholder = root.findViewById(R.id.emptyListPlaceholder);
         rcvGroupTripView.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvGroupTripView.setAdapter(groupTripAdapter);
-
+        initializeGroupTripListener();
         initializeGroupTripList();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                detachGroupTripListener();
+                initializeGroupTripList();
+            }
+        });
         return root ;
     }
 
     private void initializeGroupTripList(){
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Group")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                groupTripList.clear();
-                for(DataSnapshot inviter:snapshot.getChildren()){
-                    if(inviter!=null){
-                        for(DataSnapshot tripList:inviter.getChildren() ){
-                            tripModel tmp = tripList.getValue(tripModel.class);
-                            groupTripList.add(tmp);
-                        }
-                    }
-                }
-                groupTripAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+        reference.addValueEventListener(groupTripListener);
     }
 
 
@@ -98,7 +89,6 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
 
     @Override
     public void onLeaveGroupClicked(int position) {
-
         final tripModel currentTrip = groupTripList.get(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Are you sure you want to leave this group?");
@@ -111,7 +101,6 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
                 }else{
                       Helper.showSnackBar(getActivity().findViewById(R.id.nav_view),getString(R.string.noInternet));
                 }
-
             }
         });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -127,9 +116,7 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
     }
 
     private void leaveGroup(final tripModel trip){
-
         String currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         //remove user from Group Node
         DatabaseReference userGroupNode = FirebaseDatabase.getInstance().getReference().child("Group")
                 .child(currentUserUUID)
@@ -156,8 +143,6 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
                 }
             }
         });
-
-
         userGroupNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -178,6 +163,51 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
         i.putExtra("changeToGroup",true);
         startActivity(i);
         getActivity().finish();
+    }
+
+    private void detachGroupTripListener(){
+        groupTripList.clear();
+        groupTripAdapter.notifyDataSetChanged();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Group")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.removeEventListener(groupTripListener);
+    }
+
+    private void initializeGroupTripListener(){
+         groupTripListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                groupTripList.clear();
+                for(DataSnapshot inviter:snapshot.getChildren()){
+                    if(inviter!=null){
+                        for(DataSnapshot tripList:inviter.getChildren() ){
+                            tripModel tmp = tripList.getValue(tripModel.class);
+                            groupTripList.add(tmp);
+                        }
+                    }
+                }
+                Collections.sort(groupTripList, new Comparator<tripModel>() {
+                    @Override
+                    public int compare(tripModel trip1, tripModel trip2) {
+                        return trip2.getStartDate().compareTo(trip1.getStartDate());
+                    }
+                });
+                groupTripAdapter.notifyDataSetChanged();
+                if(swipeRefreshLayout.isRefreshing()){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                if (groupTripList.isEmpty()) {
+                    placeholder.setVisibility(View.VISIBLE);
+                } else {
+                    placeholder.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
     }
 
 }

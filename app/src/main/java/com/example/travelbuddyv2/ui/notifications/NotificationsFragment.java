@@ -35,28 +35,18 @@ public class NotificationsFragment extends Fragment {
     private RecyclerView rcvNotification;
     private List<Request> requestList ;
     private RequestAdapter requestAdapter;
-
     private NotificationsViewModel notificationsViewModel;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         notificationsViewModel =
                 new ViewModelProvider(this).get(NotificationsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
-
         requestList = new ArrayList<>();
         fillFriendRequestNotificationList();
-
         rcvNotification = root.findViewById(R.id.rcvFragmentNotificationList);
         rcvNotification.setLayoutManager(new LinearLayoutManager(root.getContext()));
-
         requestAdapter = new RequestAdapter(requestList);
-
         rcvNotification.setAdapter(requestAdapter);
-
-
-
-
         return root;
     }
 
@@ -64,7 +54,6 @@ public class NotificationsFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Invitation_Request")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -77,11 +66,6 @@ public class NotificationsFragment extends Fragment {
                         requestList.add(request);
                         Log.d(tag,request.toString());
                     }
-
-
-                 //   Request request = new Request();
-                   // request.setRequestType(tmp);
-
                 }
                 requestAdapter.notifyDataSetChanged();
             }

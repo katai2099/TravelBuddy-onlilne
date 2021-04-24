@@ -98,32 +98,18 @@ public class UserProfileFragment extends Fragment {
         loadingBar = new ProgressDialog(getContext());
         user = new User();
         getCurrentUserInformation();
-
         imgUserProfileImage.setImageResource(R.drawable.ic_baseline_person_24);
-
         initBottomSheet(root);
-
         tvUserName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bottomSheetDialog.show();
             }
         });
-
-        // changeUserName(newName,v);
-
         imgUserProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//               Intent galleryIntent = new Intent();
-//               galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//               galleryIntent.setType("image/*");
-//               startActivityForResult(galleryIntent,GalleryPick);
-
-
                 startPickImage();
-
-
             }
         });
         tvLogOut.setOnClickListener(new View.OnClickListener() {
@@ -323,18 +309,13 @@ public class UserProfileFragment extends Fragment {
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(getString(R.string.appSharedPref), MODE_PRIVATE);
         sharedPreferences.edit().remove("token").apply();
         sharedPreferences.edit().remove("isFirstRetrievePendingNotification").apply();
-
         cancelAllPendingIntentOfAlarm();
-
         savePendingNotificationIntoFirebaseDatabase(activity);
-
-
     }
 
     private void getCurrentUserInformation() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
@@ -343,11 +324,9 @@ public class UserProfileFragment extends Fragment {
                 user.setEmail(tmp.getEmail());
                 user.setUser_id(tmp.getUser_id());
                 user.setProfile_image(tmp.getProfile_image());
-
                 tvUserName.setText(user.getName());
                 tvUserEmail.setText(user.getEmail());
                 etEditProfileName.setText(user.getName());
-
                 if (user.getProfile_image() != null && !(TextUtils.isEmpty(user.getProfile_image()))) {
                     Picasso.get().load(user.getProfile_image()).resize(200, 0).into(imgUserProfileImage);
                 }
@@ -360,19 +339,13 @@ public class UserProfileFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("name");
-
         //update current user in member node
-
         final DatabaseReference memberReference = FirebaseDatabase.getInstance().getReference().child("Member");
-
         //update current user in knownList node
-
         final DatabaseReference knownListReference = FirebaseDatabase.getInstance().getReference().child("Known_lists");
-
         reference.setValue(newName).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-
                 memberReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -382,7 +355,6 @@ public class UserProfileFragment extends Fragment {
                                     Member currentMember = member.getValue(Member.class);
                                     if (currentMember.getID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                             && currentMember.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-
                                         DatabaseReference toUpdate = member.getRef();
                                         toUpdate.child("name").setValue(newName);
                                         break;
@@ -391,13 +363,10 @@ public class UserProfileFragment extends Fragment {
                             }
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 });
-
                 knownListReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -405,16 +374,12 @@ public class UserProfileFragment extends Fragment {
                             if (!owner.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                 for (DataSnapshot userList : owner.getChildren()) {
                                     User currentUser = userList.getValue(User.class);
-
                                     if (currentUser.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                             && currentUser.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-
                                         DatabaseReference toUpdate = userList.getRef();
                                         toUpdate.child("name").setValue(newName);
                                         break;
-
                                     }
-
                                 }
                             }
                         }
@@ -432,23 +397,14 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void savePendingNotificationIntoFirebaseDatabase(final Activity activity) {
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Pending_notification_backup")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
         final DatabaseHelper db = new DatabaseHelper(getContext());
-
         List<tripModel> tripModels = db.getPendingNotificationList();
-
         final int size = tripModels.size() - 1;
-
         if (!tripModels.isEmpty()) {
             for (int i = 0; i < tripModels.size(); i++) {
-
                 final int cnt = i;
-
                 reference.child(tripModels.get(i).getStringID()).setValue(tripModels.get(i)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -460,7 +416,6 @@ public class UserProfileFragment extends Fragment {
                             activity.finishAffinity();
                             FirebaseAuth.getInstance().signOut();
                         }
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -480,11 +435,8 @@ public class UserProfileFragment extends Fragment {
     private void cancelAllPendingIntentOfAlarm() {
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(getContext(), ReminderBroadcast.class);
-
         DatabaseHelper db = new DatabaseHelper(getContext());
-
         List<tripModel> tripModels = db.getPendingNotificationList();
-
         for (int i = 0; i < tripModels.size(); i++) {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), Helper.tripStringIDToInt(tripModels.get(i).getStringID()), intent, 0);
             pendingIntent.cancel();

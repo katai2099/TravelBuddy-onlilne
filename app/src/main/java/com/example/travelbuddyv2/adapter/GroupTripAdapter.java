@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelbuddyv2.GroupTripDetailActivity;
+import com.example.travelbuddyv2.Helper;
 import com.example.travelbuddyv2.Main2Activity;
 import com.example.travelbuddyv2.MemberActivity;
 import com.example.travelbuddyv2.R;
@@ -60,7 +61,9 @@ public class GroupTripAdapter extends RecyclerView.Adapter<GroupTripAdapter.Grou
         final tripModel currentTrip = groupTripList.get(position);
 
         holder.tripname.setText(currentTrip.getTripName());
-        holder.tripdate.setText(currentTrip.getStartDate() + " " + currentTrip.getEndDate());
+        String Start = Helper.changeDateFormatSuitableForTripScreen(currentTrip.getStartDate());
+        String end = Helper.changeDateFormatSuitableForTripScreen(currentTrip.getEndDate());
+        holder.tripdate.setText(Start + " -- " + end);
 
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
             @Override

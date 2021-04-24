@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelbuddyv2.Helper;
 import com.example.travelbuddyv2.MapsActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Destination;
@@ -47,8 +48,9 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
 
         TripSection tripSection = tripSectionList.get(position);
         final String date = tripSection.getDate();
+        String toShowDate = Helper.changeDateFormatSuitableForTripScreen(date);
         String positionString = String.valueOf(position+1);
-        holder.sectionTextView.setText("Day " + positionString + ":   "+ date);
+        holder.sectionTextView.setText("Day " + positionString + ":   "+ toShowDate);
         if(tripSectionList.get(position).getDestinations().size()>0){
             holder.sectionStartTime.setVisibility(View.VISIBLE);
             holder.sectionStartTime.setText("Start : " + tripSectionList.get(position).getDestinations().get(0).getStartTime());

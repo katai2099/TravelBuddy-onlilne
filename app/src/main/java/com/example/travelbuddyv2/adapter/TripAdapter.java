@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelbuddyv2.Helper;
 import com.example.travelbuddyv2.InviteFriendActivity;
 import com.example.travelbuddyv2.MemberActivity;
 import com.example.travelbuddyv2.R;
@@ -54,7 +55,9 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
     public void onBindViewHolder(@NonNull final tripHolder holder, final int position) {
         final tripModel currentTrip = list.get(position);
         holder.tripname.setText(currentTrip.getTripName());
-        holder.tripdate.setText(currentTrip.getStartDate() + " " + currentTrip.getEndDate());
+        String Start = Helper.changeDateFormatSuitableForTripScreen(currentTrip.getStartDate());
+        String end = Helper.changeDateFormatSuitableForTripScreen(currentTrip.getEndDate());
+        holder.tripdate.setText(Start + " -- " + end);
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,8 +90,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.tripHolder> {
             tripdate = itemView.findViewById(R.id.tripDateListAdapter);
             btnInviteFriend = itemView.findViewById(R.id.tripInviteFriend);
             btnDeleteTrip = itemView.findViewById(R.id.tripRemove);
-            btnDeleteTrip.setBackgroundResource(R.drawable.ic_baseline_delete_forever_24);
-
             itemView.setOnClickListener(this);
         }
         @Override

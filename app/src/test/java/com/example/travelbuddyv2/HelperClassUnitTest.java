@@ -11,30 +11,30 @@ public class HelperClassUnitTest {
 
     @Test
     public void checkIfStartTimeBeforeEndTime(){
-        Boolean checkTrue = Helper.checkIfStartTimeBeforeEndTime("12:00","12:12");
+        boolean checkTrue = Helper.checkIfStartTimeBeforeEndTime("12:00","12:12");
         assertTrue(checkTrue);
-        Boolean checkFalse = Helper.checkIfStartTimeBeforeEndTime("12:12","12:00");
+        boolean checkFalse = Helper.checkIfStartTimeBeforeEndTime("12:12","12:00");
         assertFalse(checkFalse);
     }
     @Test
     public void checkIfStartDateBeforeEndDate(){
-        Boolean checkTrue = Helper.checkIfStartDateBeforeEndDate("12-12-2020","14-12-2020");
+        boolean checkTrue = Helper.checkIfStartDateBeforeEndDate("12-12-2020","14-12-2020");
         assertTrue(checkTrue);
-        Boolean checkFalse = Helper.checkIfStartDateBeforeEndDate("14-12-2020","12-12-2020");
+        boolean checkFalse = Helper.checkIfStartDateBeforeEndDate("14-12-2020","12-12-2020");
         assertFalse(checkFalse);
     }
     @Test
     public void checkIfStartDateSameAsEndDate(){
-        Boolean checkTrue = Helper.checkIfStartDateSameDateAsEndDate("12-12-2020","12-12-2020");
+        boolean checkTrue = Helper.checkIfStartDateSameDateAsEndDate("12-12-2020","12-12-2020");
         assertTrue(checkTrue);
-        Boolean checkFalse = Helper.checkIfStartDateSameDateAsEndDate("12-12-2020","28-12-2020");
+        boolean checkFalse = Helper.checkIfStartDateSameDateAsEndDate("12-12-2020","28-12-2020");
         assertFalse(checkFalse);
     }
     @Test
     public void checkIfPdfFile(){
         boolean checkTrue = Helper.isPdf("katai.pdf");
         assertTrue(checkTrue);
-        Boolean checkFalse = Helper.isPdf("katai.png");
+        boolean checkFalse = Helper.isPdf("katai.png");
         assertFalse(checkFalse);
 
     }
@@ -99,7 +99,7 @@ public class HelperClassUnitTest {
 
         String tmp = Helper.changeInputDateFormat("2020-12-2");
         String tmp2 = "2020-12-2" ;
-        Boolean checkFalse = tmp2.equals(tmp);
+        boolean checkFalse = tmp2.equals(tmp);
         assertFalse(checkFalse);
 
     }
@@ -110,8 +110,13 @@ public class HelperClassUnitTest {
 
         String tmp = Helper.changeInputTimeFormat("2:44");
         String tmp2 = "2:44";
-        Boolean checkFalse = tmp2.equals(tmp);
+        boolean checkFalse = tmp2.equals(tmp);
         assertFalse(checkFalse);
+    }
+    @Test
+    public void changeDateFormatSuitableForPersonalTripScreen(){
+        String checkTrue = Helper.changeDateFormatSuitableForTripScreen("2012-03-22");
+        assertEquals("22",checkTrue);
     }
 
    /* @Test

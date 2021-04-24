@@ -45,7 +45,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center|bottom"
-                android:layout_marginBottom="@dimen/floating_above_bottom_navigation_bar"
+                android:layout_marginBottom="20dp"
                 android:background="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="20dp">
 

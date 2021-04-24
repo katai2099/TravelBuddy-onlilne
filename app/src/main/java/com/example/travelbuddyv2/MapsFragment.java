@@ -140,7 +140,6 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(final GoogleMap googleMap) {
             map = googleMap;
-
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -158,7 +157,6 @@ public class MapsFragment extends Fragment {
                 @Override
                 public void onMapClick(LatLng latLng) {
                     googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-                    //  btnSearchForAttraction.setVisibility(View.VISIBLE);
                     setButtonVisible();
                     if (materialSearchBar.isSearchOpened()) {
                         materialSearchBar.clearSuggestions();
@@ -233,7 +231,9 @@ public class MapsFragment extends Fragment {
         btnSearchForAttraction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                locationButton.performClick();
+                if(locationButton!=null){
+                    locationButton.performClick();
+                }
                 findNearByAttraction();
                 btnSearchForAttraction.setVisibility(View.GONE);
                 btnHideAttraction.setVisibility(View.VISIBLE);
@@ -408,6 +408,7 @@ public class MapsFragment extends Fragment {
                             Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         Log.d(tag, "ACCESS_FIND_LOCATION GRANTED");
                         getDeviceLocation();
+                        behaviorWhenLocationPermissionIsGiven(map);
                     }
                 } else {
                     Log.d(tag, "PERMISSION DENIED");
@@ -425,7 +426,6 @@ public class MapsFragment extends Fragment {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
         } else {
@@ -442,7 +442,6 @@ public class MapsFragment extends Fragment {
                     } else {
                         Toast.makeText(getContext(), "Unable to get last location", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             });
         }
@@ -610,7 +609,6 @@ public class MapsFragment extends Fragment {
         });
     }
     private void findNearByAttraction() {
-
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                 "location=" + currentLat + "," + currentLng +
                 "&radius=1000" +
@@ -646,7 +644,8 @@ public class MapsFragment extends Fragment {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            layoutParams.setMargins(0, 0, 40, 180);
+            layoutParams.setMargins(0, 0, 40, 230 );
+
         }
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);

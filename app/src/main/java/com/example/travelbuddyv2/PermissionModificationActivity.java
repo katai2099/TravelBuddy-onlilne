@@ -46,7 +46,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
             tripStringID = extra.getString("TripStringID");
             memberID = extra.getString("MemberID");
         }
-
         //Focus means what permission does owner give to member
         editTextViewFocused = false;
         viewTextViewFocused = false;
@@ -54,16 +53,12 @@ public class PermissionModificationActivity extends AppCompatActivity {
                 .child(tripOwnerID)
                 .child(tripStringID)
                 .child(memberID);
-
         Toast.makeText(getBaseContext(),tripStringID,Toast.LENGTH_SHORT).show();
         Toast.makeText(getBaseContext(),tripOwnerID,Toast.LENGTH_SHORT).show();
         Toast.makeText(getBaseContext(),memberID,Toast.LENGTH_SHORT).show();
-
         getCurrentGroupMemberPermission();
-
         Log.d(tag,String.valueOf(editTextViewFocused));
         Log.d(tag,String.valueOf(viewTextViewFocused));
-
         editTextViewBehavior();
         viewTextViewBehavior();
 
@@ -73,7 +68,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
 
 
     private void getCurrentGroupMemberPermission(){
-
         memberReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -92,7 +86,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
                     viewTextViewFocused = true;
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -101,7 +94,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
     }
 
     private void editTextViewBehavior(){
-
         tvCanEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

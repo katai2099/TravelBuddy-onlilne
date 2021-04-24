@@ -168,14 +168,11 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
                 .child(tripID)
                 .child(date)
                 .child(destinationStringID);
-
         //first check if it is the last child of the node
-
         final DatabaseReference checkNumberOfChild = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(tripID)
                 .child(date);
-
         checkNumberOfChild.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
@@ -196,25 +193,17 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onDeleteDestinationClicked(String date, String destinationStringID, int position) {
-
         List<Destination> destinationsOfCurrentDate = new ArrayList<>();
-
         for(int i=0;i<tripSectionList.size();i++){
             if(tripSectionList.get(i).getDate().equals(date)){
                 destinationsOfCurrentDate = tripSectionList.get(i).getDestinations();
             }
         }
-
         List<Destination> destinationsOfCurrentDateReplica = new ArrayList<>(destinationsOfCurrentDate);
-
         Destination deletedOne = destinationsOfCurrentDateReplica.get(position);
-
-
         boolean updateTheRest = false;
         onDeleteDestinationClick(date,destinationStringID);
-
         if(destinationsOfCurrentDateReplica.size()!=1 && position != destinationsOfCurrentDateReplica.size()-1){
-
             Destination toUpdateDestination = destinationsOfCurrentDateReplica.get(position+1);
             toUpdateDestination.setExtraDay(deletedOne.getExtraDay());
             toUpdateDestination.setDecreased(deletedOne.isDecreased());
@@ -223,29 +212,21 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
             Helper.changeStayPeriodOfDestination(toUpdateDestination.getStartDate(),toUpdateDestination.getStartTime(),0,(int)toUpdateDestination.getDuration(),toUpdateDestination);
             updateToFirebaseAfterPeriodChanged(toUpdateDestination);
             updateTheRest = true ;
-
         }
-
         if(updateTheRest && destinationsOfCurrentDateReplica.size()!=2){
-
             Log.d(tag,"update the rest");
-
              for(int i=position+2;i<destinationsOfCurrentDateReplica.size();i++){
-
                  Destination lastDestination = destinationsOfCurrentDateReplica.get(i-1);
-
                 Destination toUpdateDestination = destinationsOfCurrentDateReplica.get(i);
                 toUpdateDestination.setExtraDay(lastDestination.getExtraDay());
                 toUpdateDestination.setDecreased(lastDestination.isDecreased());
                 toUpdateDestination.setIncreased(lastDestination.isIncreased());
                 toUpdateDestination.setStartTime(lastDestination.getEndTime());
-
                  if(lastDestination.isDecreased() && toUpdateDestination.isIncreased())
                      toUpdateDestination.setExtraDay(toUpdateDestination.getExtraDay()+1);
                  else if(lastDestination.isIncreased() && toUpdateDestination.isIncreased()){
                      toUpdateDestination.setExtraDay(toUpdateDestination.getExtraDay()+1);
                  }
-
                 Helper.changeStayPeriodOfDestination(toUpdateDestination.getStartDate(),toUpdateDestination.getStartTime(),0,(int)toUpdateDestination.getDuration(),toUpdateDestination);
                 updateToFirebaseAfterPeriodChanged(toUpdateDestination);
             }
@@ -257,64 +238,40 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onDurationEditingClicked(final int position, final String curDate) {
-
-
-
-
         final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
                 changeStayPeriodOfDestination(hourOfDay,minute,position,curDate);
-
             }
         },0,0,true);
-
-
         timePickerDialog.setTitle("modify stay period");
-
-
         timePickerDialog.show();
     }
 
     private void changeStayPeriodOfDestination(int hour, int minute, int position,String currentDate){
-
-
         List<Destination> destinations = new ArrayList<>();
-
         for(TripSection list:tripSectionList){
             if(list.getDate().equals(currentDate))
                 destinations = list.getDestinations();
         }
-
         String startTime = destinations.get(position).getStartTime();
-
-
         Helper.changeStayPeriodOfDestination(currentDate,startTime,hour,minute,destinations.get(position));
-
         updateToFirebaseAfterPeriodChanged(destinations.get(position));
-
         for(int i=position+1;i<destinations.size();i++){
             Destination lastDestination = destinations.get(i-1);
-
             destinations.get(i).setExtraDay(lastDestination.getExtraDay());
             destinations.get(i).setStartTime(lastDestination.getEndTime());
             String currentDateOfTheTrip = destinations.get(i).getStartDate();
             String startTimeOfTheTrip = destinations.get(i).getStartTime();
             long duration = destinations.get(i).getDuration();
-
                     int extraDay = destinations.get(i).getExtraDay();
-
             if(lastDestination.isDecreased() && destinations.get(i).isIncreased())
                 destinations.get(i).setExtraDay(extraDay+1);
             else if(lastDestination.isIncreased() && destinations.get(i).isIncreased()){
                 destinations.get(i).setExtraDay(extraDay+1);
             }
-
             Helper.changeStayPeriodOfDestination(currentDateOfTheTrip,startTimeOfTheTrip,0,(int)(duration),destinations.get(i));
-
             updateToFirebaseAfterPeriodChanged(destinations.get(i));
-
         }
 
     }
@@ -324,14 +281,11 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
         String destinationStringID = destination.getDestinationStringID();
         String destinationCurDate = destination.getStartDate();
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(tripID)
                 .child(destinationCurDate)
                 .child(destinationStringID);
-
         reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -343,7 +297,6 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onStartTimeChangeClicked(final int position) {
-
         final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -351,24 +304,14 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
              resetStartTimeOfCurrentDate(position,hourOfDay,minute);
             }
         },0,0,true);
-
-
         timePickerDialog.setTitle("Edit Start Time");
-
-
         timePickerDialog.show();
     }
 
     private void resetStartTimeOfCurrentDate(int position,int hourOfDay,int minute){
-
         List<Destination> currentDestinationsOfThisDate = tripSectionList.get(position).getDestinations();
-
         for(int i=0;i<currentDestinationsOfThisDate.size();i++){
-
-
             if(i==0){
-
-
                 String currentDateOfTheTrip = tripSectionList.get(position).getDate();
                 Destination lastDestination = currentDestinationsOfThisDate.get(i);
                 String hour = String.valueOf(hourOfDay);
@@ -377,24 +320,17 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
                 builder.append(hour).append(":").append(min);
                 String actualClock = builder.toString();
                 String resClock = Helper.changeInputTimeFormat(actualClock);
-        //        Log.d(tag,"time is " + resClock);
                 lastDestination.setStartTime(resClock);
                 long duration = lastDestination.getDuration();
                 Helper.changeStayPeriodOfDestination(currentDateOfTheTrip,lastDestination.getStartTime(),0,(int)duration,lastDestination);
                 updateToFirebaseAfterPeriodChanged(lastDestination);
             }else{
-
                 Destination lastDestination = currentDestinationsOfThisDate.get(i-1);
-
                 currentDestinationsOfThisDate.get(i).setExtraDay(lastDestination.getExtraDay());
                 currentDestinationsOfThisDate.get(i).setStartTime(lastDestination.getEndTime());
-
                 String currentDateOfTheTrip = tripSectionList.get(position).getDate();
                 String startTimeOfTheTrip = currentDestinationsOfThisDate.get(i).getStartTime();
-
-
                 int extraDay = currentDestinationsOfThisDate.get(i).getExtraDay();
-
                 if(lastDestination.isDecreased() && currentDestinationsOfThisDate.get(i).isIncreased())
                     currentDestinationsOfThisDate.get(i).setExtraDay(extraDay+1);
                 else if(lastDestination.isIncreased() && currentDestinationsOfThisDate.get(i).isIncreased()){

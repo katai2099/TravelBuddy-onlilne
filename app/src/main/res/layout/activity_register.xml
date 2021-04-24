@@ -13,48 +13,58 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/etRegisterEmail"
+        app:layout_constraintBottom_toTopOf="@+id/signUpEmailToggle"
         android:layout_marginTop="40dp"
-        android:text="Email Registration"
+        android:layout_marginBottom="10dp"
+        android:text="@string/email_registration"
         android:gravity="center"
         android:textColor="@color/quantum_black_100"
-        android:textSize="16sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         />
-
-
-
-    <EditText
-        android:id="@+id/etRegisterEmail"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signUpEmailToggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tvRegisterText"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/registerPassword_toggle"
-        android:layout_marginTop="10dp"
-        android:hint="Email"
-        android:textAlignment="gravity"
-        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/signUpPasswordToggle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
         android:layout_marginStart="10dp"
-        />
+        android:layout_marginEnd="10dp"
+        app:errorEnabled="true"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etRegisterEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tvRegisterText"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/signUpPasswordToggle"
+            android:layout_marginTop="10dp"
+            android:hint="@string/email"
+            android:textAlignment="gravity"
+            android:drawableStart="@drawable/ic_baseline_email_24"
+            android:drawablePadding="10dp"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/registerPassword_toggle"
+        android:id="@+id/signUpPasswordToggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-
         app:passwordToggleEnabled="true"
-
-
         app:passwordToggleTint="@color/colorPrimary"
-
         android:scrollbarSize="25dp"
-        app:layout_constraintBottom_toTopOf="@id/registerPassword_toggle2"
+        app:layout_constraintBottom_toTopOf="@id/signUpConfirmPasswordToggle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etRegisterEmail" >
+        app:layout_constraintTop_toBottomOf="@+id/signUpEmailToggle"
+        app:errorEnabled="true">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -66,31 +76,29 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/etRegisterConfirmPassword"
             android:layout_marginTop="10dp"
-            android:hint="Password"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:textAlignment="gravity"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:ems="15"/>
+            android:ems="15"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_baseline_lock_24"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/registerPassword_toggle2"
+        android:id="@+id/signUpConfirmPasswordToggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-
         app:passwordToggleEnabled="true"
-
         app:passwordToggleTint="@color/colorPrimary"
-
         android:scrollbarSize="25dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnLoginSignIn"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegisterSignUp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerPassword_toggle" >
+        app:layout_constraintTop_toBottomOf="@+id/signUpPasswordToggle"
+        app:errorEnabled="true">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -102,24 +110,24 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/btnRegisterSignUp"
             android:layout_marginTop="10dp"
-            android:hint="Confirm Password"
+            android:hint="@string/confirm_password"
             android:inputType="textPassword"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:ems="15"/>
+            android:ems="15"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_baseline_lock_24"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <Button
+        style="@style/appButton"
         android:id="@+id/btnRegisterSignUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/registerPassword_toggle2"
+        app:layout_constraintTop_toBottomOf="@id/signUpConfirmPasswordToggle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
-        android:text="Sign Up"
+        android:text="@string/register"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
         />

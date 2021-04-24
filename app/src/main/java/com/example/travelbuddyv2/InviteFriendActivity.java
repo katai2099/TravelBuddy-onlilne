@@ -32,7 +32,6 @@ import java.util.List;
 public class InviteFriendActivity extends AppCompatActivity {
 
     private final String tag = "INVITE_FRIEND_ACTIVITY";
-
     EditText etInviteFriend;
     RecyclerView rcvFriendList , rcvSuggestionFriendList;
     Button btnSearchForFriend;
@@ -43,43 +42,28 @@ public class InviteFriendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friend);
-
         Bundle extra = getIntent().getExtras();
-
-
         String tripName = extra.getString("TripName");
         String tripStringID = extra.getString("TripStringID");
-
         Log.d(tag,"Information pass by Intent " + tripName + " " + tripStringID);
-
         suggestedUsers = new ArrayList<>();
-
         users = new ArrayList<>();
-
         etInviteFriend = findViewById(R.id.etFindFriendByEmail);
         rcvFriendList = findViewById(R.id.rcvInviteFriend);
         rcvSuggestionFriendList = findViewById(R.id.rcvSuggestedFriend);
         btnSearchForFriend = findViewById(R.id.btnSearchForFriend);
-
         rcvFriendList.setLayoutManager(new LinearLayoutManager(this));
         rcvSuggestionFriendList.setLayoutManager(new LinearLayoutManager(this));
-
         userAdapter = new UserAdapter(users,tripName,tripStringID);
         suggestedUserAdapter = new UserAdapter(suggestedUsers,tripName,tripStringID);
-
-
         rcvFriendList.setAdapter(userAdapter);
         rcvSuggestionFriendList.setAdapter(suggestedUserAdapter);
         rcvFriendList.setVisibility(View.GONE);
-
-
         fillKnownList();
-
         btnSearchForFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(NetworkObserver.isNetworkConnected) {
-
                     if (TextUtils.isEmpty(etInviteFriend.getText().toString())) {
                         Toast.makeText(getBaseContext(), "Please fill", Toast.LENGTH_SHORT).show();
                     } else {
@@ -97,10 +81,8 @@ public class InviteFriendActivity extends AppCompatActivity {
 
     //This will fill the list with user known contact from Firebase database =
     public void fillKnownList(){
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Known_lists")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -116,11 +98,9 @@ public class InviteFriendActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     public void fillList(final String email){
-
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User");
             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -150,7 +130,6 @@ public class InviteFriendActivity extends AppCompatActivity {
     }
 
     public boolean checkIfEmailExistInKnownList(final String email){
-
         for(int i=0;i<suggestedUsers.size();i++) {
             if (suggestedUsers.get(i).getEmail().equals(email)){
                 Log.d(tag,"There exist user in knownlist");
@@ -159,7 +138,6 @@ public class InviteFriendActivity extends AppCompatActivity {
         }
         Log.d(tag,"THERE IS NO USER IN KNOWNLIST");
         return false;
-
     }
 
 

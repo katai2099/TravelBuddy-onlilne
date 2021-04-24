@@ -17,12 +17,10 @@ import java.util.List;
 import static android.content.Context.ALARM_SERVICE;
 
 public class ResetAlarmBroadcast extends BroadcastReceiver {
-
     private static final String BOOT_COMPLETED =
             "android.intent.action.BOOT_COMPLETED";
     private static final String UPDATE_COMPLETED = "android.intent.action.MY_PACKAGE_REPLACED";
     private static final String tag = "ResetAlarmBroadcast";
-
     @Override
     public void onReceive(Context context, Intent intent) {
         String intentCode = intent.getAction();
@@ -33,14 +31,10 @@ public class ResetAlarmBroadcast extends BroadcastReceiver {
         }
         }
         else{
-            Toast.makeText(context,"Just to try",Toast.LENGTH_SHORT).show();
             Log.d(tag,"I trigger reset daily alarm by alarmHandler");
             resetAlarmWhenDeviceReboot(context);
         }
     }
-
-
-
     public void resetAlarmWhenDeviceReboot(Context context){
         DatabaseHelper db = new DatabaseHelper(context);
         List<tripModel> trips;
@@ -57,9 +51,9 @@ public class ResetAlarmBroadcast extends BroadcastReceiver {
             long timeToFireAnAlarm = Helper.getStartDateInMilli(trips.get(i).getStartDate());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
-              //  alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+1000*30,pendingIntent); // Debuggin purpose
+            }else{
+                alarmManager.set(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
             }
         }
     }
-
 }

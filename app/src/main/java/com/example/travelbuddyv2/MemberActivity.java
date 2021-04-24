@@ -40,7 +40,6 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
     View ownerLayout;
     String tripName, tripStringID, fromWho, tripOwnerID;
     RecyclerView rcvMemberView;
-
     List<Member> memberList;
     MemberAdapter memberAdapter;
     MenuItem leave;
@@ -79,16 +78,13 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
         rcvMemberView.setAdapter(memberAdapter);
         fillMemberList();
 
-
     }
 
     private void toInviteFriendActivity() {
-
         Intent i = new Intent(getBaseContext(), InviteFriendActivity.class);
         i.putExtra("TripName", tripName);
         i.putExtra("TripStringID", tripStringID);
         startActivity(i);
-
     }
 
     @Override
@@ -97,7 +93,6 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
         leave = menu.findItem(R.id.optionLeaveGroup);
         if (fromWho.equals("personalTrip"))
             leave.setVisible(false);
-
         return true;
     }
 
@@ -137,12 +132,9 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
 
 
     void fillMemberList() {
-
-
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Member")
                 .child(tripOwnerID)
                 .child(tripStringID);
-
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -170,13 +162,11 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                         tmp.setID(ownerTmp.getID());
                         tmp.setEmail(ownerTmp.getEmail());
                         tmp.setProfileImg(ownerTmp.getProfileImg());
-
                     }
                     memberList.add(tmp);
                 }
                 memberAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -222,8 +212,6 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                 }
             }
         });
-
-
         userGroupNode.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

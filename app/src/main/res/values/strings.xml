@@ -28,7 +28,7 @@
     <string name="send">send</string>
     <string name="email">Email</string>
     <string name="password_reset_link_sent">Password Reset Link Sent to Email</string>
-    <string name="no_user_associated_with_email">No User is Associated with that Email</string>
+    <string name="no_user_associated_with_email">No User Associated with the Email</string>
     <string name="email_sent">Email has been sent!</string>
     <string name="login">Login</string>
     <string name="log_out">Log out</string>
@@ -41,5 +41,12 @@
     <string name="password">Password</string>
     <string name="noInternet">Network Unavailable. Please try again later.</string>
     <string name="unexpectedBehavior">Something went wrong</string>
+    <string name="fieldRequired">This field is required</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="password_reset">Password Reset</string>
+    <string name="email_registration">Email Registration</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
 
 </resources>

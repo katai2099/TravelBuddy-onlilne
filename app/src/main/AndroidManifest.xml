@@ -36,7 +36,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".DateSelectionActivity" />
         <activity android:name=".TripSelectionActivity" />
-        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".ResetPasswordActivity"
+            android:parentActivityName=".loginActivity"/>
         <activity android:name=".ResetPasswordCompletedActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -69,12 +70,12 @@
             android:label="@string/title_activity_main2">
             <intent-filter>
                 <action android:name=".Main2Activity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".confirmEmailActivity" />
-        <activity android:name=".registerActivity" />
+        <activity android:name=".registerActivity"
+            android:parentActivityName=".loginActivity"/>
         <activity android:name=".loginActivity">
 
         </activity>
@@ -108,7 +109,6 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-
         <service
             android:name=".fcm.FcmMessagingService"
             android:exported="false">

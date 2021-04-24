@@ -113,18 +113,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int latestID = 0;
     Destination destination;
     View locationButton;
+    SupportMapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapView = mapFragment.getView();
             mapFragment.getMapAsync(this);
-
         }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -359,6 +359,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(tag,"I AM HERE");
+        mapView = mapFragment.getView();
         mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -463,6 +464,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         Log.d(tag, "ACCESS_FIND_LOCATION GRANTED");
                         getDeviceLocation();
+                        behaviorWhenLocationPermissionIsGiven(mMap);
                     }
                 } else {
                     Log.d(tag, "PERMISSION DENIED");
@@ -514,14 +516,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void behaviorWhenLocationPermissionIsGiven(GoogleMap googleMap) {
         googleMap.setMyLocationEnabled(true);
         Log.d(tag, String.valueOf(googleMap.isMyLocationEnabled()));
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        if(mapView==null) {
+            Log.d(tag,"Map view null") ;
+        }else{
+            Log.d(tag,"Map view is not null");
+        }
 
         if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
             locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            layoutParams.setMargins(0, 0, 40, 180);
+            layoutParams.setMargins(0, 0, 40, 80);
+            Log.d(tag,"Tryna locate get current location button");
         }
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
@@ -617,8 +625,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 locationPhoneNumber.setText("N/A");
                 locationStarRating.setNumStars(0);
                 locationWebsite.setText("N/A");
-
-
                 if(place.getAddress()!=null){
                     String address = place.getAddress();
                     locationAddress.setText(address);
@@ -783,11 +789,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addAttractionToDatabase(String placeId,String placeName,LatLng placeLatLng,String owner,String address){
-
-
-
         DatabaseReference userTripDetailNode ;
-
         if(latestID<10){
             userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                     .child(owner)
@@ -803,47 +805,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .child("td"+ latestID);
             destination.setDestinationStringID("td"+ latestID);
         }
-
         destination.setPlaceId(placeId);
         destination.setName(placeName);
         destination.setLongitude(placeLatLng.longitude);
         destination.setLatitude(placeLatLng.latitude);
         destination.setStartDate(dateFromTripDetail);
         destination.setAddress(address);
-
-
-        /*reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                killActivity();
-            }
-        });*/
-
         checkLatestEndTime(owner,userTripDetailNode);
-
     }
 
     private void checkLatestEndTime(String owner, final DatabaseReference userTripDetailNode){
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(owner)
                 .child(tripStringID)
                 .child(dateFromTripDetail);
-
-
         reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount()==0){
                     destination.setStartTime("08:00");
                     destination.setEndTime("08:30");
-                    userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(MapsActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
-                            killActivity();
-                        }
-                    });
                 }else{
                     int cnt = 0;
                     Log.d(tag,dataSnapshot.toString());
@@ -854,31 +835,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                         cnt++;
                     }
-
                     Log.d(tag,lastDestination.toString());
                     destination.setStartTime(lastDestination.getEndTime());
-
-
-                   // destination.setEndTime(Helper.getNextThirtyMinute(lastDestination.getEndTime()));
-
                     //check for number Of extra Day in case destination took more than one day
-
-
                     int extraDayFromLastDestination = lastDestination.getExtraDay();
                     destination.setExtraDay(extraDayFromLastDestination);
-                    //int endResult = Helper.calculateExtraDay(dateFromTripDetail,lastDestination.getEndTime(),extraDayFromLastDestination);
                     Helper.changeStayPeriodOfDestination(dateFromTripDetail,destination.getStartTime(),0,30,destination);
-                    //endResult += extraDayFromLastDestination;
-
-
-                    userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(MapsActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
-                            killActivity();
-                        }
-                    });
                 }
+                userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(MapsActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
+                        killActivity();
+                    }
+                });
             }
         });
     }

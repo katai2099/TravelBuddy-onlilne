@@ -38,6 +38,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static android.content.Context.ALARM_SERVICE;
@@ -53,6 +55,8 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
     String userUUID ;
     View currentView ;
     SwipeRefreshLayout swipeRefreshLayout;
+    View placeholder;
+    ValueEventListener personalTripListener;
     public PersonalTripFragment() {
         // Required empty public constructor
     }
@@ -64,6 +68,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_personal_trip, container, false);
         currentView = root.findViewById(R.id.personalTripLayout);
+        placeholder = root.findViewById(R.id.emptyListPlaceholder);
         swipeRefreshLayout = root.findViewById(R.id.personalTripRefreshLayout);
         userUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         fbtnAddNewTrip = root.findViewById(R.id.fbtnFragmentPersonalTrip);
@@ -71,6 +76,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         rcvTripList.setLayoutManager(new LinearLayoutManager(getActivity()));
         tripAdapter = new TripAdapter(tripLists,this);
         rcvTripList.setAdapter(tripAdapter);
+        initializePersonalTripListener();
         initializeList();
         fbtnAddNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,37 +88,26 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                detachPersonalTripListener();
                 initializeList();
             }
         });
         return root;
     }
 
+    private void detachPersonalTripListener() {
+        tripLists.clear();
+        tripAdapter.notifyDataSetChanged();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trips").
+                child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.removeEventListener(personalTripListener);
+
+    }
+
     private void initializeList(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trips").
                 child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                tripLists.clear();
-                for(DataSnapshot data: dataSnapshot.getChildren()){
-                    tripModel trip = data.getValue(tripModel.class);
-                    tripLists.add(trip);
-                }
-                tripAdapter.notifyDataSetChanged();
-                if(swipeRefreshLayout.isRefreshing()){
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                if(swipeRefreshLayout.isRefreshing()){
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-               Helper.showSnackBar(getActivity().findViewById(R.id.nav_view),getString(R.string.unexpectedBehavior));
-            }
-        });
+        reference.addValueEventListener(personalTripListener);
     }
 
     @Override
@@ -127,7 +122,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
     }
 
     @Override
-    public void onDeleteTripClicked(int position) {
+    public void onDeleteTripClicked(final int position) {
 
         final tripModel currentTrip = tripLists.get(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -145,7 +140,6 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getContext(),"Nah, I am not leaving",Toast.LENGTH_SHORT).show();
             }
         });
         AlertDialog dialog = builder.create();
@@ -262,5 +256,40 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         removeTripNode(currentTrip);
         removeTripDetail(currentTrip);
         removeUpcomingTripNotificationNode(currentTrip);
+    }
+
+    private void initializePersonalTripListener(){
+        personalTripListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tripLists.clear();
+                for(DataSnapshot data: snapshot.getChildren()){
+                    tripModel trip = data.getValue(tripModel.class);
+                    tripLists.add(trip);
+                }
+                Collections.sort(tripLists, new Comparator<tripModel>() {
+                    @Override
+                    public int compare(tripModel trip1, tripModel trip2) {
+                        return trip2.getStartDate().compareTo(trip1.getStartDate());
+                    }
+                });
+                tripAdapter.notifyDataSetChanged();
+                if(swipeRefreshLayout.isRefreshing()){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                if (tripLists.isEmpty()) {
+                    placeholder.setVisibility(View.VISIBLE);
+                } else {
+                    placeholder.setVisibility(View.INVISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                if(swipeRefreshLayout.isRefreshing()){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                Helper.showSnackBar(getActivity().findViewById(R.id.nav_view),getString(R.string.unexpectedBehavior));
+            }
+        };
     }
 }

@@ -8,6 +8,7 @@
     app:cardCornerRadius="3dp"
     app:cardElevation="3dp"
     app:cardUseCompatPadding="true"
+    android:foreground="?attr/selectableItemBackground"
     >
 
     <RelativeLayout
@@ -38,6 +39,7 @@
          />
 
         <Button
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:id="@+id/tripInviteFriend"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -45,11 +47,13 @@
             android:background="@drawable/ic_baseline_person_add_alt_1_24"
             />
         <Button
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:id="@+id/tripRemove"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_below="@id/tripInviteFriend"
             android:layout_alignParentEnd="true"
+            android:background="@drawable/ic_baseline_delete_forever_24"
             />
 
     </RelativeLayout>

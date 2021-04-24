@@ -1,9 +1,11 @@
 package com.example.travelbuddyv2;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.example.travelbuddyv2.model.Destination;
@@ -26,6 +28,14 @@ public class Helper {
 
     public static void showSnackBar(View view, String string){
         Snackbar.make(view,string,Snackbar.LENGTH_SHORT).show();
+    }
+
+    public static String changeDateFormatSuitableForTripScreen(String date){
+        String res = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM d,yyyy");
+        Date tmpDate = stringToDate(date);
+        res = simpleDateFormat.format(tmpDate);
+        return res;
     }
 
     public static String changeInputTimeFormat(String time)
@@ -83,10 +93,7 @@ public class Helper {
     }
 
     public static boolean isEditTextEmpty(EditText etText) {
-        if (etText.getText().toString().trim().length() > 0)
-            return false;
-
-        return true;
+        return etText.getText().toString().trim().length() <= 0;
     }
 
     public static void clearEdittext(EditText editText){
@@ -128,13 +135,10 @@ public class Helper {
         Calendar startCal , endCal ;
         Date tmpStartDate = Helper.stringToDate(startDate);
         Date tmpEndDate = Helper.stringToDate(endDate);
-
         startCal = Calendar.getInstance();
         startCal.setTime(tmpStartDate);
-
         endCal = Calendar.getInstance();
         endCal.setTime(tmpEndDate);
-
         return startCal.get(Calendar.YEAR)==endCal.get(Calendar.YEAR) && startCal.get(Calendar.MONTH) == endCal.get(Calendar.MONTH) && startCal.get(Calendar.DATE) == endCal.get(Calendar.DATE);
     }
 
@@ -409,6 +413,11 @@ public class Helper {
             }
         }
         return false;
+    }
+
+    public static  void hideKeyboard(View view,Activity activity) {
+        InputMethodManager inputMethodManager =(InputMethodManager)activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }

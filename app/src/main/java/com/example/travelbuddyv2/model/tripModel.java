@@ -200,7 +200,7 @@ public class tripModel {
         }
     }
 
-    static class SortbystartDate implements Comparator<tripModel>
+    static class SortByStartDate implements Comparator<tripModel>
     {
         public int compare(tripModel a, tripModel b)
         {

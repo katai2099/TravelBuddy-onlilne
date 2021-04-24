@@ -83,16 +83,11 @@ public class addNewTrip extends AppCompatActivity {
         tripName = findViewById(R.id.etTripName);
         progressBar = findViewById(R.id.simpleProgressBar);
        // progressBar.setVisibility(View.VISIBLE);
-
-
         startDate = findViewById(R.id.etDepartDate);
         startDate.setInputType(InputType.TYPE_NULL);
-
         endDate = findViewById(R.id.etArrivalDate);
         endDate.setInputType(InputType.TYPE_NULL);
-
         btnSave = findViewById(R.id.btnSaveTrip);
-
         tripName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -101,18 +96,14 @@ public class addNewTrip extends AppCompatActivity {
                 }
             }
         });
-
-
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(NetworkObserver.isNetworkConnected){
                     saveBehavior();
                 }else{
                     Helper.showSnackBar(v,getString(R.string.noInternet));
                 }
-
             }
         });
 
@@ -125,7 +116,6 @@ public class addNewTrip extends AppCompatActivity {
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int date = calendar.get(Calendar.DATE);
-
                 if(Helper.isEditTextEmpty(startDate))
                 {
                 datePickerDialogStartDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
@@ -153,15 +143,12 @@ public class addNewTrip extends AppCompatActivity {
                     },year,month,date);
 
                 }
-
                 Calendar tmpcal = Calendar.getInstance();
                 // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
                 datePickerDialogStartDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
-
                 datePickerDialogStartDate.show();
             }
         });
-
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,15 +157,12 @@ public class addNewTrip extends AppCompatActivity {
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int date = calendar.get(Calendar.DATE);
-
                 if(!Helper.isEditTextEmpty(startDate) && Helper.isEditTextEmpty(endDate)){
-
                     Date d = Helper.stringToDate(startDate.getText().toString());
                     calendar.setTime(d);
                     year = calendar.get(Calendar.YEAR);
                     month = calendar.get(Calendar.MONTH);
                     date = calendar.get(Calendar.DATE);
-
                     datePickerDialogEndDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -187,10 +171,8 @@ public class addNewTrip extends AppCompatActivity {
                             endDate.setText(res);
                         }
                     }, year, month, date);
-
                 }
                 else if(Helper.isEditTextEmpty(endDate)) {
-
                     datePickerDialogEndDate = new DatePickerDialog(addNewTrip.this, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -199,9 +181,7 @@ public class addNewTrip extends AppCompatActivity {
                             endDate.setText(res);
                         }
                     }, year, month, date);
-
                 }else{
-
                     Date d = Helper.stringToDate(endDate.getText().toString());
                     calendar.setTime(d);
                     year = calendar.get(Calendar.YEAR);
@@ -215,13 +195,10 @@ public class addNewTrip extends AppCompatActivity {
                             endDate.setText(res);
                         }
                     }, year, month, date);
-
                 }
-
                     Calendar tmpcal = Calendar.getInstance();
                 // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
                     datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
-
                 datePickerDialogEndDate.show();
 
             }
@@ -237,7 +214,6 @@ public class addNewTrip extends AppCompatActivity {
     private void saveBehavior(){
         String tmpStartDate = Helper.changeInputDateFormat(startDate.getText().toString());
         String tmpEndDate = Helper.changeInputDateFormat(endDate.getText().toString());
-
         if(Helper.isEditTextEmpty(tripName))
         {
             Toast.makeText(addNewTrip.this,"Please fill all detail",Toast.LENGTH_SHORT).show();
@@ -262,7 +238,6 @@ public class addNewTrip extends AppCompatActivity {
             tmpTripModel.setStringID("t" + ID);
             tmpTripModel.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
             //adding date to TripDetail NODE
-            //Still need to get it cleaned
             final List<String> dateList = getDateInterval(tmpStartDate,tmpEndDate);
             final HashMap<String,String> res = new HashMap<>();
             for(int i=0;i<dateList.size();i++){
@@ -297,8 +272,6 @@ public class addNewTrip extends AppCompatActivity {
     }
 
     private void subscribeToUpcomingTripNotification(final String tripStringID){
-
-
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String s) {
@@ -309,8 +282,6 @@ public class addNewTrip extends AppCompatActivity {
                 reference.setValue("");
             }
         });
-
-
     }
 
     private void getCurrentUserInfo() {
@@ -340,7 +311,7 @@ public class addNewTrip extends AppCompatActivity {
 
 
 
-    public void setNotificationTime(tripModel passingData) // milli needed just for debug
+    public void setNotificationTime(tripModel passingData)
     {
         Intent intent = new Intent(addNewTrip.this,ReminderBroadcast.class);
         Bundle extras = new Bundle();
@@ -350,30 +321,21 @@ public class addNewTrip extends AppCompatActivity {
         intent.putExtras(extras);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(addNewTrip.this,Helper.tripStringIDToInt(passingData.getStringID()),intent,0);
         long timeToFireAnAlarm = Helper.getStartDateInMilli(passingData.getStartDate());
-
-       // Calendar calendar = Calendar.getInstance();
-      //  calendar.add(Calendar.SECOND,30);
-       // long timeToFireAnAlarm = calendar.getTimeInMillis();
-
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
         } else{
             alarmManager.set(AlarmManager.RTC_WAKEUP,timeToFireAnAlarm,pendingIntent);
         }
-
     }
 
 
 
     private void getCurrentIdFromFirebaseDatabase(){
-
         tmp = new ArrayList<>();
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Trips")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -387,28 +349,20 @@ public class addNewTrip extends AppCompatActivity {
                 Log.d(tag,"latest trip ID " + size);
                 ID = size+1;
                 }
-                //need to sort here !!!!!!!!!!
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-
-
     }
 
     private int StringToInt(String ID){
-
         StringBuilder tmp = new StringBuilder();
-
         for(int i=1;i<ID.length();i++){
             tmp.append(ID.charAt(i));
         }
-
         return Integer.parseInt(tmp.toString());
-
     }
 
     private List<String> getDateInterval(String startDate , String endDate)  {
@@ -421,7 +375,6 @@ public class addNewTrip extends AppCompatActivity {
         calendar = new GregorianCalendar();
         List<String> listOfdate = new ArrayList<>();
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
         try {
             start = simpleDateFormat.parse(startDate);
         } catch (ParseException e) {
@@ -432,7 +385,6 @@ public class addNewTrip extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         calendar.setTime(start);
         // while (calendar.getTime().before(endDate))
         while(calendar.getTime().before(end))
@@ -445,7 +397,6 @@ public class addNewTrip extends AppCompatActivity {
         String tmp = simpleDateFormat.format(calendar.getTime());
         //System.out.println(calendar.getTime().toString());
         listOfdate.add(tmp);
-
         return listOfdate;
     }
 
@@ -454,18 +405,13 @@ public class addNewTrip extends AppCompatActivity {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("t"+id)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         final Member member = new Member();
         member.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         member.setID(FirebaseAuth.getInstance().getCurrentUser().getUid());
         member.setName(currentUserInfo.getName());
         member.setPermission("owner");
         member.setProfileImg(currentUserInfo.getProfile_image());
-
         reference.setValue(member);
-
-
-
     }
 
     private void toTripFragment(){
