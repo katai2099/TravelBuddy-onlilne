@@ -12,6 +12,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -31,6 +34,7 @@ import com.example.travelbuddyv2.retrofit.NotificationData;
 import com.example.travelbuddyv2.retrofit.PushNotification;
 import com.example.travelbuddyv2.utils.Snack;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,20 +61,17 @@ import retrofit2.Response;
 
 
 public class addNewTrip extends AppCompatActivity {
-
     private final String tag = "ADD_NEW_TRIP";
-
     private int ID = 0;
-
     List<Integer> tmp;
-
     EditText tripName , startDate , endDate;
-    Button btnSave;
+  //  Button btnSave;
     DatePickerDialog datePickerDialogStartDate,datePickerDialogEndDate;
     Calendar calendar ;
     DatabaseHelper databaseHelper;
     User currentUserInfo;
     ProgressBar progressBar;
+    MenuItem save;
 
 
     @Override
@@ -82,12 +83,11 @@ public class addNewTrip extends AppCompatActivity {
         getCurrentUserInfo();
         tripName = findViewById(R.id.etTripName);
         progressBar = findViewById(R.id.simpleProgressBar);
-       // progressBar.setVisibility(View.VISIBLE);
         startDate = findViewById(R.id.etDepartDate);
         startDate.setInputType(InputType.TYPE_NULL);
         endDate = findViewById(R.id.etArrivalDate);
         endDate.setInputType(InputType.TYPE_NULL);
-        btnSave = findViewById(R.id.btnSaveTrip);
+      //  btnSave = findViewById(R.id.btnSaveTrip);
         tripName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -96,7 +96,7 @@ public class addNewTrip extends AppCompatActivity {
                 }
             }
         });
-        btnSave.setOnClickListener(new View.OnClickListener() {
+     /*   btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(NetworkObserver.isNetworkConnected){
@@ -105,7 +105,7 @@ public class addNewTrip extends AppCompatActivity {
                     Helper.showSnackBar(v,getString(R.string.noInternet));
                 }
             }
-        });
+        });*/
 
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,17 +200,13 @@ public class addNewTrip extends AppCompatActivity {
                 // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
                     datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
                 datePickerDialogEndDate.show();
-
             }
         });
-
     }
-
     private void savePendingNotificationToOfflineDatabase(tripModel model){
         databaseHelper = new DatabaseHelper(addNewTrip.this);
         databaseHelper.addNewPendingNotification(model.getTripName(),model.getStringID(),model.getStartDate());
     }
-
     private void saveBehavior(){
         String tmpStartDate = Helper.changeInputDateFormat(startDate.getText().toString());
         String tmpEndDate = Helper.changeInputDateFormat(endDate.getText().toString());
@@ -231,6 +227,8 @@ public class addNewTrip extends AppCompatActivity {
             Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
         }
         else {
+            save.setEnabled(false);
+            progressBar.setVisibility(View.VISIBLE);
             final tripModel tmpTripModel = new tripModel();
             tmpTripModel.setTripName(tripName.getText().toString());
             tmpTripModel.setStartDate(tmpStartDate);
@@ -263,11 +261,20 @@ public class addNewTrip extends AppCompatActivity {
                                     setNotificationTime(tmpTripModel);
                                     subscribeToUpcomingTripNotification(tmpTripModel.getStringID());
                                     savePendingNotificationToOfflineDatabase(tmpTripModel);
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    save.setEnabled(true);
                                     toTripFragment();
                                 }
                             });
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    save.setEnabled(true);
+                    progressBar.setVisibility(View.VISIBLE);
+                    Toast.makeText(addNewTrip.this,getString(R.string.unexpectedBehavior),Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -420,4 +427,23 @@ public class addNewTrip extends AppCompatActivity {
         startActivity(i);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.save_menu,menu);
+        save = menu.findItem(R.id.optionSaveTrip);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.optionSaveTrip){
+            if(NetworkObserver.isNetworkConnected){
+                saveBehavior();
+            }else{
+                Helper.showSnackBar(getCurrentFocus(),getString(R.string.noInternet));
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

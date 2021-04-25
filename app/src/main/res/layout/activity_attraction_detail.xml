@@ -109,28 +109,29 @@ android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:minHeight="50dp"
                         android:paddingStart="@dimen/spacing_large"
-                        android:paddingLeft="@dimen/spacing_large"
                         android:paddingEnd="@dimen/spacing_large"
-                        android:paddingRight="@dimen/spacing_large"
                         android:text="Dandelion Chocolate"
+                        android:maxLines="1"
                         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
                     <ImageView
                         android:id="@+id/locationSinglePic"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_width="90dp"
+                        android:layout_height="70dp"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginRight="20dp"
-                        android:layout_toEndOf="@id/locationName"
-                        android:background="@drawable/ic_baseline_local_phone_24" />
+                        android:paddingBottom="10dp"
+                        android:paddingEnd="10dp"
+                         />
 
                     <TextView
-
+                        android:maxLines="1"
                         android:id="@+id/locationAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/locationName"
                         android:layout_marginStart="@dimen/spacing_xxlarge"
+                        android:paddingEnd="@dimen/spacing_large"
+                        android:paddingStart="@dimen/spacing_large"
                         android:text="NongThatai" />
 
                     <RatingBar
@@ -143,6 +144,8 @@ android:layout_height="match_parent"
                         android:numStars="5"
                         android:rating="3.5"
                         android:stepSize="0.5"
+                        android:paddingEnd="@dimen/spacing_large"
+                        android:paddingStart="@dimen/spacing_large"
                         android:theme="@style/Yellow.Small.AppCompatRatingBar" />
 
                     <TextView
@@ -151,7 +154,7 @@ android:layout_height="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/locationAddress"
                         android:layout_toEndOf="@id/locationStarRating"
-                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
                         android:text="4.7 (51)"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -227,10 +230,11 @@ android:layout_height="match_parent"
                                 android:layout_height="?attr/actionBarSize"
                                 android:background="@android:color/transparent"
                                 android:tint="@color/grey_20"
-                                app:srcCompat="@drawable/ic_baseline_local_phone_24" />
+                                android:src="@drawable/ic_baseline_local_phone_24"
+                                android:paddingEnd="5dp"/>
 
                             <View
-                                android:layout_width="@dimen/spacing_mxlarge"
+                                android:layout_width="@dimen/spacing_medium"
                                 android:layout_height="0dp" />
 
                             <TextView
@@ -255,10 +259,11 @@ android:layout_height="match_parent"
                                 android:layout_height="?attr/actionBarSize"
                                 android:background="@android:color/transparent"
                                 android:tint="@color/grey_20"
-                                app:srcCompat="@drawable/ic_baseline_email_24" />
+                                android:src="@drawable/ic_baseline_email_24"
+                                android:paddingEnd="5dp"/>
 
                             <View
-                                android:layout_width="@dimen/spacing_mxlarge"
+                                android:layout_width="@dimen/spacing_medium"
                                 android:layout_height="0dp" />
 
                             <TextView

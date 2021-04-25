@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".PersonalTripFragment">
 
+    <ProgressBar
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:id="@+id/simpleProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_marginTop="8dp"
         android:id="@+id/personalTripRefreshLayout"

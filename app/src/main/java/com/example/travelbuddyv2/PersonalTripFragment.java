@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.TripAdapter;
@@ -56,11 +57,11 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
     View currentView ;
     SwipeRefreshLayout swipeRefreshLayout;
     View placeholder;
+    ProgressBar progressBar;
     ValueEventListener personalTripListener;
     public PersonalTripFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,6 +69,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_personal_trip, container, false);
         currentView = root.findViewById(R.id.personalTripLayout);
+        progressBar = root.findViewById(R.id.simpleProgressBar);
         placeholder = root.findViewById(R.id.emptyListPlaceholder);
         swipeRefreshLayout = root.findViewById(R.id.personalTripRefreshLayout);
         userUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -283,6 +285,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
                 } else {
                     placeholder.setVisibility(View.INVISIBLE);
                 }
+                progressBar.setVisibility(View.GONE);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -292,6 +295,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
                 if(getActivity()!=null) {
                     Helper.showSnackBar(getActivity().findViewById(R.id.nav_view), getString(R.string.unexpectedBehavior));
                 }
+                progressBar.setVisibility(View.GONE);
             }
         };
     }

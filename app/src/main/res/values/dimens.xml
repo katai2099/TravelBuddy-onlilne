@@ -18,7 +18,7 @@
     <dimen name="spacing_mxlarge">25dp</dimen>
     <dimen name="spacing_xlarge">35dp</dimen>
     <dimen name="spacing_xmlarge">40dp</dimen>
-    <dimen name="spacing_xxlarge">50dp</dimen>
+    <dimen name="spacing_xxlarge">30dp</dimen>
     <dimen name="spacing_xxxlarge">55dp</dimen>
 
     <dimen name="bottom_navigation_bar_height">48dp</dimen>

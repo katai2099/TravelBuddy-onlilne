@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.GroupTripAdapter;
@@ -45,6 +46,7 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
     SwipeRefreshLayout swipeRefreshLayout;
     ValueEventListener groupTripListener;
     View placeholder;
+    ProgressBar progressBar;
     public GroupTripFragment() {
         // Required empty public constructor
     }
@@ -56,6 +58,7 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
         View root = inflater.inflate(R.layout.fragment_group_trip, container, false);
         groupTripList = new ArrayList<>();
         groupTripAdapter = new GroupTripAdapter(groupTripList,this,getActivity());
+        progressBar = root.findViewById(R.id.simpleProgressBar);
         rcvGroupTripView = root.findViewById(R.id.rcvFragmentGroupTrip);
         swipeRefreshLayout = root.findViewById(R.id.groupTripRefreshLayout);
         placeholder = root.findViewById(R.id.emptyListPlaceholder);
@@ -201,11 +204,18 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
                 } else {
                     placeholder.setVisibility(View.INVISIBLE);
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                if(swipeRefreshLayout.isRefreshing()){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                if(getActivity()!=null) {
+                    Helper.showSnackBar(getActivity().findViewById(R.id.nav_view), getString(R.string.unexpectedBehavior));
+                }
+                progressBar.setVisibility(View.GONE);
             }
         };
     }

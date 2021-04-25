@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -120,6 +121,7 @@ public class MapsFragment extends Fragment {
     private Button btnAddTrip, btnSearchForAttraction, btnAddAttractionOnSwipeUp, btnHideAttraction;
     private List<Bitmap> bitmapList;
     private TextView locationName, locationAddress, locationRating, locationWorkingHour, locationPhoneNumber, locationWebsite;
+    private ImageView locationSinglePic;
     private RatingBar locationStarRating;
     private double currentLat, currentLng;
     private View locationButton;
@@ -456,6 +458,7 @@ public class MapsFragment extends Fragment {
         locationPhoneNumber = googleMapInformationLayout.findViewById(R.id.locationPhoneNumber);
         locationWebsite = googleMapInformationLayout.findViewById(R.id.locationWebsite);
         locationStarRating = googleMapInformationLayout.findViewById(R.id.locationStarRating);
+        locationSinglePic = googleMapInformationLayout.findViewById(R.id.locationSinglePic);
     }
 
     private void bottomSheetBehavior() {
@@ -543,28 +546,27 @@ public class MapsFragment extends Fragment {
             @Override
             public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
                 final Place place = fetchPlaceResponse.getPlace();
-                // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
                 final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-                if (metadata == null || metadata.isEmpty()) {
-                    Toast.makeText(getContext(), "No metadata", Toast.LENGTH_SHORT).show();
-                }
                 if (metadata != null && metadata.size() != 0) {
-
                     for (int i = 0; i < metadata.size(); i++) {
                         if (i == 5)
                             break;
                         final PhotoMetadata photoMetadata = metadata.get(i);
                         final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                                .setMaxWidth(300)
-                                .setMaxHeight(300)
+                                .setMaxWidth(852)
+                                .setMaxHeight(480)
                                 .build();
-
+                        final int cnt = i;
                         placesClient.fetchPhoto(photoRequest).addOnSuccessListener(new OnSuccessListener<FetchPhotoResponse>() {
                             @Override
                             public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
                                 Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                                bitmapList.add(bitmap);
-                                googleMapPictureAdapter.notifyDataSetChanged();
+                                if(cnt ==0){
+                                    locationSinglePic.setImageBitmap(bitmap);
+                                }else {
+                                    bitmapList.add(bitmap);
+                                    googleMapPictureAdapter.notifyDataSetChanged();
+                                }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -578,6 +580,8 @@ public class MapsFragment extends Fragment {
                             }
                         });
                     }
+                }else{
+                    locationSinglePic.setImageResource(R.drawable.ic_baseline_photo_24);
                 }
             }
         });

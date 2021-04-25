@@ -70,13 +70,25 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
         ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList,childTripDetailAdapterCallBack);
         holder.childRecyclerView.setAdapter(childTripDetailAdapter);
 
-        holder.btnAddTripDetail.setOnClickListener(new View.OnClickListener() {
+ /*       holder.btnAddTripDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                // parentGroupTripDetailAdapterCallBack.onListClicked(position);
                 if(hasPermission)
                 {
                     //Toast.makeText(holder.itemView.getContext(),"You may proceed",Toast.LENGTH_SHORT).show();
+                    parentGroupTripDetailAdapterCallback.addNewAttractionClicked(position);
+                }
+                else{
+                    Toast.makeText(holder.itemView.getContext(),"You dont have permission to edit",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });*/
+        holder.addAttraction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(hasPermission)
+                {
                     parentGroupTripDetailAdapterCallback.addNewAttractionClicked(position);
                 }
                 else{
@@ -95,14 +107,16 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
 
         TextView sectionTextview,sectionStartTime ;
         RecyclerView childRecyclerView;
-        Button btnAddTripDetail;
+      //  Button btnAddTripDetail;
+        View addAttraction;
 
         public ParentGroupTripDetailHolder(@NonNull View itemView) {
             super(itemView);
             sectionTextview = itemView.findViewById(R.id.sectionNameTextView);
             sectionStartTime = itemView.findViewById(R.id.sectionStartTime);
             childRecyclerView = itemView.findViewById(R.id.childRecyclerView);
-            btnAddTripDetail = itemView.findViewById(R.id.section_row_btnAddTripDetail);
+           // btnAddTripDetail = itemView.findViewById(R.id.section_row_btnAddTripDetail);
+            addAttraction = itemView.findViewById(R.id.sectionRowAddAttraction);
         }
     }
 

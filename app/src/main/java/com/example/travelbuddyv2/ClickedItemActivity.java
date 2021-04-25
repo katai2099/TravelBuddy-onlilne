@@ -43,7 +43,6 @@ public class ClickedItemActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         itemInfoFromPreviousActivity = new Inventory();
         currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         imgItemImage = findViewById(R.id.imgEnlargeImage);
         tvItemName = findViewById(R.id.tvEnlargeImageName);
 
@@ -148,6 +147,7 @@ public class ClickedItemActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 

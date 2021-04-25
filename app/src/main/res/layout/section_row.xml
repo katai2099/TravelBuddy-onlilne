@@ -18,6 +18,7 @@
         android:textColor="@color/quantum_black_100" />
 
     <TextView
+        android:background="?attr/selectableItemBackground"
         android:id="@+id/sectionStartTime"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
@@ -41,7 +42,8 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <androidx.cardview.widget.CardView
-        android:background="?attr/selectableItemBackground"
+        android:id="@+id/sectionRowAddAttraction"
+        android:foreground="?attr/selectableItemBackground"
         android:layout_below="@+id/childRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -50,16 +52,38 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp">
 
-        <Button
-            android:id="@+id/section_row_btnAddTripDetail"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <androidx.cardview.widget.CardView
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:gravity="center"
-            android:text="Atrractions"
-            android:background="@color/cardview_light_background"
-          />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/attraction"
+                    android:src="@drawable/ic_baseline_location_on_24"/>
+
+                <TextView
+                    android:layout_marginStart="5dp"
+                    android:id="@+id/attraction"
+                    android:textSize="17sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/quantum_black_100"
+                    android:text="Attractions"/>
+            </RelativeLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+
 
     </androidx.cardview.widget.CardView>
 

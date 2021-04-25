@@ -28,8 +28,9 @@
     </style>
 
     <style name="redButton" parent="Widget.AppCompat.Button.Colored">
-        <item name="backgroundTint">@color/quantum_googred</item>
-        <item name="background">?attr/selectableItemBackgroundBorderless</item>
+<!--        <item name="backgroundTint">#72b8fc</item>-->
+        <item name="backgroundTint"> #89cff0</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
 

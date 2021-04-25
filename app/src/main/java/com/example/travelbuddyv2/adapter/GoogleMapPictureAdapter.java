@@ -28,16 +28,12 @@ public class GoogleMapPictureAdapter extends RecyclerView.Adapter<GoogleMapPictu
 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.google_map_photo,parent,false);
-
         return new GoogleMapPictureHolder(itemView);
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull GoogleMapPictureHolder holder, int position) {
-
         holder.imageView.setImageBitmap(bitmapList.get(position));
-
     }
 
     @Override
