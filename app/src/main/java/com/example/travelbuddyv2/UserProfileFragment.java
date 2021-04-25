@@ -132,6 +132,13 @@ public class UserProfileFragment extends Fragment {
              signOut(getActivity());
             }
         });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }

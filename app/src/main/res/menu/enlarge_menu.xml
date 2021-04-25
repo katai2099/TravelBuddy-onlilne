@@ -3,9 +3,13 @@
 
     <item
         android:id="@+id/optionEnlargeImageDownload"
-        android:title="Download"/>
+        android:title="Download"
+        android:icon="@drawable/ic_baseline_download_24"
+        />
     <item
         android:id="@+id/optionEnlargeImageDelete"
-        android:title="Delete"/>
+        android:title="Delete"
+        android:icon="@drawable/ic_baseline_delete_forever_24"
+        />
 
 </menu>

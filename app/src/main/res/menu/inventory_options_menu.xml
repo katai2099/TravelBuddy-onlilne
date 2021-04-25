@@ -15,7 +15,7 @@
         />
     <item
         android:id="@+id/optionDelete"
-        android:title="Remove"
+        android:title="Delete"
         android:icon="@drawable/ic_baseline_delete_forever_24"
         />
 

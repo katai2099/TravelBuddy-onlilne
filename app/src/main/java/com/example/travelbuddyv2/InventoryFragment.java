@@ -93,6 +93,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
         View root =  inflater.inflate(R.layout.fragment_inventory, container, false);
         setHasOptionsMenu(true);
         loadingBar = new ProgressDialog(getContext());
+        loadingBar.setTitle("Uploading");
         listLayout = new LinearLayoutManager(getContext());
         gridLayout = new GridLayoutManager(getContext(),2);
         currentOwnerOfItem = new User();
