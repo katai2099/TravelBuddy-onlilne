@@ -2,9 +2,11 @@ package com.example.travelbuddyv2;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -115,10 +117,23 @@ public class UserProfileFragment extends Fragment {
         tvLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signOut(getActivity());
+             showDialogBeforeLogOut();
             }
         });
         return root;
+    }
+
+    private void showDialogBeforeLogOut(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Do you want to log out?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+             signOut(getActivity());
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void startPickImage() {
@@ -142,6 +157,7 @@ public class UserProfileFragment extends Fragment {
         btnCancel = bottomSheetView.findViewById(R.id.btnEditProfileCancel);
         btnSave = bottomSheetView.findViewById(R.id.btnEditProfileSave);
         etEditProfileName = bottomSheetView.findViewById(R.id.etEditProfileName);
+        etEditProfileName.requestFocus();
         etEditProfileName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -177,8 +193,10 @@ public class UserProfileFragment extends Fragment {
         if (!previousName.equals(newName) && NetworkObserver.isNetworkConnected) {
             changeUserName(newName);
             refreshUserName();
-        }else{
+        }else if(!NetworkObserver.isNetworkConnected){
             Helper.showSnackBar(imgUserProfileImage,getString(R.string.noInternet));
+        }else{
+            Helper.showSnackBar(imgUserProfileImage,"Name could not be the same as previous one");
         }
         bottomSheetDialog.dismiss();
     }

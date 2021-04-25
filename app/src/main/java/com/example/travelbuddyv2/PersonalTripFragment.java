@@ -133,6 +133,7 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
                 if(NetworkObserver.isNetworkConnected){
                     deleteTrip(currentTrip);
                 }else{
+                    if(getActivity()!=null)
                     Helper.showSnackBar(getActivity().findViewById(R.id.nav_view),getString(R.string.noInternet));
                 }
             }
@@ -288,7 +289,9 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
                 if(swipeRefreshLayout.isRefreshing()){
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                Helper.showSnackBar(getActivity().findViewById(R.id.nav_view),getString(R.string.unexpectedBehavior));
+                if(getActivity()!=null) {
+                    Helper.showSnackBar(getActivity().findViewById(R.id.nav_view), getString(R.string.unexpectedBehavior));
+                }
             }
         };
     }

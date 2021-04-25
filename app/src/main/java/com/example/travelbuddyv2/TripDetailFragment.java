@@ -68,7 +68,6 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-
         View root = inflater.inflate(R.layout.fragment_trip_detail, container, false);
 
         Bundle bundle = getArguments();
@@ -247,6 +246,17 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
         timePickerDialog.setTitle("modify stay period");
         timePickerDialog.show();
     }
+
+    @Override
+    public void onAttractionClicked(String placeID, String placeName, Double lat, Double lng) {
+        Intent i = new Intent(getContext(),AttractionDetailActivity.class);
+        i.putExtra("PLACEID",placeID);
+        i.putExtra("PLACENAME",placeName);
+        i.putExtra("PLACELAT",lat);
+        i.putExtra("PLACELNG",lng);
+        startActivity(i);
+    }
+
 
     private void changeStayPeriodOfDestination(int hour, int minute, int position,String currentDate){
         List<Destination> destinations = new ArrayList<>();

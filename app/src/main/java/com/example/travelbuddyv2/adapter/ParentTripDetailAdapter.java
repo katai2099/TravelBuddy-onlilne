@@ -48,7 +48,7 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
 
         TripSection tripSection = tripSectionList.get(position);
         final String date = tripSection.getDate();
-        String toShowDate = Helper.changeDateFormatSuitableForTripScreen(date);
+        String toShowDate = Helper.changeDateFormatSuitableForTripDetailScreen(date);
         String positionString = String.valueOf(position+1);
         holder.sectionTextView.setText("Day " + positionString + ":   "+ toShowDate);
         if(tripSectionList.get(position).getDestinations().size()>0){

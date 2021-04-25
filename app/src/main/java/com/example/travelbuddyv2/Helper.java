@@ -32,7 +32,15 @@ public class Helper {
 
     public static String changeDateFormatSuitableForTripScreen(String date){
         String res = "";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM d,yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM d, yyyy");
+        Date tmpDate = stringToDate(date);
+        res = simpleDateFormat.format(tmpDate);
+        return res;
+    }
+
+    public static String changeDateFormatSuitableForTripDetailScreen(String date){
+        String res = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM d, yyyy");
         Date tmpDate = stringToDate(date);
         res = simpleDateFormat.format(tmpDate);
         return res;
@@ -168,21 +176,15 @@ public class Helper {
         for(int i=1;i<ID.length();i++){
             tmp.append(ID.charAt(i));
         }
-
         return Integer.parseInt(tmp.toString());
-
     }
 
     public static int tripDetailStringIDToInt(String ID){
-
         StringBuilder tmp = new StringBuilder();
-
         for(int i=2;i<ID.length();i++){
             tmp.append(ID.charAt(i));
         }
-
         return Integer.parseInt(tmp.toString());
-
     }
 
     public static String getNextThirtyMinute(String time){
@@ -190,52 +192,37 @@ public class Helper {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.MINUTE,30);
-
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         return df.format(cal.getTime());
-
     }
 
     public static int calculateExtraDay(String currentDate,String time,int numberOfExtraDayFromLastDestination){
-
         //get time
         Date currentUserTime = stringToTime(time);
-
         Calendar getMinHour = Calendar.getInstance();
         getMinHour.setTime(currentUserTime);
-
         //get date
         Date currentUserDate = stringToDate(currentDate);
-
         Calendar beforeAdding = Calendar.getInstance();
-
         beforeAdding.setTime(currentUserDate);
         beforeAdding.set(Calendar.HOUR_OF_DAY,getMinHour.get(Calendar.HOUR_OF_DAY));
         beforeAdding.set(Calendar.MINUTE,getMinHour.get(Calendar.MINUTE));
         beforeAdding.set(Calendar.SECOND,0);
         beforeAdding.set(Calendar.MILLISECOND,0);
-
         //add number of extra day in case there is one destination took more then one day
         beforeAdding.add(Calendar.DATE,numberOfExtraDayFromLastDestination);
-
         //get date
         Calendar afterAdding = Calendar.getInstance();
-
         afterAdding.setTime(currentUserDate);
         afterAdding.set(Calendar.HOUR_OF_DAY,getMinHour.get(Calendar.HOUR_OF_DAY));
         afterAdding.set(Calendar.MINUTE,getMinHour.get(Calendar.MINUTE));
         afterAdding.set(Calendar.SECOND,0);
         afterAdding.set(Calendar.MILLISECOND,0);
-
         //add number of extra day in case there is one destination took more then one day
         afterAdding.add(Calendar.DATE,numberOfExtraDayFromLastDestination);
-
         afterAdding.add(Calendar.MINUTE,30);
-
         List<String> dates = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-
         while(beforeAdding.getTime().before(afterAdding.getTime()) || beforeAdding.getTime().equals(afterAdding.getTime())  )
         {
             Date result = beforeAdding.getTime();
@@ -243,62 +230,45 @@ public class Helper {
             dates.add(tmp);
             beforeAdding.add(Calendar.MINUTE, 30);
         }
-
         Date res = afterAdding.getTime();
-
         if(!( dates.get(0).equals(dates.get(1))) ){
             return 1;
         }
-
         //~ return res.toString();
         return 0 ;
     }
 
     public static int calculateExtraDay(String currentDate,String time,int numberOfExtraDayFromLastDestination,int hour,int min){
-
         //get time
         Date currentUserTime = stringToTime(time);
-
         Calendar getMinHour = Calendar.getInstance();
         getMinHour.setTime(currentUserTime);
-
         //get date
         Date currentUserDate = stringToDate(currentDate);
-
         Calendar beforeAdding = Calendar.getInstance();
-
         beforeAdding.setTime(currentUserDate);
         beforeAdding.set(Calendar.HOUR_OF_DAY,getMinHour.get(Calendar.HOUR_OF_DAY));
         beforeAdding.set(Calendar.MINUTE,getMinHour.get(Calendar.MINUTE));
         beforeAdding.set(Calendar.SECOND,0);
         beforeAdding.set(Calendar.MILLISECOND,0);
-
         //add number of extra day in case there is one destination took more then one day
         beforeAdding.add(Calendar.DATE,numberOfExtraDayFromLastDestination);
-
         //get date
         Calendar afterAdding = Calendar.getInstance();
-
         afterAdding.setTime(currentUserDate);
         afterAdding.set(Calendar.HOUR_OF_DAY,getMinHour.get(Calendar.HOUR_OF_DAY));
         afterAdding.set(Calendar.MINUTE,getMinHour.get(Calendar.MINUTE));
         afterAdding.set(Calendar.SECOND,0);
         afterAdding.set(Calendar.MILLISECOND,0);
-
         //add number of extra day in case there is one destination took more then one day
         afterAdding.add(Calendar.DATE,numberOfExtraDayFromLastDestination);
-
         afterAdding.add(Calendar.MINUTE,min);
         afterAdding.add(Calendar.HOUR_OF_DAY,hour);
-
         List<String> dates = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-
         if(hour == 0 && min == 0){
             return 0;
         }
-
         while(beforeAdding.getTime().before(afterAdding.getTime()) || beforeAdding.getTime().equals(afterAdding.getTime())  )
         {
             Date result = beforeAdding.getTime();
@@ -307,98 +277,67 @@ public class Helper {
             beforeAdding.add(Calendar.MINUTE, min);
             beforeAdding.add(Calendar.HOUR_OF_DAY,hour);
         }
-
-        Date res = afterAdding.getTime();
-
         if(!( dates.get(0).equals(dates.get(1))) ){
             return 1;
         }
-
         //~ return res.toString();
         return 0 ;
     }
 
     public static void changeStayPeriodOfDestination(String currentDate, String startTime, int hour, int minute, Destination destination){
-
         //need to calculate new extraDay , get new EndDate , modify i+1 list
-
         SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat toTime = new SimpleDateFormat("HH:mm");
-
         Date date = new Date();
-
-
         try{
             date = toDate.parse(currentDate);
         }catch(ParseException e){
             System.out.println(e);
         }
-
         Calendar curDate = Calendar.getInstance();
         curDate.setTime(date);
-
         Date time = new Date();
-
         try{
             time = toTime.parse(startTime);
         }catch(ParseException e){
             System.out.println(e);
         }
-
         Calendar curTime = Calendar.getInstance();
         curTime.setTime(time);
-
         curDate.set(Calendar.HOUR_OF_DAY, curTime.get(Calendar.HOUR_OF_DAY));
         curDate.set(Calendar.MINUTE,curTime.get(Calendar.MINUTE));
         curDate.set(Calendar.MILLISECOND,0);
-
         curDate.add(Calendar.HOUR_OF_DAY, hour);
         curDate.add(Calendar.MINUTE,minute);
-
         Date res = curDate.getTime();
-
         String finalTime = toTime.format(res);
-
         int extraDay = destination.getExtraDay();
-
         int  extraDayAfterPeriodChanged = calculateExtraDay(currentDate,startTime,extraDay,hour,minute);
-
         Log.d(tag,"Extra day " + extraDayAfterPeriodChanged);
-
         if(extraDayAfterPeriodChanged==1){
-
             if(!destination.isIncreased() && destination.isDecreased()){
                 extraDayAfterPeriodChanged += extraDay;
             }else{
                 extraDayAfterPeriodChanged = extraDay;
             }
-
             destination.setIncreased(true);
             destination.setDecreased(false);
-
         }else if(extraDayAfterPeriodChanged==0){
-
             if(!destination.isDecreased() && destination.isIncreased()){
                 if(extraDay==0){
                     extraDayAfterPeriodChanged = 0;
                 }else {
                     extraDayAfterPeriodChanged = extraDay - 1;
                 }
-
                 destination.setIncreased(false);
                 destination.setDecreased(true);
-
             }else{
                 extraDayAfterPeriodChanged = extraDay;
             }
-
         }
-
         Log.d(tag,"Extra day after if else " + extraDayAfterPeriodChanged);
-
         if(extraDayAfterPeriodChanged<0)
             extraDayAfterPeriodChanged = 0;
-
         destination.setEndTime( finalTime) ;
         destination.setDuration((hour*60) + minute);
         destination.setExtraDay(extraDayAfterPeriodChanged);

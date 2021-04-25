@@ -29,6 +29,8 @@ import com.squareup.picasso.Picasso;
 import java.util.Iterator;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestHolder> {
 
     private final String tag = "REQUEST_ADAPTER";
@@ -102,7 +104,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
         private final TextView tvFriendRequestNotification;
         private final Button btnReject , btnAccept;
-        private final ImageView requesterProfileImage;
+     //   private final ImageView requesterProfileImage;
+        private final CircleImageView requesterProfileImage;
 
         public RequestHolder(@NonNull View itemView) {
             super(itemView);

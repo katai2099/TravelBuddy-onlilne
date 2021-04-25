@@ -8,6 +8,9 @@
     tools:context=".ui.main.PlaceholderFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="?attr/selectableItemBackground"
         android:id="@+id/rcvFragmentGroupTripDetailToSelectedList"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"/>

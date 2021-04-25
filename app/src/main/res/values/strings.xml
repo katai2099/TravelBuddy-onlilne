@@ -48,5 +48,7 @@
     <string name="email_registration">Email Registration</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="register">Register</string>
+    <string name="pending">Pending</string>
+    <string name="title_activity_attraction_detail">Map</string>
 
 </resources>

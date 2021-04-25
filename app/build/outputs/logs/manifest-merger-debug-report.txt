@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
-INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
-INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
-INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
+INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
+INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
+INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
 MERGED from [com.theartofdev.edmodo:android-image-cropper:2.8.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\d86ef09880160cfe85d97c8767edd133\jetified-android-image-cropper-2.8.0\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.navigation:navigation-ui:2.2.2] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\4c697d28d8330b9c438c6b6847fca9e7\navigation-ui-2.2.2\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.material:material:1.3.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\cd6f2caba378d66250797e09d6bb24e0\material-1.3.0\AndroidManifest.xml:17:1-24:12
@@ -98,45 +98,45 @@ MERGED from [com.google.android.datatransport:transport-runtime:2.2.5] C:\Users\
 MERGED from [com.google.android.datatransport:transport-api:2.2.1] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\a2b5239852b76551b25d346a08649ac5\jetified-transport-api-2.2.1\AndroidManifest.xml:15:1-22:12
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\1f6b045666a31134b82a56c243bf4255\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.volley:volley:1.1.1] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\a48bbc8c92a7881844b1496ed1d5024b\jetified-volley-1.1.1\AndroidManifest.xml:2:1-11:12
-INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
-INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
-INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
+INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
+INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
+INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
 	package
 		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:4:5-40
 		INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
 		INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml
 	xmlns:tools
 		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:3:5-51
 	android:versionCode
 		INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-121:12
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:1-130:12
 		INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:10:5-79
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:11:5-79
 MERGED from [com.google.android.libraries.places:places:2.4.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\3fc4170a7d931066d98175bdb9d38ef1\jetified-places-2.4.0\AndroidManifest.xml:9:5-79
 MERGED from [com.google.android.libraries.places:places:2.4.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\3fc4170a7d931066d98175bdb9d38ef1\jetified-places-2.4.0\AndroidManifest.xml:9:5-79
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:10:22-76
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:11:22-76
 uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:11:5-81
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:11:22-78
-uses-permission#android.permission.ACCESS_COARSE_LOCATION
 ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:12:5-81
 	android:name
 		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:12:22-78
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:13:5-81
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:13:22-78
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:13:5-80
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:14:5-80
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:13:22-77
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:14:22-77
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:14:5-67
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:15:5-67
 MERGED from [com.google.android.libraries.places:places:2.4.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\3fc4170a7d931066d98175bdb9d38ef1\jetified-places-2.4.0\AndroidManifest.xml:11:5-67
 MERGED from [com.google.android.libraries.places:places:2.4.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\3fc4170a7d931066d98175bdb9d38ef1\jetified-places-2.4.0\AndroidManifest.xml:11:5-67
 MERGED from [com.google.android.gms:play-services-maps:17.0.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\8584395d637b6ec6e70bcbc794772af4\jetified-play-services-maps-17.0.0\AndroidManifest.xml:24:5-67
@@ -164,9 +164,9 @@ MERGED from [com.google.android.gms:play-services-measurement-impl:18.0.2] C:\Us
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:18.0.2] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\a9fe74ae9672b0421c50b173386824e1\jetified-play-services-measurement-sdk-api-18.0.2\AndroidManifest.xml:23:5-67
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:18.0.2] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\a9fe74ae9672b0421c50b173386824e1\jetified-play-services-measurement-sdk-api-18.0.2\AndroidManifest.xml:23:5-67
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:14:22-64
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:15:22-64
 application
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:16:5-119:19
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:17:5-128:19
 MERGED from [com.google.android.material:material:1.3.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\cd6f2caba378d66250797e09d6bb24e0\material-1.3.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.3.0] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\cd6f2caba378d66250797e09d6bb24e0\material-1.3.0\AndroidManifest.xml:22:5-20
 MERGED from [com.github.mancj:MaterialSearchBar:0.8.5] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\798f0e0c992c3ccb3849d8a110726554\jetified-MaterialSearchBar-0.8.5\AndroidManifest.xml:11:5-15:19
@@ -250,207 +250,213 @@ MERGED from [com.android.volley:volley:1.1.1] C:\Users\KaTaizZ\.gradle\caches\tr
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.3.1] C:\Users\KaTaizZ\.gradle\caches\transforms-2\files-2.1\f3d364c4591b4da0386e5d8846d9d728\core-1.3.1\AndroidManifest.xml:24:18-86
 	android:supportsRtl
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:21:9-35
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:22:9-35
 	android:label
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:19:9-41
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:20:9-41
 	android:roundIcon
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:20:9-54
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:21:9-54
 	android:icon
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:18:9-43
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:19:9-43
 	android:allowBackup
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:17:9-35
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:18:9-35
 	android:theme
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:22:9-40
-activity#com.example.travelbuddyv2.SplashScreenActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:23:9-29:20
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:23:19-55
-intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:24:13-28:29
-action#android.intent.action.MAIN
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:25:17-69
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:25:25-66
-category#android.intent.category.LAUNCHER
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:27:17-77
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:27:27-74
-activity#com.example.travelbuddyv2.ClickedItemActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:30:9-57
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:30:19-54
-activity#com.example.travelbuddyv2.PermissionModificationActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:31:9-68
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:31:19-65
-activity#com.example.travelbuddyv2.MemberActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:32:9-52
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:32:19-49
-activity#com.example.travelbuddyv2.GroupTripDetailActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:33:9-36:59
-	android:label
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:35:13-69
-	android:theme
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:36:13-56
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:34:13-52
-activity#com.example.travelbuddyv2.DateSelectionActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:37:9-59
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:37:19-56
-activity#com.example.travelbuddyv2.TripSelectionActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:38:9-59
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:38:19-56
-activity#com.example.travelbuddyv2.ResetPasswordActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:39:9-40:58
-	android:parentActivityName
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:40:13-56
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:39:19-56
-activity#com.example.travelbuddyv2.ResetPasswordCompletedActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:41:9-68
-	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:41:19-65
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:23:9-40
 meta-data#com.google.android.geo.API_KEY
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:50:9-52:55
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:33:9-35:55
 	android:value
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:52:13-52
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:35:13-52
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:51:13-58
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:34:13-58
+activity#com.example.travelbuddyv2.AttractionDetailActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:37:9-39:81
+	android:label
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:39:13-69
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:38:13-53
+activity#com.example.travelbuddyv2.SplashScreenActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:40:9-46:20
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:40:19-55
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:41:13-45:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:42:17-69
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:42:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:44:17-77
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:44:27-74
+activity#com.example.travelbuddyv2.ClickedItemActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:47:9-57
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:47:19-54
+activity#com.example.travelbuddyv2.PermissionModificationActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:48:9-68
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:48:19-65
+activity#com.example.travelbuddyv2.MemberActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:49:9-52
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:49:19-49
+activity#com.example.travelbuddyv2.GroupTripDetailActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:50:9-53:59
+	android:label
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:52:13-69
+	android:theme
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:53:13-56
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:51:13-52
+activity#com.example.travelbuddyv2.DateSelectionActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:54:9-59
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:54:19-56
+activity#com.example.travelbuddyv2.TripSelectionActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:55:9-59
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:55:19-56
+activity#com.example.travelbuddyv2.ResetPasswordActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:56:9-58:59
+	android:parentActivityName
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:58:13-56
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:57:13-50
+activity#com.example.travelbuddyv2.ResetPasswordCompletedActivity
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:59:9-68
+	android:name
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:59:19-65
 meta-data#com.google.firebase.messaging.default_notification_icon
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:53:9-55:72
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:61:9-63:72
 	android:resource
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:55:13-69
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:63:13-69
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:54:13-83
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:62:13-83
 meta-data#com.google.firebase.messaging.default_notification_color
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:56:9-58:53
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:64:9-66:53
 	android:resource
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:58:13-50
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:66:13-50
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:57:13-84
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:65:13-84
 activity#com.example.travelbuddyv2.MapsActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:60:9-62:59
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:68:9-70:59
 	android:label
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:62:13-56
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:70:13-56
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:61:13-41
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:69:13-41
 activity#com.example.travelbuddyv2.InviteFriendActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:63:9-58
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:71:9-58
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:63:19-55
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:71:19-55
 activity#com.example.travelbuddyv2.TripDetailActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:64:9-67:59
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:72:9-75:59
 	android:label
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:66:13-63
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:74:13-63
 	android:theme
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:67:13-56
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:75:13-56
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:65:13-47
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:73:13-47
 activity#com.example.travelbuddyv2.Main2Activity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:68:9-75:20
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:76:9-84:20
 	android:label
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:70:13-57
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:78:13-57
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:69:13-42
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:77:13-42
 intent-filter#action:name:.Main2Activity+category:name:android.intent.category.DEFAULT
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:71:13-74:29
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:79:13-83:29
 action#com.example.travelbuddyv2.Main2Activity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:72:17-57
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:80:17-57
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:72:25-54
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:80:25-54
 category#android.intent.category.DEFAULT
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:73:17-76
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:82:17-76
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:73:27-73
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:82:27-73
 activity#com.example.travelbuddyv2.confirmEmailActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:76:9-58
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:85:9-58
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:76:19-55
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:85:19-55
 activity#com.example.travelbuddyv2.registerActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:77:9-78:58
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:86:9-88:59
 	android:parentActivityName
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:78:13-56
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:88:13-56
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:77:19-51
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:87:13-45
 activity#com.example.travelbuddyv2.loginActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:79:9-81:20
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:89:9-60
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:79:19-48
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:89:19-48
 activity#com.example.travelbuddyv2.EditTripDetailWithAdditionalData
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:82:9-84:61
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:90:9-92:61
 	android:theme
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:84:13-58
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:92:13-58
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:83:13-61
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:91:13-61
 activity#com.example.travelbuddyv2.EditTrip
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:85:9-87:61
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:93:9-95:61
 	android:theme
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:87:13-58
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:95:13-58
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:86:13-37
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:94:13-37
 activity#com.example.travelbuddyv2.tripDetail
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:88:9-90:52
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:96:9-98:52
 	android:parentActivityName
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:90:13-49
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:98:13-49
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:89:13-39
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:97:13-39
 activity#com.example.travelbuddyv2.myTrip
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:91:9-93:61
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:99:9-101:61
 	android:parentActivityName
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:93:13-58
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:101:13-58
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:92:13-35
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:100:13-35
 activity#com.example.travelbuddyv2.addNewTrip
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:94:9-96:61
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:102:9-104:61
 	android:parentActivityName
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:96:13-58
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:104:13-58
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:95:13-39
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:103:13-39
 activity#com.example.travelbuddyv2.MainActivityOld
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:97:9-53
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:105:9-53
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:97:19-50
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:105:19-50
 receiver#com.example.travelbuddyv2.ReminderBroadcast
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:99:9-55
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:107:9-55
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:99:19-52
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:107:19-52
 receiver#com.example.travelbuddyv2.ResetAlarmBroadcast
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:100:9-107:20
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:108:9-115:20
 	android:enabled
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:102:13-35
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:110:13-35
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:101:13-48
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:109:13-48
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.MY_PACKAGE_REPLACED
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:103:13-106:29
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:111:13-114:29
 action#android.intent.action.BOOT_COMPLETED
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:104:17-79
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:112:17-79
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:104:25-76
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:112:25-76
 action#android.intent.action.MY_PACKAGE_REPLACED
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:105:17-84
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:113:17-84
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:105:25-81
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:113:25-81
 activity#com.theartofdev.edmodo.cropper.CropImageActivity
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:109:9-111:59
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:117:9-119:59
 	android:theme
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:111:13-56
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:119:13-56
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:110:13-76
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:118:13-76
 service#com.example.travelbuddyv2.fcm.FcmMessagingService
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:112:9-118:19
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:121:9-127:19
 	android:exported
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:114:13-37
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:123:13-37
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:113:13-52
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:122:13-52
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:115:13-117:29
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:124:13-126:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:116:17-78
+ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:125:17-78
 	android:name
-		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:116:25-75
+		ADDED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml:125:25-75
 uses-sdk
 INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\KaTaizZ\Documents\GitLab\travelbuddy-online\app\src\main\AndroidManifest.xml

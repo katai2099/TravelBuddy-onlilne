@@ -177,7 +177,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         rcvGoogleMapPictures = findViewById(R.id.googleMapPicturesRecyclerView);
 
         rcvGoogleMapPictures.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        //   rcvGoogleMapPictures.setPadding(10,10,10,10);
         googleMapPictureAdapter = new GoogleMapPictureAdapter(bitmapList);
         rcvGoogleMapPictures.setAdapter(googleMapPictureAdapter);
 

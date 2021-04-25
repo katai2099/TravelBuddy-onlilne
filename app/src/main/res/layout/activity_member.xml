@@ -7,10 +7,14 @@
     tools:context=".MemberActivity">
 
     <LinearLayout
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="2dp"
         android:id="@+id/layoutForOwner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="?attr/selectableItemBackground">
 
         <Button
             android:layout_width="40dp"
@@ -21,7 +25,7 @@
             android:id="@+id/tvInviteFriend"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Invite friends to join the travel group"
+            android:text="Invite friend to join the travel group"
             android:textColor="@color/quantum_black_100"
             android:gravity="center_vertical"
             android:textSize="14sp"
@@ -35,8 +39,8 @@
         android:layout_below="@+id/layoutForOwner"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@android:color/darker_gray" />
 
 

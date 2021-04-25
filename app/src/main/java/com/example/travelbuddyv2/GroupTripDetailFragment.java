@@ -312,6 +312,16 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         }
     }
 
+    @Override
+    public void onAttractionClicked(String placeID, String placeName, Double lat, Double lng) {
+        Intent i = new Intent(getContext(),AttractionDetailActivity.class);
+        i.putExtra("PLACEID",placeID);
+        i.putExtra("PLACENAME",placeName);
+        i.putExtra("PLACELAT",lat);
+        i.putExtra("PLACELNG",lng);
+        startActivity(i);
+    }
+
 
     private void changeStayPeriodOfDestination(int hour, int minute, int position,String currentDate){
         List<Destination> destinations = new ArrayList<>();

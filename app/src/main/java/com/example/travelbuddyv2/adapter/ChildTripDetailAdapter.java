@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -20,7 +21,6 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
 
     List<Destination> destinations;
     ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack;
-
 
     public ChildTripDetailAdapter(List<Destination> destinations, ChildTripDetailAdapterCallBack childTripDetailAdapterCallBack) {
         this.destinations = destinations;
@@ -44,14 +44,12 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
         holder.address.setText(destinations.get(position).getAddress());
         holder.startTime.setText(destinations.get(position).getStartTime());
         holder.endTime.setText(destinations.get(position).getEndTime());
-
         holder.btnRemoveDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 childTripDetailAdapterCallBack.onDeleteDestinationClicked(destinations.get(position).getStartDate(),destinations.get(position).getDestinationStringID(),position);
             }
         });
-
         String midNight = "00:00" ;
         String endTime = destinations.get(position).getEndTime();
         int extra = destinations.get(position).getExtraDay();
@@ -78,13 +76,13 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
         return destinations.size();
     }
 
-    class ChildTripDetailHolder extends RecyclerView.ViewHolder {
+    class ChildTripDetailHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView itemTextView , startTime , endTime , extraDay , address;
         Button btnRemoveDestination;
         View editDuration ;
 
-        public ChildTripDetailHolder(@NonNull View itemView) {
+        public ChildTripDetailHolder(@NonNull View itemView)  {
             super(itemView);
             itemTextView = itemView.findViewById(R.id.itemName);
             address = itemView.findViewById(R.id.itemAddress);
@@ -93,6 +91,17 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
             extraDay = itemView.findViewById(R.id.tvExtraDay);
             btnRemoveDestination = itemView.findViewById(R.id.btnDeleteDestination);
             editDuration = itemView.findViewById(R.id.layoutEditDuration);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            String placeID = destinations.get(getAdapterPosition()).getPlaceId();
+            String placeName = destinations.get(getAdapterPosition()).getName();
+            Double lat = destinations.get(getAdapterPosition()).getLatitude();
+            Double lng = destinations.get(getAdapterPosition()).getLongitude();
+            childTripDetailAdapterCallBack.onAttractionClicked(placeID,placeName,lat,lng);
+
         }
     }
 
@@ -100,6 +109,7 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
         void onDeleteDestinationClick(String date,String destinationStringID);
         void onDeleteDestinationClicked(String date,String destinationStringID,int position);
         void onDurationEditingClicked(int position,String curDate);
+        void onAttractionClicked(String placeID,String placeName,Double lat,Double lng);
     }
 
 

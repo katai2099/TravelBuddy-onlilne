@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.travelbuddyv2">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -20,6 +21,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".AttractionDetailActivity"
+            android:label="@string/title_activity_attraction_detail"></activity>
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,20 +53,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".DateSelectionActivity" />
         <activity android:name=".TripSelectionActivity" />
-        <activity android:name=".ResetPasswordActivity"
-            android:parentActivityName=".loginActivity"/>
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:parentActivityName=".loginActivity" />
         <activity android:name=".ResetPasswordCompletedActivity" />
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notifications_black_24dp" />
@@ -70,15 +78,15 @@
             android:label="@string/title_activity_main2">
             <intent-filter>
                 <action android:name=".Main2Activity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".confirmEmailActivity" />
-        <activity android:name=".registerActivity"
-            android:parentActivityName=".loginActivity"/>
-        <activity android:name=".loginActivity">
-
-        </activity>
+        <activity
+            android:name=".registerActivity"
+            android:parentActivityName=".loginActivity" />
+        <activity android:name=".loginActivity"></activity>
         <activity
             android:name=".EditTripDetailWithAdditionalData"
             android:theme="@style/Theme.AppCompat.Dialog" />
@@ -109,6 +117,7 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
+
         <service
             android:name=".fcm.FcmMessagingService"
             android:exported="false">

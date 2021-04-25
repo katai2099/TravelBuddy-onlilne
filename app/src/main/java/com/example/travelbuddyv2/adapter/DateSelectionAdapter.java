@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelbuddyv2.Helper;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Destination;
 
@@ -36,11 +37,10 @@ public class DateSelectionAdapter extends  RecyclerView.Adapter<DateSelectionAda
 
     @Override
     public void onBindViewHolder(@NonNull DateSelectionHolder holder, int position) {
-
         String date = dates.get(position);
-        holder.textView.setText(date);
-
-
+        String toShowDate = Helper.changeDateFormatSuitableForTripDetailScreen(date);
+        String positionString = String.valueOf(position+1);
+        holder.textView.setText("Day " + positionString + ":   " + toShowDate);
     }
 
     @Override

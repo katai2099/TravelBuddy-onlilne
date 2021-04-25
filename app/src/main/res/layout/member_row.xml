@@ -4,14 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
 
     <androidx.cardview.widget.CardView
+        android:foreground="?attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="3dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
 
 
         <RelativeLayout
@@ -20,16 +24,21 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
+        <!--    <ImageView
                 android:id="@+id/imgMemberProfile"
                 android:layout_width="80dp"
-                android:layout_height="80dp" />
+                android:layout_height="80dp" />-->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgMemberProfile"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:padding="5dp"/>
 
             <LinearLayout
                 android:id="@+id/linear1"
                 android:layout_toEndOf="@+id/imgMemberProfile"
                 android:layout_width="270dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -56,7 +65,7 @@
                 android:layout_below="@+id/linear1"
                 android:layout_toEndOf="@id/imgMemberProfile"
                 android:layout_width="270dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:orientation="horizontal">
 
                 <TextView

@@ -37,7 +37,6 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
     RecyclerView rcvTrip;
     Destination destination;
 
-
     public GroupTripSelectionFragment() {
         // Required empty public constructor
     }
@@ -83,7 +82,6 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Group")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

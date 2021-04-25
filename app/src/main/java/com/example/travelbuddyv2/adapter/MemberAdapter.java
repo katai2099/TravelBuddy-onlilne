@@ -19,6 +19,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHolder> {
 
     List<Member> memberList;
@@ -77,7 +79,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
 
     class MemberHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final ImageView imgMemberProfile;
+       // final ImageView imgMemberProfile;
+        final CircleImageView imgMemberProfile;
         final TextView tvMemberName, tvMemberEmail , tvMemberPermission, tvMemberOwnership;
         final Button btnMemberDelete;
 

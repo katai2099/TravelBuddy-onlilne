@@ -20,6 +20,9 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:hint="Enter Email Address"
+        android:imeOptions="actionSearch"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
         />
 
         <Button
@@ -34,7 +37,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvInviteFriend"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/etFindFriendByEmail"/>
 
     </RelativeLayout>

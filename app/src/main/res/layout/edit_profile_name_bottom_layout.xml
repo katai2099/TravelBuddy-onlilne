@@ -6,7 +6,7 @@
 
     <TextView
         android:layout_marginTop="@dimen/default_margin"
-        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginStart="25dp"
         android:layout_marginEnd="@dimen/default_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,6 +35,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:text="@string/cancel"
+            style="@style/appButton"
+            android:textColor="@color/colorPrimary"
             />
 
         <Button
@@ -44,6 +46,8 @@
             android:layout_alignParentEnd="true"
             android:background="@android:color/transparent"
             android:text="@string/save"
+            style="@style/appButton"
+            android:textColor="@color/colorPrimary"
             />
 
     </RelativeLayout>

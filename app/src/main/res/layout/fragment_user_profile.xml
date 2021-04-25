@@ -15,6 +15,7 @@
         android:layout_marginTop="?actionBarSize"
         />
 
+
     <ImageView
         android:id="@+id/img1"
         android:layout_width="25dp"
@@ -51,7 +52,7 @@
         android:layout_toEndOf="@+id/img1"
         android:textSize="16sp"
         android:textColor="@color/quantum_black_100"
-        android:background="@android:color/transparent"
+        android:background="?attr/selectableItemBackground"
         android:maxLines="1"
         app:drawableEndCompat="@drawable/ic_baseline_edit_24"
         android:focusable="true" />
@@ -81,9 +82,10 @@
         android:layout_toEndOf="@id/img2"
         android:layout_below="@id/tvProfileName"
         android:textSize="14sp"
-        android:hint="Email"/>
+        android:hint="@string/email"/>
 
     <TextView
+
         android:id="@+id/tvProfileEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -106,6 +108,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginStart="12dp"
         android:drawablePadding="4dp"
+        android:background="?attr/selectableItemBackground"
         app:drawableStartCompat="@drawable/ic_baseline_logout_24"
         app:drawableEndCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
 

@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
 
     private final String tag = "USER_ADAPTER";
@@ -105,7 +107,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     }
 
     class UserHolder extends RecyclerView.ViewHolder {
-        private final ImageView imgFriendProfile;
+//        private final ImageView imgFriendProfile;
+        private final CircleImageView imgFriendProfile;
         private final TextView tvFriendEmail, tvFriendName, tvPending;
         private final Button btnInviteFriend;
         private final String name, id; // tripname , tripStringID
