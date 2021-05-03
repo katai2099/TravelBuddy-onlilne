@@ -44,6 +44,8 @@ public class PlaceTask extends AsyncTask<String,Integer,String> {
         }
         String data = builder.toString();
         reader.close();
+        stream.close();
+        connection.disconnect();
         return data;
     }
 

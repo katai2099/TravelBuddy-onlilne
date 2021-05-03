@@ -52,6 +52,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
     public void onBindViewHolder(@NonNull final RequestHolder holder, int position) {
         final Request request = requestList.get(position);
         getInviterName(request,holder);
+        holder.requesterProfileImage.setImageResource(R.drawable.ic_baseline_person_24);
         holder.btnReject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +105,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
 
         private final TextView tvFriendRequestNotification;
         private final Button btnReject , btnAccept;
-     //   private final ImageView requesterProfileImage;
         private final CircleImageView requesterProfileImage;
 
         public RequestHolder(@NonNull View itemView) {
@@ -254,6 +254,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestH
                 if(user.getProfile_image()!=null && !(TextUtils.isEmpty(user.getProfile_image())) ){
                     Picasso.get().load(user.getProfile_image()).fit().into(holder.requesterProfileImage);
                 }
+                holder.btnAccept.setVisibility(View.VISIBLE);
+                holder.btnReject.setVisibility(View.VISIBLE);
             }
         });
 

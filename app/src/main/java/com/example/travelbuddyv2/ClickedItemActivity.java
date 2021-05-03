@@ -96,7 +96,7 @@ public class ClickedItemActivity extends AppCompatActivity {
 
     private void deleteFile(){
         if(NetworkObserver.isNetworkConnected) {
-            if (isPersonal) {
+            if (itemInfoFromPreviousActivity.getOwner().equals(currentUserUUID)) {
                 removeItem(currentUserUUID, itemInfoFromPreviousActivity);
                 removeItemFromCloudStorage(currentUserUUID,itemInfoFromPreviousActivity);
             } else {

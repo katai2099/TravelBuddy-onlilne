@@ -20,7 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class    ResetPasswordActivity extends AppCompatActivity {
+public class ResetPasswordActivity extends AppCompatActivity {
 
     private final String tag = "RESET_PASSWORD_ACTIVITY" ;
     Button btnSend;

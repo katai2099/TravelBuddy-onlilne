@@ -68,16 +68,6 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
         ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList,childTripDetailAdapterCallBack);
         holder.childRecyclerView.setAdapter(childTripDetailAdapter);
 
-       /* holder.btnAddTripDetail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(holder.itemView.getContext(), MapsActivity.class);
-                i.putExtra("tripStringID",tripStringId);
-                i.putExtra("dateOfTrip",date);
-                i.putExtra("isCurrentUserAMember",false);
-                holder.itemView.getContext().startActivity(i);
-            }
-        });*/
         holder.addAttraction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,7 +91,6 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
 
         TextView sectionTextView,sectionStartTime;
         RecyclerView childRecyclerView;
-       // Button btnAddTripDetail;
         View addAttraction;
 
         public ParentTripDetailHolder(@NonNull View itemView) {
@@ -109,7 +98,6 @@ public class ParentTripDetailAdapter extends RecyclerView.Adapter<ParentTripDeta
             sectionTextView = itemView.findViewById(R.id.sectionNameTextView);
             sectionStartTime = itemView.findViewById(R.id.sectionStartTime);
             childRecyclerView = itemView.findViewById(R.id.childRecyclerView);
-        //    btnAddTripDetail = itemView.findViewById(R.id.section_row_btnAddTripDetail);
             addAttraction = itemView.findViewById(R.id.sectionRowAddAttraction);
         }
     }

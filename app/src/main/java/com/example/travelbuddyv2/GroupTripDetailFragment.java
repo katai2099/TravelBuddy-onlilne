@@ -58,9 +58,6 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
 
     private boolean hasPermission = false;
 
-
-
-
    // private GroupTripAdapter.AdapterCallBack adapterCallBack;
 
     public GroupTripDetailFragment() {
@@ -185,13 +182,12 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     }
     @Override
     public void onListClicked(int position) {
-        rcvGroupTripDetailView.smoothScrollToPosition(position);
+        rcvGroupTripDetailView.scrollToPosition(position);
     }
 
     @Override
     public void addNewAttractionClicked(int position) {
         Intent i = new Intent(getContext(),MapsActivity.class);
-        Toast.makeText(getContext(),"You may proceed",Toast.LENGTH_SHORT).show();
         i.putExtra("tripStringID",tripID);
         i.putExtra("dateOfTrip",tripSectionList.get(position).getDate());
         i.putExtra("tripOwner",tripOwner);
@@ -358,12 +354,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
                 .child(tripID)
                 .child(destinationCurDate)
                 .child(destinationStringID);
-        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-//                Toast.makeText(getContext(),"Update done",Toast.LENGTH_SHORT).show();
-            }
-        });
+        reference.setValue(destination);
     }
 
     private void resetStartTimeOfCurrentDate(int position,int hourOfDay,int minute){

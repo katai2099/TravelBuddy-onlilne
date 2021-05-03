@@ -63,7 +63,6 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
 
         if(!isFromPersonalTrip){
             tripOwnerUUID = bundle.getString("tripOwnerUUID");
-            Toast.makeText(DateSelectionActivity.this,tripOwnerUUID,Toast.LENGTH_SHORT).show();
         }
 
 
@@ -164,7 +163,6 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
 
     private void addTripDetailToDatabase(int position,String owner){
 
-      //  Toast.makeText(DateSelectionActivity.this,String.valueOf(ID),Toast.LENGTH_SHORT).show();
 
         Log.d(tag,"This is after user decide to add " + dateAndItsIdPair.toString());
 
@@ -195,13 +193,6 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
 
         checkLatestEndTime(position,owner,userTripDetailNode);
 
-      /*  userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(DateSelectionActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
-                goBackToMapFragment();
-            }
-        });*/
     }
 
 

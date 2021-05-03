@@ -45,6 +45,7 @@
             android:layout_marginTop="10dp"
             android:hint="@string/email"
             android:textAlignment="gravity"
+            android:ems="15"
             android:drawableStart="@drawable/ic_baseline_email_24"
             android:drawablePadding="10dp"
             />

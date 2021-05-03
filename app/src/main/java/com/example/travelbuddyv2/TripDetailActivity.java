@@ -41,23 +41,4 @@ public class TripDetailActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
     }
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.inventory_menu,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.optionLeaveGroup:
-                return true;
-            default:
-                break;
-        }
-        return false;
-    }*/
 }

@@ -117,7 +117,7 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                 builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(MemberActivity.this, "Guess I still want to be here", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
@@ -139,11 +139,11 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 memberList.clear();
+                int i =0;
                 for (DataSnapshot member : snapshot.getChildren()) {
                     Member tmp = member.getValue(Member.class);
-                    Log.d(tag, tmp.toString());
-                    Log.d(tag, String.valueOf(memberList.size()));
-                    if (memberList.size() == 1 && tmp.getPermission().equals("owner")) {
+                    Log.d(tag,tmp.toString());
+                    if (snapshot.getChildrenCount() > 1 && tmp.getPermission().equals("owner") && i != 0) {
                         Member ownerTmp = new Member();
                         ownerTmp.setName(memberList.get(0).getName());
                         ownerTmp.setPermission(memberList.get(0).getPermission());
@@ -164,6 +164,7 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                         tmp.setProfileImg(ownerTmp.getProfileImg());
                     }
                     memberList.add(tmp);
+                    i++;
                 }
                 memberAdapter.notifyDataSetChanged();
             }
@@ -284,7 +285,7 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MemberActivity.this, "Well, he/she can be here then", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -338,7 +339,6 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                 }
             }
         });
-
     }
 
     @Override

@@ -366,11 +366,7 @@ public class AttractionDetailActivity extends FragmentActivity implements OnMapR
             @Override
             public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
                 final Place place = fetchPlaceResponse.getPlace();
-                // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
                 final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-                if (metadata == null || metadata.isEmpty()) {
-                    Toast.makeText(AttractionDetailActivity.this, "No metadata", Toast.LENGTH_SHORT).show();
-                }
                 if (metadata!=null && metadata.size() != 0) {
                     for (int i = 0; i < metadata.size(); i++) {
                         if (i == 5)

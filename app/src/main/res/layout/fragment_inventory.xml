@@ -7,6 +7,14 @@
     android:clickable="true"
     >
 
+    <ProgressBar
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:id="@+id/simpleProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+
     <View
         android:id="@+id/randomView"
         android:layout_width="36dp"
@@ -39,5 +47,40 @@
         android:layout_height="match_parent"
         android:layout_below="@id/randomView"
         android:paddingBottom="5dp" />
+
+    <RelativeLayout
+        android:id="@+id/emptyListPlaceholder"
+        android:visibility="invisible"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No item on the list?"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add one by click on + button"
+                android:layout_gravity="center"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Or Ask your friend to share them with you"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

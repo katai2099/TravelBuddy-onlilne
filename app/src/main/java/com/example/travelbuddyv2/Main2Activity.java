@@ -91,6 +91,7 @@ public class Main2Activity extends AppCompatActivity {
         }
 
 
+
     }
 
 
@@ -104,7 +105,7 @@ public class Main2Activity extends AppCompatActivity {
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-            //    Toast.makeText(MainActivity.this,"Function Trigger!",Toast.LENGTH_SHORT).show();
+
         }
     }
 

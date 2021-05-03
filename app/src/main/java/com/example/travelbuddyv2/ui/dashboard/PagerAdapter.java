@@ -19,7 +19,7 @@ import com.example.travelbuddyv2.ui.home.HomeFragment;
 
 public class PagerAdapter extends FragmentPagerAdapter {
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_4, R.string.tab_text_3};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_5, R.string.tab_text_3};
     private final Context mContext;
 
     public PagerAdapter(Context mContext, FragmentManager fm) {

@@ -1,6 +1,7 @@
 package com.example.travelbuddyv2.googleMapAPICall;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;

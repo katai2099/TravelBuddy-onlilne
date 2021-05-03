@@ -210,7 +210,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onSearchConfirmed(CharSequence text) {
-//                Toast.makeText(getContext(),text.toString(),Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -223,9 +223,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
-
-
-
 
 
         materialSearchBar.addTextChangeListener(new TextWatcher() {
@@ -277,7 +274,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onFailure(@NonNull Exception e) {
                         if(e instanceof ApiException){
                             ApiException apiException = (ApiException) e;
-                            Toast.makeText(MapsActivity.this,String.valueOf(apiException.getStatusCode()),Toast.LENGTH_SHORT).show();
+                            Log.d(tag, String.valueOf(apiException.getStatusCode()));
                         }
                     }
                 });
@@ -456,6 +453,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.d(tag, "GET PERMISSION RESULT");
         switch (requestCode) {
             case 1:
@@ -682,11 +680,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
                 final Place place = fetchPlaceResponse.getPlace();
-                // Toast.makeText(getApplicationContext(),place.toString(),Toast.LENGTH_SHORT).show();
                 final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-                if (metadata == null || metadata.isEmpty()) {
-                    Toast.makeText(MapsActivity.this, "No metadata", Toast.LENGTH_SHORT).show();
-                }
                 if (metadata!=null && metadata.size() != 0) {
                     for (int i = 0; i < metadata.size(); i++) {
                         if (i == 5)
@@ -739,7 +733,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 String address = locationAddress.getText().toString();
                 if(!isCurrentUserAMember){
-
                     addAttractionToDatabase(placeID,placeName,placeLatLng,FirebaseAuth.getInstance().getCurrentUser().getUid(),address);
                 }else{
 

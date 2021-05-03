@@ -93,6 +93,8 @@ public class InviteFriendActivity extends AppCompatActivity {
                 //check if User has Receiver in his/her known lists
                 if (!checkIfEmailExistInKnownList(etInviteFriend.getText().toString().trim())) {
                     fillSearchedFriendList(etInviteFriend.getText().toString().trim());
+                }else{
+                    Toast.makeText(InviteFriendActivity.this,"User already on known lists",Toast.LENGTH_SHORT).show();
                 }
             }
         }else{

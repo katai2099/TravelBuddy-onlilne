@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.InventoryGridViewAdapter;
@@ -65,7 +66,8 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
     Boolean isListView = true ;
     ImageButton btnListView,btnGridView;
     RecyclerView rcvItems;
-    private static final int PICK_IMAGE = 3;
+    View emptyListPlaceholder;
+    boolean firstLoad = true ;
     private static final int PICK_PDF_FILE = 2;
     String tripID , tripOwner;
     boolean isPersonal;
@@ -79,6 +81,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
     private String currentUserUUID;
     User currentOwnerOfItem;
     DividerItemDecoration listViewDecor;
+    ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,23 +111,22 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 tripOwner = bundle.getString("TRIP_OWNER");
             }
         }
+        emptyListPlaceholder = root.findViewById(R.id.emptyListPlaceholder);
         btnGridView = root.findViewById(R.id.btnGridView);
         btnListView = root.findViewById(R.id.btnListView);
-
+        progressBar = root.findViewById(R.id.simpleProgressBar);
         btnListView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeToListView();
             }
         });
-
         btnGridView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeToGridView();
             }
         });
-
         inventoryList = new ArrayList<>();
         rcvItems = root.findViewById(R.id.rcvItems);
         rcvItems.setLayoutManager(listLayout);
@@ -162,7 +164,6 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 if (data != null) {
                     uri = data.getData();
                    String type = getContext().getContentResolver().getType(uri);
-                    Toast.makeText(getContext(),type,Toast.LENGTH_SHORT).show();
                     if(NetworkObserver.isNetworkConnected) {
                         if (isPersonal) {
                             uploadToFirebaseCloudStorage(uri, currentUserUUID);
@@ -285,20 +286,41 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 inventoryList.clear();
                 for (DataSnapshot data:snapshot.getChildren()) {
                     Inventory tmp = data.getValue(Inventory.class);
-                    //inventoryList.add(tmp);
                     if(! tmp.getOwner().equals(currentUserUUID) && tmp.getPermission().toUpperCase().equals("SHARED")){
                         inventoryList.add(tmp);
                     }else if(tmp.getOwner().equals(currentUserUUID)){
                         inventoryList.add(tmp);
                     }
                 }
+                if(inventoryList.isEmpty()){
+                    if(isListView){
+                        btnGridView.setVisibility(View.GONE);
+                    }else{
+                        btnListView.setVisibility(View.GONE);
+                    }
+                    emptyListPlaceholder.setVisibility(View.VISIBLE);
+                }else{
+                    if(isListView){
+                        btnGridView.setVisibility(View.VISIBLE);
+                    }else{
+                        btnListView.setVisibility(View.VISIBLE);
+                    }
+                    emptyListPlaceholder.setVisibility(View.INVISIBLE);
+                }
                 inventoryAdapter.notifyDataSetChanged();
                 inventoryGridViewAdapter.notifyDataSetChanged();
+                if(firstLoad){
+                    progressBar.setVisibility(View.GONE);
+                    firstLoad = false;
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                if(firstLoad){
+                    progressBar.setVisibility(View.GONE);
+                    firstLoad = false;
+                }
             }
         });
 
@@ -485,14 +507,5 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
     @Override
     public void onResume() {
         super.onResume();
-       /* if(isListView) {
-            btnGridView.setVisibility(View.VISIBLE);
-            btnListView.setVisibility(View.GONE);
-            Log.d(tag,"grid View visible");
-        }else{
-            btnGridView.setVisibility(View.GONE);
-            btnListView.setVisibility(View.VISIBLE);
-            Log.d(tag,"list View visible");
-        }*/
     }
 }

@@ -150,7 +150,7 @@ public class HomeFragment extends Fragment implements myTripAdapter.OnListListen
     @Override
     public void onListClick(int position) {
 
-      //  Toast.makeText(getContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
+
     }
 
 

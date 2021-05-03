@@ -53,9 +53,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
                 .child(tripOwnerID)
                 .child(tripStringID)
                 .child(memberID);
-        Toast.makeText(getBaseContext(),tripStringID,Toast.LENGTH_SHORT).show();
-        Toast.makeText(getBaseContext(),tripOwnerID,Toast.LENGTH_SHORT).show();
-        Toast.makeText(getBaseContext(),memberID,Toast.LENGTH_SHORT).show();
         getCurrentGroupMemberPermission();
         Log.d(tag,String.valueOf(editTextViewFocused));
         Log.d(tag,String.valueOf(viewTextViewFocused));
@@ -99,7 +96,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!editTextViewFocused) {
                     memberReference.child("permission").setValue("edit");
-                   // Toast.makeText(getBaseContext(), "Clicked " + editTextViewFocused, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -112,7 +108,6 @@ public class PermissionModificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!viewTextViewFocused) {
                     memberReference.child("permission").setValue("view");
-                   // Toast.makeText(getBaseContext(), "Clicked " + viewTextViewFocused, Toast.LENGTH_SHORT).show();
                 }
             }
         });

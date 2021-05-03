@@ -1,77 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".confirmEmailActivity">
+    tools:context=".confirmEmailActivity"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/img_email_confirmation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/email_confirmmation"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
-    />
-
-    <TextView
-        android:id="@+id/tvConfirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/img_email_confirmation"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tvUserEmail"
-        android:textSize="16sp"
-        android:text="Confirm your email address \n We sent a confirmation email to: "
 
         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm your email address "
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="We sent a confirmation email to:"
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        />
+
+
     <TextView
         android:id="@+id/tvUserEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvConfirm"
-        app:layout_constraintBottom_toTopOf="@+id/tvConfirm2"
         android:textSize="16sp"
         android:textStyle="bold"
-        />
+        android:layout_gravity="center"/>
+
     <TextView
-        android:id="@+id/tvConfirm2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserEmail"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:textSize="16sp"
-        android:text="Check your email and click on the \n confirmation link to continue."/>
+        android:layout_gravity="center"
+        android:text="Check your email and click on the"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="confirmation link to continue."
+        android:textSize="16sp" />
 
     <Button
+        style="@style/appButton"
+        android:layout_gravity="center"
         android:id="@+id/btnDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvConfirm2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnResendConfirmationEMail"
-        android:text="@string/login"
-        />
+        android:text="@string/login" />
 
     <Button
+        android:layout_gravity="center"
         android:id="@+id/btnResendConfirmationEMail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDone"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="20dp"
-        android:text="Resend email"/>
+        android:background="@android:color/transparent"
+        android:text="@string/resend_email"
+        android:textColor="@color/quantum_googred400" />
 
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

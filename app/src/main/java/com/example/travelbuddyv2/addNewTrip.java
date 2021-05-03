@@ -65,14 +65,12 @@ public class addNewTrip extends AppCompatActivity {
     private int ID = 0;
     List<Integer> tmp;
     EditText tripName , startDate , endDate;
-  //  Button btnSave;
     DatePickerDialog datePickerDialogStartDate,datePickerDialogEndDate;
     Calendar calendar ;
     DatabaseHelper databaseHelper;
     User currentUserInfo;
     ProgressBar progressBar;
     MenuItem save;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +94,6 @@ public class addNewTrip extends AppCompatActivity {
                 }
             }
         });
-     /*   btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(NetworkObserver.isNetworkConnected){
-                    saveBehavior();
-                }else{
-                    Helper.showSnackBar(v,getString(R.string.noInternet));
-                }
-            }
-        });*/
 
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +129,6 @@ public class addNewTrip extends AppCompatActivity {
                             startDate.setText(res);
                         }
                     },year,month,date);
-
                 }
                 Calendar tmpcal = Calendar.getInstance();
                 // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
@@ -242,6 +229,7 @@ public class addNewTrip extends AppCompatActivity {
                 res.put(dateList.get(i),"");
             }
             final int lastInsertedID = ID;
+            //adding trip to Trips Node
             FirebaseDatabase.getInstance().getReference()
                     .child("Trips")
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -257,7 +245,6 @@ public class addNewTrip extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     addOwnerToMemberNode(lastInsertedID);
-                                    Toast.makeText(addNewTrip.this,"Adding complete id is " + ID,Toast.LENGTH_SHORT).show();
                                     setNotificationTime(tmpTripModel);
                                     subscribeToUpcomingTripNotification(tmpTripModel.getStringID());
                                     savePendingNotificationToOfflineDatabase(tmpTripModel);
@@ -313,7 +300,7 @@ public class addNewTrip extends AppCompatActivity {
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        //Toast.makeText(this,"I hide keyboard",Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -347,7 +334,7 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot data: snapshot.getChildren()){
-                    tmp.add(StringToInt(data.getKey()));
+                    tmp.add(Helper.tripStringIDToInt(data.getKey()));
                     Log.d(tag,"KEY FROM FIREBASE " + data.getKey());
                 }
                 if(tmp.size()!=0){
@@ -364,19 +351,10 @@ public class addNewTrip extends AppCompatActivity {
         });
     }
 
-    private int StringToInt(String ID){
-        StringBuilder tmp = new StringBuilder();
-        for(int i=1;i<ID.length();i++){
-            tmp.append(ID.charAt(i));
-        }
-        return Integer.parseInt(tmp.toString());
-    }
-
     private List<String> getDateInterval(String startDate , String endDate)  {
         SimpleDateFormat simpleDateFormat;
         Date start , end ;
         Calendar calendar;
-
         start = new Date();
         end = new Date();
         calendar = new GregorianCalendar();
@@ -393,7 +371,6 @@ public class addNewTrip extends AppCompatActivity {
             e.printStackTrace();
         }
         calendar.setTime(start);
-        // while (calendar.getTime().before(endDate))
         while(calendar.getTime().before(end))
         {
             Date result = calendar.getTime();
@@ -402,7 +379,6 @@ public class addNewTrip extends AppCompatActivity {
             calendar.add(Calendar.DATE, 1);
         }
         String tmp = simpleDateFormat.format(calendar.getTime());
-        //System.out.println(calendar.getTime().toString());
         listOfdate.add(tmp);
         return listOfdate;
     }

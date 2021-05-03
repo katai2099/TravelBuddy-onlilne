@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+
+
 public class Helper {
 
     static private final String tag = "HELPER";
@@ -114,12 +116,9 @@ public class Helper {
         Date startDateTime = Helper.stringToTime(startTime);
         Date endDateTime = Helper.stringToTime(endTime);
         startCal = Calendar.getInstance();
-
         startCal.setTime(startDateTime);
         endCal = Calendar.getInstance();
-
-         endCal.setTime(endDateTime);
-
+        endCal.setTime(endDateTime);
         return startCal.before(endCal);
     }
 
@@ -170,9 +169,7 @@ public class Helper {
 
 
     public static int tripStringIDToInt(String ID){
-
         StringBuilder tmp = new StringBuilder();
-
         for(int i=1;i<ID.length();i++){
             tmp.append(ID.charAt(i));
         }
@@ -230,11 +227,9 @@ public class Helper {
             dates.add(tmp);
             beforeAdding.add(Calendar.MINUTE, 30);
         }
-        Date res = afterAdding.getTime();
         if(!( dates.get(0).equals(dates.get(1))) ){
             return 1;
         }
-        //~ return res.toString();
         return 0 ;
     }
 
@@ -280,12 +275,10 @@ public class Helper {
         if(!( dates.get(0).equals(dates.get(1))) ){
             return 1;
         }
-        //~ return res.toString();
         return 0 ;
     }
 
     public static void changeStayPeriodOfDestination(String currentDate, String startTime, int hour, int minute, Destination destination){
-        //need to calculate new extraDay , get new EndDate , modify i+1 list
         SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat toTime = new SimpleDateFormat("HH:mm");
         Date date = new Date();
@@ -313,7 +306,6 @@ public class Helper {
         String finalTime = toTime.format(res);
         int extraDay = destination.getExtraDay();
         int  extraDayAfterPeriodChanged = calculateExtraDay(currentDate,startTime,extraDay,hour,minute);
-        Log.d(tag,"Extra day " + extraDayAfterPeriodChanged);
         if(extraDayAfterPeriodChanged==1){
             if(!destination.isIncreased() && destination.isDecreased()){
                 extraDayAfterPeriodChanged += extraDay;
@@ -335,7 +327,6 @@ public class Helper {
                 extraDayAfterPeriodChanged = extraDay;
             }
         }
-        Log.d(tag,"Extra day after if else " + extraDayAfterPeriodChanged);
         if(extraDayAfterPeriodChanged<0)
             extraDayAfterPeriodChanged = 0;
         destination.setEndTime( finalTime) ;
@@ -352,6 +343,30 @@ public class Helper {
             }
         }
         return false;
+    }
+
+    public static int minuteToInt(String time){
+        StringBuilder tmp = new StringBuilder();
+        for(int i=3;i<time.length();i++){
+            tmp.append(time.charAt(i));
+        }
+        return Integer.parseInt(tmp.toString());
+    }
+
+    public static int hourToInt(String time){
+        StringBuilder tmp = new StringBuilder();
+        for(int i=0;i<2;i++){
+            tmp.append(time.charAt(i));
+        }
+        return Integer.parseInt(tmp.toString());
+    }
+
+    public static int minutesToHour(long duration){
+        return (int) (duration/60);
+    }
+
+    public static int minutesToMinute(long duration){
+        return (int) (duration%60);
     }
 
     public static  void hideKeyboard(View view,Activity activity) {

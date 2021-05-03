@@ -34,6 +34,11 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
     RecyclerView rcvTrip;
     //This destination is used to pass to next activity
     Destination destination;
+    String googleMapPlaceName;
+    String googleMapPlaceID;
+    double googleMapPlaceLat;
+    double googleMapPlaceLong;
+    String googleMapAddress;
 
 
     public PersonalTripSelectionFragment() {
@@ -47,11 +52,13 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_personal_trip_selection, container, false);
         Bundle bundle = getArguments();
-        String googleMapPlaceName = bundle.getString("googleMapPlaceName");
-        String googleMapPlaceID = bundle.getString("googleMapPlaceID");
-        double googleMapPlaceLat = bundle.getDouble("googleMapPlaceLat");
-        double googleMapPlaceLong = bundle.getDouble("googleMapPlaceLong");
-        String googleMapAddress = bundle.getString("googleMapAddress");
+        if(bundle!=null) {
+            googleMapPlaceName = bundle.getString("googleMapPlaceName");
+            googleMapPlaceID = bundle.getString("googleMapPlaceID");
+            googleMapPlaceLat = bundle.getDouble("googleMapPlaceLat");
+            googleMapPlaceLong = bundle.getDouble("googleMapPlaceLong");
+            googleMapAddress = bundle.getString("googleMapAddress");
+        }
         Log.d(tag, googleMapPlaceName);
         Log.d(tag, googleMapPlaceID);
         Log.d(tag, String.valueOf(googleMapPlaceLat));
@@ -97,9 +104,7 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
     @Override
     public void onTripClicked(int position) {
         Intent i = new Intent(getContext(), DateSelectionActivity.class);
-
         tripModel trip = tripModelList.get(position);
-
         i.putExtra("tripStringId",trip.getStringID());
         i.putExtra("googleMapPlaceName",destination.getName());
         i.putExtra("googleMapPlaceID",destination.getPlaceId());

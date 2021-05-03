@@ -178,18 +178,13 @@ public class loginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(loginActivity.this,"CANT GET DEVICE TOKEN",Toast.LENGTH_SHORT).show();
-                    }
                 });
             }
         });
     }
     private boolean isEmailVerified(){
         FirebaseUser user = auth.getCurrentUser();
-        Log.d(tag,"I am here to check if email is verified");
+        Log.d(tag,"I am here to check if email is verified " );
         return user != null && user.isEmailVerified();
     }
 }

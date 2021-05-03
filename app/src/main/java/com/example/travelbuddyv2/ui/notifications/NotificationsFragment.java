@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,26 +32,28 @@ import java.util.List;
 
 public class NotificationsFragment extends Fragment {
 
+    private boolean firstLoad = true;
     private final String tag = "NOTIFICATION_FRAGMENT";
     private RecyclerView rcvNotification;
     private List<Request> requestList ;
     private RequestAdapter requestAdapter;
-    private NotificationsViewModel notificationsViewModel;
+    private View placeHolder;
+    private ProgressBar progressBar;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
         requestList = new ArrayList<>();
-        fillFriendRequestNotificationList();
+        fillInvitationRequestList();
         rcvNotification = root.findViewById(R.id.rcvFragmentNotificationList);
+        progressBar = root.findViewById(R.id.simpleProgressBar);
+        placeHolder = root.findViewById(R.id.emptyListPlaceholder);
         rcvNotification.setLayoutManager(new LinearLayoutManager(root.getContext()));
         requestAdapter = new RequestAdapter(requestList);
         rcvNotification.setAdapter(requestAdapter);
         return root;
     }
 
-    private void fillFriendRequestNotificationList(){
+    private void fillInvitationRequestList(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Invitation_Request")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -68,11 +71,23 @@ public class NotificationsFragment extends Fragment {
                     }
                 }
                 requestAdapter.notifyDataSetChanged();
+                if (requestList.isEmpty()) {
+                    placeHolder.setVisibility(View.VISIBLE);
+                } else {
+                    placeHolder.setVisibility(View.INVISIBLE);
+                }
+                if(firstLoad){
+                    progressBar.setVisibility(View.GONE);
+                    firstLoad= false;
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                if(firstLoad){
+                    progressBar.setVisibility(View.GONE);
+                    firstLoad= false;
+                }
             }
         });
     }

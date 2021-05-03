@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.travelbuddyv2.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,11 +35,9 @@ public class registerActivity extends AppCompatActivity {
     EditText etEmail, etPassword , etConfirmPassword;
     Button btnSignUp;
     TextInputLayout toggleEmail , togglePassword, toggleConfirmPassword;
-
     private static final String email_regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     private static final String password_regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
     private static final String userName_Regex = "^[\\w-\\.]+";
-
     FirebaseAuth auth;
 
     @Override
@@ -174,26 +174,33 @@ public class registerActivity extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     sendValidationEmail();
-                    User user = new User();
+                    final User user = new User();
                     user.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     user.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                     user.setName(getLocalPartOfEmail(email));
-                    FirebaseDatabase.getInstance().getReference()
-                            .child("User")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .setValue(user)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    toConfirmEmailScreen();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
+                    FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            FirebaseAuth.getInstance().signOut();
-                            Toast.makeText(registerActivity.this,getString(R.string.unexpectedBehavior),Toast.LENGTH_SHORT).show();
+                        public void onSuccess(String s) {
+                            user.setDeviceToken(s);
+                            FirebaseDatabase.getInstance().getReference()
+                                    .child("User")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .setValue(user)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            toConfirmEmailScreen();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    FirebaseAuth.getInstance().signOut();
+                                    Toast.makeText(registerActivity.this,getString(R.string.unexpectedBehavior),Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     });
+
                 }
                 else{
                     Toast.makeText(registerActivity.this,getString(R.string.unexpectedBehavior),Toast.LENGTH_SHORT).show();
@@ -206,7 +213,7 @@ public class registerActivity extends AppCompatActivity {
     private boolean isEmailCorrect(String email) {
         Pattern pattern = Pattern.compile(email_regex);
         Matcher matcher = pattern.matcher(email);
-        return ((Matcher) matcher).matches();
+        return matcher.matches();
     }
 
     private boolean isPasswordStrongEnough(String password) {
@@ -237,9 +244,5 @@ public class registerActivity extends AppCompatActivity {
         return s1.equals(s2);
     }
 
-    // return true if the string is null
-    private boolean isEmptyString(String string) {
-        return TextUtils.isEmpty(string);
-    }
 
 }

@@ -80,7 +80,6 @@ public class UserProfileFragment extends Fragment {
     CircleImageView imgUserProfileImage;
     User user;
     View view;
-    private static final int GalleryPick = 1;
     private ProgressDialog loadingBar;
 
     public UserProfileFragment() {
@@ -132,12 +131,7 @@ public class UserProfileFragment extends Fragment {
              signOut(getActivity());
             }
         });
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
 
-            }
-        });
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -216,13 +210,11 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Log.d(tag, "I am here");
             Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
             startCrop(imageUri);
         }
-
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Log.d(tag, "AFTER CHOOSING PHOTO");
             if(NetworkObserver.isNetworkConnected){
@@ -230,8 +222,6 @@ public class UserProfileFragment extends Fragment {
             }else{
                 Helper.showSnackBar(imgUserProfileImage,getString(R.string.noInternet));
             }
-
-
         }
     }
 

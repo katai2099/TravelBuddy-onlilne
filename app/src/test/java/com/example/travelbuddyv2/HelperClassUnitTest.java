@@ -1,5 +1,7 @@
 package com.example.travelbuddyv2;
 
+import com.example.travelbuddyv2.model.Destination;
+
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -36,60 +38,43 @@ public class HelperClassUnitTest {
         assertTrue(checkTrue);
         boolean checkFalse = Helper.isPdf("katai.png");
         assertFalse(checkFalse);
-
     }
 
-    /*
-    @Test
-    public void getStartDateInMilliSec(){
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR,2020);
-        cal.set(Calendar.MONTH,12-1); // january is 0
-        cal.set(Calendar.DATE,1);
-        cal.set(Calendar.MINUTE,0);
-        cal.set(Calendar.HOUR,0);
-        cal.set(Calendar.SECOND,0);
-        cal.set(Calendar.MILLISECOND,0);
-        float checkTrue = Helper.getStartDateInMilli("2020-12-2");
-        assertEquals(1606802400000f,checkTrue,0); // 1606802400000f is millsec of 2020-12-1 at 7 am
-    }
-    */
-    /*
     @Test
     public void stringToDate(){
-        Date d = new Date();
-        d.setTime(Helper.stringToDate("2020-12-1").getTime());
-        d.setSeconds(0);
-        d.setMinutes(0);
-        d.setHours(0);
-        assertEquals("Tue Dec 01 00:00:00 CET 2020",d.toString());
+        Date date = new Date();
+        date.setTime(Helper.stringToDate("2020-12-01").getTime());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        assertEquals(1,cal.get(Calendar.DATE));
+        assertEquals(11,cal.get(Calendar.MONTH));
+        assertEquals(2020,cal.get(Calendar.YEAR));
 
-        Date d2 = new Date();
-        d2.setTime(Helper.stringToDate("2020-12-3").getTime());
-        d2.setSeconds(0);
-        d2.setMinutes(0);
-        d2.setHours(0);
-        String tmp = "Tue Dec 04 00:00:00 CET 2020";
-        Boolean checkFalse =  tmp.equals(d2.toString());
-        assertFalse(checkFalse);
+        Date date2 = new Date();
+        date2.setTime(Helper.stringToDate("2020-12-3").getTime());
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        assertNotEquals(1,cal2.get(Calendar.DATE));
+        assertNotEquals(10,cal2.get(Calendar.MONTH));
+        assertNotEquals(2021,cal2.get(Calendar.YEAR));
     }
-    */
 
-    //we only care about time here
-    /*
+    //this not use anymore need to be gone
+
+/*    //we only care about time here
     @Test
     public void stringToTime(){
         Date d = new Date();
         d.setTime(Helper.stringToTime("23:45").getTime());
-        d.setSeconds(0);
-        assertEquals("Thu Jan 01 23:45:00 CET 1970",d.toString());
+        Calendar cal = Calendar.getInstance();
+        assertEquals(23,cal.get(Calendar.HOUR_OF_DAY));
 
-        Date d2 = new Date();
-        d2.setTime(Helper.stringToTime("10:00").getTime());
-        d2.setSeconds(0);
-        String tmp = "Thu Jan 01 10:01:00 CET 1970";
-        Boolean checkFalse =  tmp.equals(d2.toString());
-        assertFalse(checkFalse);
+//        Date d2 = new Date();
+//        d2.setTime(Helper.stringToTime("10:00").getTime());
+//        d2.setSeconds(0);
+//        String tmp = "Thu Jan 01 10:01:00 CET 1970";
+//        Boolean checkFalse =  tmp.equals(d2.toString());
+//        assertFalse(checkFalse);
 
     }*/
     @Test
@@ -107,25 +92,107 @@ public class HelperClassUnitTest {
     public void changeInputTimeFormat(){
         String checkTrue = Helper.changeInputTimeFormat("1:23");
         assertEquals("01:23",checkTrue);
-
         String tmp = Helper.changeInputTimeFormat("2:44");
         String tmp2 = "2:44";
         boolean checkFalse = tmp2.equals(tmp);
         assertFalse(checkFalse);
     }
     @Test
-    public void changeDateFormatSuitableForPersonalTripScreen(){
+    public void changeDateFormatSuitableForTripScreen(){
         String checkTrue = Helper.changeDateFormatSuitableForTripScreen("2012-03-22");
-        assertEquals("22",checkTrue);
+        assertEquals("Mar 22, 2012",checkTrue);
     }
 
-   /* @Test
+    @Test
     public void calculateExtraDay(){
-        String checkTrue = Helper.calculateExtraDay("2020-12-1","09:30");
-        assertEquals("ff",checkTrue);
-    }*/
+        int checkTrue = Helper.calculateExtraDay("2020-12-1","09:30",1);
+        assertEquals(0,checkTrue);
+    }
 
+    @Test
+    public void calculateExtraDayWithMoreParameter(){
+        int secondCheckTrue = Helper.calculateExtraDay("2021-12-1","23:30",1,1,0);
+        assertEquals(1,secondCheckTrue);
+    }
 
+    @Test
+    public void changeDateFormatSuitableForTripDetailScreen(){
+        String checkTrue = Helper.changeDateFormatSuitableForTripDetailScreen("2012-03-22");
+        assertEquals("Thu, Mar 22, 2012",checkTrue);
+    }
+
+    @Test
+    public void tripStringIDtoInt(){
+        int checkTrue = Helper.tripStringIDToInt("t2");
+        assertEquals(2,checkTrue);
+    }
+
+    @Test
+    public void tripDetailStringIDtoInt(){
+        int checkTrue = Helper.tripDetailStringIDToInt("td03");
+        assertEquals(3,checkTrue);
+    }
+
+    @Test
+    public void getNextThirtyMinute(){
+        String checkTrue = Helper.getNextThirtyMinute("09:30");
+        assertEquals("10:00",checkTrue);
+    }
+
+    @Test
+    public void changeStayPeriodOfDestination(){
+        Destination test = new Destination();
+        Helper.changeStayPeriodOfDestination("2012-02-02","09:00",2,30,test);
+        assertEquals("11:30",test.getEndTime());
+    }
+    @Test
+    public void changeStayPeriodOfDestinationWithExtraDayIncreased(){
+        Destination test = new Destination();
+        Helper.changeStayPeriodOfDestination("2012-02-02","23:00",2,30,test);
+        assertEquals(1,test.getExtraDay());
+    }
+    @Test
+    public void changeStayPeriodOfDestinationWithExtraDayDecreased(){
+        Destination test = new Destination();
+        test.setExtraDay(1);
+        test.setIncreased(true);
+        test.setDecreased(false);
+        Helper.changeStayPeriodOfDestination("2012-02-02","09:00",2,30,test);
+        assertEquals(0,test.getExtraDay());
+    }
+    @Test
+    public void changeStayPeriodCheckOnStayPeriod(){
+        Destination test = new Destination();
+        test.setExtraDay(1);
+        test.setIncreased(true);
+        test.setDecreased(false);
+        Helper.changeStayPeriodOfDestination("2012-02-02","09:00",2,30,test);
+        assertEquals(150,test.getDuration());
+    }
+
+    @Test
+    public void minuteToInt(){
+        int actual = Helper.minuteToInt("00:59");
+        assertEquals(59,actual);
+    }
+
+    @Test
+    public void hourToInt(){
+        int actual = Helper.hourToInt("01:11");
+        assertEquals(1,actual);
+    }
+
+    @Test
+    public void failMinuteToInt(){
+        int actual = Helper.minuteToInt("00:21");
+        assertNotEquals(1,actual);
+    }
+
+    @Test
+    public void failHourToInt(){
+        int actual = Helper.hourToInt("12:21");
+        assertNotEquals(13,actual);
+    }
 
 
 

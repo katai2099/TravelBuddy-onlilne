@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -68,7 +69,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         holder.btnInviteFriend.setVisibility(View.VISIBLE);
         if (user.getProfile_image() != null && !(TextUtils.isEmpty(user.getProfile_image()))) {
             Picasso.get().load(user.getProfile_image()).fit().into(holder.imgFriendProfile);
-            Log.d(tag, "Picasso called");
         }
         final Request requester = new Request();
         requester.setRequestType("sent");
@@ -80,22 +80,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         receiver.setTripID(holder.id);
         receiver.setTripName(holder.name);
         receiver.setInviter(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        checkIfAlreadyAMember(user);
         holder.btnInviteFriend.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Log.d(tag, String.valueOf(isAlreadyAMember));
-                if (NetworkObserver.isNetworkConnected) {
-                    if (!isAlreadyAMember)
-                        addRequest(user, requester, receiver, holder);
-                    else {
-                        holder.tvPending.setVisibility(View.VISIBLE);
-                        holder.btnInviteFriend.setVisibility(View.GONE);
-                    }
-                } else {
-                    Helper.showSnackBar(v, holder.itemView.getContext().getString(R.string.noInternet));
-                }
+                checkIfAlreadyAMember(user,requester,receiver,holder);
+
             }
         });
 
@@ -247,34 +237,33 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     }
 
     private int StringToInt(String ID) {
-
         StringBuilder tmp = new StringBuilder();
-
         for (int i = 1; i < ID.length(); i++) {
             tmp.append(ID.charAt(i));
         }
-
         return Integer.parseInt(tmp.toString());
-
     }
 
-    private void checkIfAlreadyAMember(final User receiver) {
+    private void checkIfAlreadyAMember(final User user,final Request requester,final Request receiver,final UserHolder holder) {
         DatabaseReference memberNodeReference = FirebaseDatabase.getInstance().getReference().child("Member")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(id);
-        memberNodeReference.addValueEventListener(new ValueEventListener() {
+        memberNodeReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot memberNode : snapshot.getChildren()) {
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                boolean alreadyAMember = false;
+                for(DataSnapshot memberNode : dataSnapshot.getChildren()){
                     Member member = memberNode.getValue(Member.class);
-                    if (member.getID().equals(receiver.getUser_id())) {
-                        isAlreadyAMember = true;
+                    if (member.getID().equals(user.getUser_id())) {
+                        alreadyAMember = true;
+                        break;
                     }
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+                if(!alreadyAMember)
+                    addRequest(user,requester,receiver,holder);
+                else{
+                    Toast.makeText(holder.itemView.getContext(),"This user is already a member of the group",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

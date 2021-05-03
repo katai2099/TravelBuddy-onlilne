@@ -37,20 +37,6 @@ public class TripSelectionActivity extends AppCompatActivity {
         destination = new Destination();
 
         Bundle bundle = getIntent().getExtras();
-/*
-        if(bundle!=null){
-            destination.setName(bundle.getString("googleMapPlaceName"));
-            destination.setPlaceId(bundle.getString("googleMapPlaceID"));
-            destination.setLatitude(bundle.getDouble("googleMapPlaceLat"));
-            destination.setLongitude(bundle.getDouble("googleMapPlaceLong"));
-        }
-
-        tripModelList = new ArrayList<>();
-        tripSelectionAdapter = new TripSelectionAdapter(tripModelList,destination);
-        rcvTrip = findViewById(R.id.rcvTripSelection);
-        rcvTrip.setLayoutManager(new LinearLayoutManager(this));
-        rcvTrip.setAdapter(tripSelectionAdapter);
-        fillListWithTrip();*/
 
         TripSelectionPagerAdapter tripSelectionPagerAdapter = new TripSelectionPagerAdapter(this,getSupportFragmentManager(),bundle);
         ViewPager viewPager = findViewById(R.id.view_pager);

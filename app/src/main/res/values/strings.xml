@@ -51,5 +51,6 @@
     <string name="pending">Pending</string>
     <string name="title_activity_attraction_detail">Map</string>
     <string name="trip_name">Trip name</string>
+    <string name="resend_email">Resend email</string>
 
 </resources>

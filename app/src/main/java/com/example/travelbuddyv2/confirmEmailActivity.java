@@ -21,8 +21,6 @@ public class confirmEmailActivity extends AppCompatActivity {
     Button btnResendConfirmationEmail , btnDone;
     String userEmail;
 
-    FirebaseAuth auth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,22 +28,15 @@ public class confirmEmailActivity extends AppCompatActivity {
         tvUserEmail = findViewById(R.id.tvUserEmail);
         btnResendConfirmationEmail = findViewById(R.id.btnResendConfirmationEMail);
         btnDone = findViewById(R.id.btnDone);
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-
-
         userEmail = user.getEmail();
-
         tvUserEmail.setText(userEmail);
-
         btnResendConfirmationEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendValidationEmail();
             }
         });
-
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,13 +46,10 @@ public class confirmEmailActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     private void sendValidationEmail(){
-
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

@@ -78,10 +78,6 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
              Toast.makeText(getContext(),"NULL",Toast.LENGTH_SHORT).show();
         }
 
-
-
-
-
         tripSectionList = new ArrayList<>();
 
         //fillList();
@@ -154,8 +150,7 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onListClicked(int position) {
-       // rcvTripDetail.scrollToPosition(position);
-        rcvTripDetail.smoothScrollToPosition(position);
+        rcvTripDetail.scrollToPosition(position);
     }
 
 
@@ -237,12 +232,16 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onDurationEditingClicked(final int position, final String curDate) {
+        Destination selectedAttraction = getListOfSpecificDate(curDate).get(position);
+        final int hour = Helper.minutesToHour(selectedAttraction.getDuration());
+        final int min = Helper.minutesToMinute(selectedAttraction.getDuration());
         final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                if(!(hourOfDay == hour && minute == min))
                 changeStayPeriodOfDestination(hourOfDay,minute,position,curDate);
             }
-        },0,0,true);
+        },hour,min,true);
         timePickerDialog.setTitle("modify stay period");
         timePickerDialog.show();
     }
@@ -255,6 +254,15 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
         i.putExtra("PLACELAT",lat);
         i.putExtra("PLACELNG",lng);
         startActivity(i);
+    }
+
+    public List<Destination> getListOfSpecificDate(String date){
+        List<Destination> destinations = new ArrayList<>();
+        for(TripSection list:tripSectionList){
+            if(list.getDate().equals(date))
+                destinations = list.getDestinations();
+        }
+        return destinations;
     }
 
 
@@ -296,24 +304,25 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
                 .child(tripID)
                 .child(destinationCurDate)
                 .child(destinationStringID);
-        reference.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-//                Toast.makeText(getContext(),"Update done",Toast.LENGTH_SHORT).show();
-            }
-        });
+        reference.setValue(destination);
 
     }
 
     @Override
     public void onStartTimeChangeClicked(final int position) {
+        Destination firstDestinationOfTheDate = tripSectionList.get(position).getDestinations().get(0);
+        final int hour = Helper.hourToInt(firstDestinationOfTheDate.getStartTime());
+        final int min = Helper.minuteToInt(firstDestinationOfTheDate.getStartTime());
         final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-             resetStartTimeOfCurrentDate(position,hourOfDay,minute);
+                if(!(hour == hourOfDay && min == minute))
+                resetStartTimeOfCurrentDate(position,hourOfDay,minute);
+                else{
+                    Toast.makeText(getContext(),"Exact same value",Toast.LENGTH_SHORT).show();
+                }
             }
-        },0,0,true);
+        },hour,min,true);
         timePickerDialog.setTitle("Edit Start Time");
         timePickerDialog.show();
     }

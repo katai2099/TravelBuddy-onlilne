@@ -70,20 +70,6 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
         ChildTripDetailAdapter childTripDetailAdapter = new ChildTripDetailAdapter(destinationList,childTripDetailAdapterCallBack);
         holder.childRecyclerView.setAdapter(childTripDetailAdapter);
 
- /*       holder.btnAddTripDetail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               // parentGroupTripDetailAdapterCallBack.onListClicked(position);
-                if(hasPermission)
-                {
-                    //Toast.makeText(holder.itemView.getContext(),"You may proceed",Toast.LENGTH_SHORT).show();
-                    parentGroupTripDetailAdapterCallback.addNewAttractionClicked(position);
-                }
-                else{
-                    Toast.makeText(holder.itemView.getContext(),"You dont have permission to edit",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
         holder.addAttraction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,7 +78,7 @@ public class ParentGroupTripDetailAdapter extends RecyclerView.Adapter<ParentGro
                     parentGroupTripDetailAdapterCallback.addNewAttractionClicked(position);
                 }
                 else{
-                    Toast.makeText(holder.itemView.getContext(),"You dont have permission to edit",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(holder.itemView.getContext(),"You do not have permission to edit",Toast.LENGTH_SHORT).show();
                 }
             }
         });

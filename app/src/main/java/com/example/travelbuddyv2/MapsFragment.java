@@ -191,7 +191,6 @@ public class MapsFragment extends Fragment {
                     final String placeName = pointOfInterest.name;
                     final String placeId = pointOfInterest.placeId;
                     final LatLng placeLatLng = pointOfInterest.latLng;
-                    Toast.makeText(getActivity(), placeName, Toast.LENGTH_SHORT).show();
                     showBottomLayoutWithDetail(placeId, placeName, placeLatLng);
                 }
             });
@@ -266,7 +265,7 @@ public class MapsFragment extends Fragment {
 
             @Override
             public void onSearchConfirmed(CharSequence text) {
-//                Toast.makeText(getContext(),text.toString(),Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -324,7 +323,7 @@ public class MapsFragment extends Fragment {
                     public void onFailure(@NonNull Exception e) {
                         if (e instanceof ApiException) {
                             ApiException apiException = (ApiException) e;
-                            Toast.makeText(getContext(), String.valueOf(apiException.getStatusCode()), Toast.LENGTH_SHORT).show();
+                            Log.d(tag, String.valueOf(apiException.getStatusCode()));
                         }
                     }
                 });
