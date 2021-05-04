@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +54,7 @@ public class NotificationsFragment extends Fragment {
         return root;
     }
 
+
     private void fillInvitationRequestList(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Invitation_Request")
@@ -91,5 +93,6 @@ public class NotificationsFragment extends Fragment {
             }
         });
     }
+
 
 }

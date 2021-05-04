@@ -7,7 +7,7 @@
     android:autoMirrored="true">
   <group
      android:pivotX="12"
-      android:scaleX="-1">
+      android:scaleX="1">
 
 
   <path

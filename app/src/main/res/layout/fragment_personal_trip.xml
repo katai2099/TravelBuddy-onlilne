@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:layout_marginBottom="55dp">
+        android:layout_marginBottom="64dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvFragmentPersonalTrip"
@@ -72,9 +72,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="70dp"
         android:src="@drawable/ic_baseline_add_24"
-        android:layout_marginEnd="13dp"
+        android:layout_marginEnd="20dp"
         android:contentDescription="TODO" />
 
 </RelativeLayout>

@@ -20,9 +20,12 @@
         android:id="@+id/tripNameListAdapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:maxLines="1"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:layout_toStartOf="@id/tripInviteFriend"
+        android:gravity="center|start"
         android:textSize="18sp"
         android:textColor="@color/quantum_black_100"
         />
@@ -32,7 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tripNameListAdapter"
-        android:layout_marginStart="10dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="5dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:textSize="14sp"
@@ -43,7 +48,7 @@
             android:id="@+id/tripInviteFriend"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
+            android:layout_toStartOf="@+id/tripRemove"
             android:background="@drawable/ic_baseline_person_add_alt_1_24"
             />
         <Button
@@ -51,7 +56,6 @@
             android:id="@+id/tripRemove"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_below="@id/tripInviteFriend"
             android:layout_alignParentEnd="true"
             android:background="@drawable/ic_baseline_delete_forever_24"
             />
