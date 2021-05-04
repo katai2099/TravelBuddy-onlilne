@@ -369,6 +369,39 @@ public class Helper {
         return (int) (duration%60);
     }
 
+    public static String changeDurationToText(int hour,int min){
+        StringBuilder duration = new StringBuilder();
+        if(hour == 0 && min != 0){
+            duration.append(min);
+            if(min > 1)
+                duration.append(" mins");
+            else{
+                duration.append(" min");
+            }
+        }else if(hour != 0 && min==0){
+            duration.append(hour);
+            if(hour > 1)
+                duration.append(" hours");
+            else{
+                duration.append(" hour");
+            }
+        }else if(hour != 0 && min != 0){
+            duration.append(hour);
+            if(hour > 1)
+                duration.append(" hours ");
+            else{
+                duration.append(" hour ");
+            }
+            duration.append(min);
+            if(min > 1)
+                duration.append(" mins");
+            else{
+                duration.append(" min");
+            }
+        }
+        return duration.toString();
+    }
+
     public static  void hideKeyboard(View view,Activity activity) {
         InputMethodManager inputMethodManager =(InputMethodManager)activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);

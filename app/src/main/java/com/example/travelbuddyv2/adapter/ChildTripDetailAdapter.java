@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelbuddyv2.Helper;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Destination;
 
@@ -55,11 +56,14 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
         int extra = destinations.get(position).getExtraDay();
 
         if(extra!=1 && endTime.equals(midNight) && extra!=0){
-            holder.extraDay.setText("+ " + (extra - 1));
+            holder.extraDay.setText("" + (extra - 1));
         }else if(extra !=0 && !(endTime.equals(midNight))){
-            holder.extraDay.setText("+ " + (extra));
+            holder.extraDay.setText("" + (extra));
         }
-
+        int hour = Helper.minutesToHour(destinations.get(position).getDuration());
+        int min = Helper.minutesToMinute(destinations.get(position).getDuration());
+        String durationText = Helper.changeDurationToText(hour,min);
+        holder.duration.setText(durationText);
         holder.editDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +82,7 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
 
     class ChildTripDetailHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView itemTextView , startTime , endTime , extraDay , address;
+        TextView itemTextView , startTime , endTime , extraDay , address , duration;
         Button btnRemoveDestination;
         View editDuration ;
 
@@ -91,6 +95,7 @@ public class ChildTripDetailAdapter extends RecyclerView.Adapter<ChildTripDetail
             extraDay = itemView.findViewById(R.id.tvExtraDay);
             btnRemoveDestination = itemView.findViewById(R.id.btnDeleteDestination);
             editDuration = itemView.findViewById(R.id.layoutEditDuration);
+            duration = itemView.findViewById(R.id.itemDuration);
             itemView.setOnClickListener(this);
         }
 

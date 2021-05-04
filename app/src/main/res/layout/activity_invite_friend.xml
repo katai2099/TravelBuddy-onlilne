@@ -13,6 +13,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <ProgressBar
+            android:id="@+id/simpleProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"
+            android:visibility="visible" />
+
     <EditText
         android:id="@+id/etFindFriendByEmail"
         android:layout_marginTop="10dp"

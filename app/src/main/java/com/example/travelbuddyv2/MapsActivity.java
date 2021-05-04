@@ -89,6 +89,7 @@ import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private float offset;
     private final String tag = "MAP_ACTIVITY";
     private boolean isWorkingButton = true;
     private boolean isHideAttractionButtonHide = true;
@@ -218,6 +219,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (buttonCode == MaterialSearchBar.BUTTON_BACK) {
                     materialSearchBar.closeSearch();
                     materialSearchBar.clearSuggestions();
+                    setButtonVisible();
                 }
 
 
@@ -283,7 +285,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if(s.toString().isEmpty())
+                    materialSearchBar.clearSuggestions();
             }
         });
 
@@ -293,12 +296,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(position >= predictionList.size()){
                     return;
                 }
+                materialSearchBar.closeSearch();
                 AutocompletePrediction selectedPrediction = predictionList.get(position);
-              /*  String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
-                materialSearchBar.setText(suggestion);
-*/
                 materialSearchBar.clearSuggestions();
-                //    btnSearchForAttraction.setVisibility(View.GONE);
                 setButtonGone();
 
 
@@ -378,7 +378,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onMapClick(LatLng latLng) {
                 googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-                //  btnSearchForAttraction.setVisibility(View.VISIBLE);
                 setButtonVisible();
                 if(materialSearchBar.isSearchOpened()){
                     materialSearchBar.clearSuggestions();
@@ -429,11 +428,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Log.d(tag,marker.getSnippet());
-                //   btnSearchForAttraction.setVisibility(View.GONE);
                 setButtonGone();
                 showBottomLayoutWithDetail(marker.getSnippet(),marker.getTitle(),marker.getPosition());
-
-                // googleMap.clear();
                 return true;
             }
         });
@@ -590,10 +586,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //we hide when user first enter the map fragment
         googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-
         googleMapInformationLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
+                offset = slideOffset;
+                if(slideOffset>0)
                 btnAddTrip.setVisibility(View.GONE);
             }
 
@@ -601,6 +598,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED){
                     btnAddTrip.setVisibility(View.VISIBLE);
+                }
+                if(offset>1 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING)
+                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                Log.d(tag,previousState.name() + " previous state");
+                Log.d(tag,newState.name() + " previous state");
+                if(materialSearchBar.isSearchOpened()){
+                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
             }
         });
@@ -856,7 +860,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setButtonVisible(){
-        if(btnSearchForAttraction.getVisibility() == View.GONE && !isHideAttractionButtonHide && isWorkingButton){
+        if(btnSearchForAttraction.getVisibility() == View.GONE && isHideAttractionButtonHide && isWorkingButton){
             btnSearchForAttraction.setVisibility(View.VISIBLE);
         }else if(btnHideAttraction.getVisibility() == View.GONE && btnSearchForAttraction.getVisibility() == View.GONE && isWorkingButton){
             btnHideAttraction.setVisibility(View.VISIBLE);

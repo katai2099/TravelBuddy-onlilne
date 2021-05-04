@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.MemberAdapter;
@@ -37,6 +38,7 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
 
     private final String tag = "MEMBER_ACTIVITY";
 
+    ProgressBar progressBar;
     View ownerLayout;
     String tripName, tripStringID, fromWho, tripOwnerID;
     RecyclerView rcvMemberView;
@@ -76,6 +78,7 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
         rcvMemberView = findViewById(R.id.rcvMemberActivity);
         rcvMemberView.setLayoutManager(new LinearLayoutManager(this));
         rcvMemberView.setAdapter(memberAdapter);
+        progressBar = findViewById(R.id.simpleProgressBar);
         fillMemberList();
 
     }
@@ -167,10 +170,11 @@ public class MemberActivity extends AppCompatActivity implements MemberAdapter.M
                     i++;
                 }
                 memberAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressBar.setVisibility(View.GONE);
             }
         });
 

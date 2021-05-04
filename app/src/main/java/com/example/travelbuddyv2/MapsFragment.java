@@ -105,6 +105,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment {
 
+    private float offset;
     private boolean isWorkingButton = true;
     private boolean isHideAttractionButtonHide = true;
     private SlidingUpPanelLayout googleMapInformationLayout;
@@ -250,17 +251,19 @@ public class MapsFragment extends Fragment {
                 isHideAttractionButtonHide = true;
             }
         });
+
+
         materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
                 if (enabled && (googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)) {
-                    Log.d(tag, "Search typed");
                     googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
                 if (enabled && (btnHideAttraction.getVisibility() == View.VISIBLE || btnSearchForAttraction.getVisibility() == View.VISIBLE)) {
                     setButtonGone();
                 }
+                Log.d(tag,enabled + " search state");
             }
 
             @Override
@@ -273,6 +276,7 @@ public class MapsFragment extends Fragment {
                 if (buttonCode == MaterialSearchBar.BUTTON_BACK) {
                     materialSearchBar.closeSearch();
                     materialSearchBar.clearSuggestions();
+                    setButtonVisible();
                 }
             }
         });
@@ -284,10 +288,8 @@ public class MapsFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 String countryCode = "HU";
                 Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-
                 try {
                     List<Address> addresses = geocoder.getFromLocation(currentLat, currentLng, 1);
                     if (addresses.size() != 0) {
@@ -327,17 +329,18 @@ public class MapsFragment extends Fragment {
                         }
                     }
                 });
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if(s.toString().isEmpty())
+                    materialSearchBar.clearSuggestions();
             }
         });
         materialSearchBar.setSuggestionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
             @Override
             public void OnItemClickListener(int position, View v) {
+                materialSearchBar.closeSearch();
                 if (position >= predictionList.size()) {
                     return;
                 }
@@ -346,7 +349,7 @@ public class MapsFragment extends Fragment {
                 setButtonGone();
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    imm.hideSoftInputFromWindow(getView().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
                 }
                 final String placeId = selectedPrediction.getPlaceId();
                 List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.NAME);
@@ -373,6 +376,11 @@ public class MapsFragment extends Fragment {
 
             @Override
             public void OnItemDeleteListener(int position, View v) {
+               List tmp = materialSearchBar.getLastSuggestions();
+               Log.d(tag,"position " + position);
+                Log.d(tag,"last suggestion size " + tmp.size());
+               tmp.remove(position);
+               materialSearchBar.updateLastSuggestions(tmp);
             }
         });
         return root;
@@ -466,7 +474,10 @@ public class MapsFragment extends Fragment {
         googleMapInformationLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                btnAddTrip.setVisibility(View.GONE);
+                offset = slideOffset;
+                if(slideOffset>0)
+                    btnAddTrip.setVisibility(View.GONE);
+                Log.d(tag, String.valueOf(slideOffset));
             }
 
             @Override
@@ -474,6 +485,14 @@ public class MapsFragment extends Fragment {
                 if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     btnAddTrip.setVisibility(View.VISIBLE);
                 }
+                if(offset>1 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING) {
+                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                }
+                if(materialSearchBar.isSearchOpened()){
+                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                }
+                Log.d(tag,previousState.name() + " previous state");
+                Log.d(tag,newState.name() + " new state");
             }
         });
     }

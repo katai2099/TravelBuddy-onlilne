@@ -57,7 +57,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayHolder> {
     }
 
     public interface DayAdapterCallback{
-        public void onListClicked(int position);
+        void onListClicked(int position);
     }
 
 }

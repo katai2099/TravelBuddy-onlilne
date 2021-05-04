@@ -2,6 +2,7 @@ package com.example.travelbuddyv2;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -77,7 +79,7 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
         rcvDays.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
         dayAdapter = new DayAdapter(dayList,this);
         rcvDays.setAdapter(dayAdapter);
-//        registerOnScrollListener();
+        registerOnScrollListener();
         progressBar = root.findViewById(R.id.simpleProgressBar);
         updatingText = root.findViewById(R.id.UpdatingText);
         updatingProgressBar = root.findViewById(R.id.updatingProgressBar);
@@ -131,27 +133,44 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
                 }
             }
         });
+
     }
 
-//    private void registerOnScrollListener(){
-//        rcvTripDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//                if(newState==RecyclerView.SCROLL_STATE_DRAGGING){
-//                    int position = ((LinearLayoutManager)rcvTripDetail.getLayoutManager())
-//                            .findFirstVisibleItemPosition();
-//                    Log.d(tag, String.valueOf(position));
-//                }
-//
-//            }
-//        });
-//
-//    }
+    private void registerOnScrollListener(){
+        rcvTripDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                    int position = ((LinearLayoutManager)rcvTripDetail.getLayoutManager())
+                            .findFirstVisibleItemPosition();
+                   for(int i=0;i<dayList.size();i++){
+                       if(i!=position){
+                           TextView tmp = rcvDays.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tvDayRow);
+                           tmp.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+                       }
+                   }
+                   TextView v = rcvDays.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.tvDayRow);
+                   v.setTextColor(Color.parseColor("#0faaae"));
+            }
+
+
+
+
+        });
+
+    }
 
     @Override
     public void onListClicked(int position) {
         rcvTripDetail.scrollToPosition(position);
+        for(int i=0;i<dayList.size();i++){
+            if(i!=position){
+                TextView tmp = rcvDays.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tvDayRow);
+                tmp.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+            }
+        }
+        TextView v = rcvDays.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.tvDayRow);
+        v.setTextColor(Color.parseColor("#0faaae"));
     }
 
     @Override
@@ -187,76 +206,78 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onDeleteDestinationClicked(String date, String destinationStringID, int position) {
-        List<Destination> destinationsOfCurrentDate = new ArrayList<>();
-        for(int i=0;i<tripSectionList.size();i++){
-            if(tripSectionList.get(i).getDate().equals(date)){
-                destinationsOfCurrentDate = tripSectionList.get(i).getDestinations();
-            }
-        }
-        List<Destination> destinationsOfCurrentDateReplica = new ArrayList<>(destinationsOfCurrentDate);
-        Destination deletedOne = destinationsOfCurrentDateReplica.get(position);
-        boolean updateTheRest = false;
-        onDeleteDestinationClick(date,destinationStringID);
-        if(destinationsOfCurrentDateReplica.size()!=1 && position != destinationsOfCurrentDateReplica.size()-1){
-            isUpdate = true;
-            updatingProgressBar.setVisibility(View.VISIBLE);
-            updatingProgressBar.bringToFront();
-            updatingText.setVisibility(View.VISIBLE);
-            updatingText.bringToFront();
-            updatingDestinationSize = destinationsOfCurrentDateReplica.size();
-            Destination toUpdateDestination = destinationsOfCurrentDateReplica.get(position+1);
-            toUpdateDestination.setExtraDay(deletedOne.getExtraDay());
-            toUpdateDestination.setDecreased(deletedOne.isDecreased());
-            toUpdateDestination.setIncreased(deletedOne.isIncreased());
-            toUpdateDestination.setStartTime(deletedOne.getStartTime());
-            Helper.changeStayPeriodOfDestination(toUpdateDestination.getStartDate(),toUpdateDestination.getStartTime(),0,(int)toUpdateDestination.getDuration(),toUpdateDestination);
-            updatingCurrentPosition = position+1;
-            updateToFirebaseAfterPeriodChanged(toUpdateDestination);
-            updateTheRest = true ;
-        }
-        if(updateTheRest && destinationsOfCurrentDateReplica.size()!=2){
-             for(int i=position+2;i<destinationsOfCurrentDateReplica.size();i++){
-                 Destination lastDestination = destinationsOfCurrentDateReplica.get(i-1);
-                Destination toUpdateDestination = destinationsOfCurrentDateReplica.get(i);
-                toUpdateDestination.setExtraDay(lastDestination.getExtraDay());
-                toUpdateDestination.setDecreased(lastDestination.isDecreased());
-                toUpdateDestination.setIncreased(lastDestination.isIncreased());
-                toUpdateDestination.setStartTime(lastDestination.getEndTime());
-                 if(lastDestination.isDecreased() && toUpdateDestination.isIncreased())
-                     toUpdateDestination.setExtraDay(toUpdateDestination.getExtraDay()+1);
-                 else if(lastDestination.isIncreased() && toUpdateDestination.isIncreased()){
-                     toUpdateDestination.setExtraDay(toUpdateDestination.getExtraDay()+1);
-                 }
-                Helper.changeStayPeriodOfDestination(toUpdateDestination.getStartDate(),toUpdateDestination.getStartTime(),0,(int)toUpdateDestination.getDuration(),toUpdateDestination);
-                 updatingCurrentPosition = i;
-                 updateToFirebaseAfterPeriodChanged(toUpdateDestination);
-            }
+        if(!isUpdate) {
 
+            List<Destination> destinationsOfCurrentDate = new ArrayList<>();
+            for (int i = 0; i < tripSectionList.size(); i++) {
+                if (tripSectionList.get(i).getDate().equals(date)) {
+                    destinationsOfCurrentDate = tripSectionList.get(i).getDestinations();
+                }
+            }
+            List<Destination> destinationsOfCurrentDateReplica = new ArrayList<>(destinationsOfCurrentDate);
+            Destination deletedOne = destinationsOfCurrentDateReplica.get(position);
+            boolean updateTheRest = false;
+            onDeleteDestinationClick(date, destinationStringID);
+            if (destinationsOfCurrentDateReplica.size() != 1 && position != destinationsOfCurrentDateReplica.size() - 1) {
+                isUpdate = true;
+                updatingProgressBar.setVisibility(View.VISIBLE);
+                updatingProgressBar.bringToFront();
+                updatingText.setVisibility(View.VISIBLE);
+                updatingText.bringToFront();
+                updatingDestinationSize = destinationsOfCurrentDateReplica.size();
+                Destination toUpdateDestination = destinationsOfCurrentDateReplica.get(position + 1);
+                toUpdateDestination.setExtraDay(deletedOne.getExtraDay());
+                toUpdateDestination.setDecreased(deletedOne.isDecreased());
+                toUpdateDestination.setIncreased(deletedOne.isIncreased());
+                toUpdateDestination.setStartTime(deletedOne.getStartTime());
+                Helper.changeStayPeriodOfDestination(toUpdateDestination.getStartDate(), toUpdateDestination.getStartTime(), 0, (int) toUpdateDestination.getDuration(), toUpdateDestination);
+                updatingCurrentPosition = position + 1;
+                updateToFirebaseAfterPeriodChanged(toUpdateDestination);
+                updateTheRest = true;
+            }
+            if (updateTheRest && destinationsOfCurrentDateReplica.size() != 2) {
+                for (int i = position + 2; i < destinationsOfCurrentDateReplica.size(); i++) {
+                    Destination lastDestination = destinationsOfCurrentDateReplica.get(i - 1);
+                    Destination toUpdateDestination = destinationsOfCurrentDateReplica.get(i);
+                    toUpdateDestination.setExtraDay(lastDestination.getExtraDay());
+                    toUpdateDestination.setDecreased(lastDestination.isDecreased());
+                    toUpdateDestination.setIncreased(lastDestination.isIncreased());
+                    toUpdateDestination.setStartTime(lastDestination.getEndTime());
+                    if (lastDestination.isDecreased() && toUpdateDestination.isIncreased())
+                        toUpdateDestination.setExtraDay(toUpdateDestination.getExtraDay() + 1);
+                    else if (lastDestination.isIncreased() && toUpdateDestination.isIncreased()) {
+                        toUpdateDestination.setExtraDay(toUpdateDestination.getExtraDay() + 1);
+                    }
+                    Helper.changeStayPeriodOfDestination(toUpdateDestination.getStartDate(), toUpdateDestination.getStartTime(), 0, (int) toUpdateDestination.getDuration(), toUpdateDestination);
+                    updatingCurrentPosition = i;
+                    updateToFirebaseAfterPeriodChanged(toUpdateDestination);
+                }
+            }
         }
-        
 
     }
 
     @Override
     public void onDurationEditingClicked(final int position, final String curDate) {
-        Destination selectedAttraction = getListOfSpecificDate(curDate).get(position);
-        final int hour = Helper.minutesToHour(selectedAttraction.getDuration());
-        final int min = Helper.minutesToMinute(selectedAttraction.getDuration());
-        final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                if(!(hourOfDay == hour && minute == min)){
-                    changeStayPeriodOfDestination(hourOfDay,minute,position,curDate);
-                    updatingText.setVisibility(View.VISIBLE);
-                    updatingText.bringToFront();
-                    updatingProgressBar.setVisibility(View.VISIBLE);
-                    updatingProgressBar.bringToFront();
+        if(!isUpdate){
+            Destination selectedAttraction = getListOfSpecificDate(curDate).get(position);
+            final int hour = Helper.minutesToHour(selectedAttraction.getDuration());
+            final int min = Helper.minutesToMinute(selectedAttraction.getDuration());
+            final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    if(!(hourOfDay == hour && minute == min)){
+                        changeStayPeriodOfDestination(hourOfDay,minute,position,curDate);
+                        updatingText.setVisibility(View.VISIBLE);
+                        updatingText.bringToFront();
+                        updatingProgressBar.setVisibility(View.VISIBLE);
+                        updatingProgressBar.bringToFront();
+                    }
                 }
-            }
-        },hour,min,true);
-
-        timePickerDialog.setTitle("Modify stay period");
-        timePickerDialog.show();
+            },hour,min,true);
+            timePickerDialog.setTitle("Modify stay period");
+            timePickerDialog.show();
+        }
     }
 
     @Override
@@ -345,26 +366,29 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onStartTimeChangeClicked(final int position) {
-        Destination firstDestinationOfTheDate = tripSectionList.get(position).getDestinations().get(0);
-        final int hour = Helper.hourToInt(firstDestinationOfTheDate.getStartTime());
-        final int min = Helper.minuteToInt(firstDestinationOfTheDate.getStartTime());
-        final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                if(!(hour == hourOfDay && min == minute)){
-                    resetStartTimeOfCurrentDate(position,hourOfDay,minute);
-                    updatingText.setVisibility(View.VISIBLE);
-                    updatingText.bringToFront();
-                    updatingProgressBar.setVisibility(View.VISIBLE);
-                    updatingProgressBar.bringToFront();
+        if(!isUpdate){
+            Destination firstDestinationOfTheDate = tripSectionList.get(position).getDestinations().get(0);
+            final int hour = Helper.hourToInt(firstDestinationOfTheDate.getStartTime());
+            final int min = Helper.minuteToInt(firstDestinationOfTheDate.getStartTime());
+            final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    if(!(hour == hourOfDay && min == minute)){
+                        resetStartTimeOfCurrentDate(position,hourOfDay,minute);
+                        updatingText.setVisibility(View.VISIBLE);
+                        updatingText.bringToFront();
+                        updatingProgressBar.setVisibility(View.VISIBLE);
+                        updatingProgressBar.bringToFront();
+                    }
                 }
-            }
-        },hour,min,true);
-        timePickerDialog.setTitle("Edit Start Time");
-        timePickerDialog.show();
+            },hour,min,true);
+            timePickerDialog.setTitle("Edit Start Time");
+            timePickerDialog.show();
+        }
     }
 
     private void resetStartTimeOfCurrentDate(int position,int hourOfDay,int minute){
+        isUpdate = true;
         List<Destination> currentDestinationsOfThisDate = tripSectionList.get(position).getDestinations();
         updatingDestinationSize = currentDestinationsOfThisDate.size();
         for(int i=0;i<currentDestinationsOfThisDate.size();i++){

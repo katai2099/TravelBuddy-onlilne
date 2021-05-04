@@ -194,6 +194,11 @@ public class HelperClassUnitTest {
         assertNotEquals(13,actual);
     }
 
+    @Test
+    public void durationToText(){
+        String actual = Helper.changeDurationToText(2,1);
+        assertEquals("23",actual);
+    }
 
 
 }

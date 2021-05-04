@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class InviteFriendActivity extends AppCompatActivity {
     Button btnSearchForFriend;
     List<User> users, suggestedUsers;
     UserAdapter userAdapter, suggestedUserAdapter;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class InviteFriendActivity extends AppCompatActivity {
         rcvFriendList.setAdapter(userAdapter);
         rcvSuggestionFriendList.setAdapter(suggestedUserAdapter);
         rcvFriendList.setVisibility(View.GONE);
+        progressBar = findViewById(R.id.simpleProgressBar);
         fillKnownList();
         btnSearchForFriend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,16 +116,19 @@ public class InviteFriendActivity extends AppCompatActivity {
                     suggestedUsers.add(tmp);
                 }
                 suggestedUserAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(InviteFriendActivity.this,getString(R.string.unexpectedBehavior),Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
 
     public void fillSearchedFriendList(final String email){
+            progressBar.setVisibility(View.VISIBLE);
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User");
             reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                 @Override
@@ -140,11 +146,13 @@ public class InviteFriendActivity extends AppCompatActivity {
                     if(userDoesNotExist)
                         Toast.makeText(getBaseContext(),"COULD NOT FIND USER",Toast.LENGTH_SHORT).show();
                     userAdapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(InviteFriendActivity.this,getString(R.string.unexpectedBehavior),Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                 }
             });
 

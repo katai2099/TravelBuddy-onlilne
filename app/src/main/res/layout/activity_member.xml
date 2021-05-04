@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".MemberActivity">
 
+    <ProgressBar
+        android:id="@+id/simpleProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:visibility="visible" />
+
     <LinearLayout
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
