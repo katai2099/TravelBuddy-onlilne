@@ -3,6 +3,7 @@ package com.example.travelbuddyv2;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,11 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.TripSelectionAdapter;
 import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.tripModel;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +42,8 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
     double googleMapPlaceLat;
     double googleMapPlaceLong;
     String googleMapAddress;
+
+    ProgressBar progressBar;
 
 
     public PersonalTripSelectionFragment() {
@@ -75,6 +80,7 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
         tripModelList = new ArrayList<>();
         tripSelectionAdapter = new TripSelectionAdapter(tripModelList,this);
         rcvTrip = root.findViewById(R.id.rcvFragmentPersonalTripSelection);
+        progressBar = root.findViewById(R.id.simpleProgressBar);
         rcvTrip.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvTrip.setAdapter(tripSelectionAdapter);
         fillListWithTrip();
@@ -96,6 +102,12 @@ public class PersonalTripSelectionFragment extends Fragment implements TripSelec
                     tripModelList.add(tmp);
                 }
                 tripSelectionAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.GONE);
             }
         });
 

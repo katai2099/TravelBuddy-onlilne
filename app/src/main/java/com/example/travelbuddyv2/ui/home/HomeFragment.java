@@ -72,7 +72,6 @@ public class HomeFragment extends Fragment  {
 
         rcvTriplist = root.findViewById(R.id.rcvFragmentHomeTriplist);
         rcvTriplist.setLayoutManager(new LinearLayoutManager(getActivity()));
-       // tripAdapter = new TripAdapter(tripLists);
 
         rcvTriplist.setAdapter(tripAdapter);
 

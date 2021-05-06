@@ -12,10 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.TripSelectionAdapter;
 import com.example.travelbuddyv2.model.Destination;
+import com.example.travelbuddyv2.model.Member;
 import com.example.travelbuddyv2.model.tripModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +38,7 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
     TripSelectionAdapter tripSelectionAdapter;
     RecyclerView rcvTrip;
     Destination destination;
+    ProgressBar progressBar;
 
     public GroupTripSelectionFragment() {
         // Required empty public constructor
@@ -70,6 +73,7 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
         groupTripList = new ArrayList<>();
         tripSelectionAdapter = new TripSelectionAdapter(groupTripList,this);
         rcvTrip = root.findViewById(R.id.rcvFragmentGroupTripSelection);
+        progressBar = root.findViewById(R.id.simpleProgressBar);
         rcvTrip.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvTrip.setAdapter(tripSelectionAdapter);
         initializeGroupTripList();
@@ -95,11 +99,12 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
                     }
                 }
                 tripSelectionAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -108,10 +113,8 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
     @Override
     public void onTripClicked(int position) {
 
-        Intent i = new Intent(getContext(), DateSelectionActivity.class);
-
         tripModel trip = groupTripList.get(position);
-
+        final Intent i = new Intent(getContext(), DateSelectionActivity.class);
         i.putExtra("tripStringId",trip.getStringID());
         i.putExtra("googleMapPlaceName",destination.getName());
         i.putExtra("googleMapPlaceID",destination.getPlaceId());
@@ -120,7 +123,28 @@ public class GroupTripSelectionFragment extends Fragment implements TripSelectio
         i.putExtra("googleMapAddress",destination.getAddress());
         i.putExtra("isFromPersonalTrip",false);
         i.putExtra("tripOwnerUUID",trip.getOwner());
-        startActivity(i);
+
+        //check if current user has permission to edit the trip
+        DatabaseReference MemberNode = FirebaseDatabase.getInstance().getReference().child("Member")
+                .child(trip.getOwner())
+                .child(trip.getStringID())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        MemberNode.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                Member currentUser = dataSnapshot.getValue(Member.class);
+                if(currentUser.getPermission().equals("edit")){
+                    startActivity(i);
+                }else{
+                    Toast.makeText(getContext(),"You do not have permission to edit",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+       // startActivity(i);
 
     }
+
+
 }

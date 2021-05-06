@@ -5,62 +5,76 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="3dp"
+    app:cardCornerRadius="10dp"
     app:cardElevation="3dp"
     app:cardUseCompatPadding="true"
     android:foreground="?attr/selectableItemBackground"
     >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="3dp">
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tripNameListAdapter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:layout_marginTop="10dp"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:layout_toStartOf="@id/tripInviteFriend"
-        android:gravity="center|start"
-        android:textSize="18sp"
-        android:textColor="@color/quantum_black_100"
-        />
+        <View
+            android:layout_width="10dp"
+            android:background="#0faaae"
+            android:layout_height="match_parent"/>
 
-    <TextView
-        android:id="@+id/tripDateListAdapter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tripNameListAdapter"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="5dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="10dp"
-        android:textSize="14sp"
-         />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp">
 
-        <Button
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:id="@+id/tripInviteFriend"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_toStartOf="@+id/tripRemove"
-            android:background="@drawable/ic_baseline_person_add_alt_1_24"
-            />
-        <Button
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:id="@+id/tripRemove"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/ic_baseline_delete_forever_24"
-            />
+            <TextView
+                android:ellipsize="end"
+                android:id="@+id/tripNameListAdapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_marginTop="10dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:layout_toStartOf="@id/tripInviteFriend"
+                android:gravity="center|start"
+                android:textSize="18sp"
+                android:textColor="@color/quantum_black_100"
+                />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tripDateListAdapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tripNameListAdapter"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="14sp"
+                />
+
+            <Button
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:id="@+id/tripInviteFriend"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_toStartOf="@+id/tripRemove"
+                android:background="@drawable/ic_baseline_person_add_alt_1_24"
+                />
+            <Button
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:id="@+id/tripRemove"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_baseline_delete_forever_24"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
 
 </androidx.cardview.widget.CardView>
 

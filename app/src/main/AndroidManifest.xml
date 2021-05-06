@@ -114,6 +114,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".addNewTrip"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Main2Activity"
              />
 
         <receiver android:name=".ReminderBroadcast" />

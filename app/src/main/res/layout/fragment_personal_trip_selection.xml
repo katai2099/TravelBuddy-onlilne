@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     tools:context=".PersonalTripSelectionFragment">
 
+
+    <ProgressBar
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:id="@+id/simpleProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvFragmentPersonalTripSelection"
         android:layout_width="match_parent"

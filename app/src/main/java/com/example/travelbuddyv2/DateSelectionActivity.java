@@ -9,10 +9,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.DateSelectionAdapter;
 import com.example.travelbuddyv2.model.Destination;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +42,7 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
     HashMap<String,Integer> dateAndItsIdPair;
     boolean isFromPersonalTrip;
     String tripOwnerUUID;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +69,10 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
             tripOwnerUUID = bundle.getString("tripOwnerUUID");
         }
 
-
-
         dates = new ArrayList<>();
-
         dateSelectionAdapter = new DateSelectionAdapter(dates,this);
-
         rcvDate = findViewById(R.id.rcvDateSelection);
+        progressBar = findViewById(R.id.simpleProgressBar);
         rcvDate.setLayoutManager(new LinearLayoutManager(this));
         rcvDate.setAdapter(dateSelectionAdapter);
 
@@ -89,11 +90,9 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
     }
 
     private void fillListWithDate(String owner){
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(owner)
                 .child(tripStringID);
-
         reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
@@ -103,6 +102,12 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
                 }
                 Log.d(tag,dateAndItsIdPair.toString());
                 dateSelectionAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
