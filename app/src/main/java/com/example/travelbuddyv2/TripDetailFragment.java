@@ -162,7 +162,9 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
 
     @Override
     public void onListClicked(int position) {
-        rcvTripDetail.scrollToPosition(position);
+        LinearLayoutManager linear =  (LinearLayoutManager)rcvTripDetail.getLayoutManager();
+        assert linear != null;
+        linear.scrollToPositionWithOffset(position,0);
         for(int i=0;i<dayList.size();i++){
             if(i!=position){
                 TextView tmp = rcvDays.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tvDayRow);

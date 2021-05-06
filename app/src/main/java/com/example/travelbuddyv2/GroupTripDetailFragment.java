@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.ChildTripDetailAdapter;
 import com.example.travelbuddyv2.adapter.DayAdapter;
-import com.example.travelbuddyv2.adapter.GroupTripAdapter;
 import com.example.travelbuddyv2.adapter.ParentGroupTripDetailAdapter;
 import com.example.travelbuddyv2.model.Destination;
 import com.example.travelbuddyv2.model.Member;
@@ -37,12 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -56,7 +49,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
 
     List<TripSection> tripSectionList;
     ParentGroupTripDetailAdapter parentGroupTripDetailAdapter;
-    RecyclerView rcvGroupTripDetailView,rcvDays;
+    RecyclerView rcvGroupTripDetail,rcvDays;
     List<String> dayList;
     DayAdapter dayAdapter;
     View updatingText;
@@ -95,10 +88,10 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         View root = inflater.inflate(R.layout.fragment_group_trip_detail, container, false);
         tripSectionList = new ArrayList<>();
         parentGroupTripDetailAdapter = new ParentGroupTripDetailAdapter(tripSectionList,this,this);
-        rcvGroupTripDetailView = root.findViewById(R.id.rcvFragmentGroupTripDetail);
+        rcvGroupTripDetail = root.findViewById(R.id.rcvFragmentGroupTripDetail);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        rcvGroupTripDetailView.setLayoutManager(layoutManager);
-        rcvGroupTripDetailView.setAdapter(parentGroupTripDetailAdapter);
+        rcvGroupTripDetail.setLayoutManager(layoutManager);
+        rcvGroupTripDetail.setAdapter(parentGroupTripDetailAdapter);
         //
         dayList = new ArrayList<>();
         rcvDays = root.findViewById(R.id.rcvFragmentGroupTripDetailToSelectedList);
@@ -114,11 +107,11 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     }
 
     private void registerOnScrollListener(){
-        rcvGroupTripDetailView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        rcvGroupTripDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int position = ((LinearLayoutManager)rcvGroupTripDetailView.getLayoutManager())
+                int position = ((LinearLayoutManager) rcvGroupTripDetail.getLayoutManager())
                         .findFirstVisibleItemPosition();
                 for(int i=0;i<dayList.size();i++){
                     if(i!=position){
@@ -213,7 +206,10 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     }
     @Override
     public void onListClicked(int position) {
-        rcvGroupTripDetailView.scrollToPosition(position);
+//        rcvGroupTripDetailView.scrollToPosition(position);
+        LinearLayoutManager linear =  (LinearLayoutManager) rcvGroupTripDetail.getLayoutManager();
+        assert linear != null;
+        linear.scrollToPositionWithOffset(position,0);
         for(int i=0;i<dayList.size();i++){
             if(i!=position){
                 TextView tmp = rcvDays.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tvDayRow);

@@ -385,7 +385,7 @@ public class Helper {
             else{
                 duration.append(" hour");
             }
-        }else if(hour != 0 && min != 0){
+        }else if(hour != 0){
             duration.append(hour);
             if(hour > 1)
                 duration.append(" hours ");

@@ -35,6 +35,8 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_baseline_email_24"
             android:drawablePadding="10dp"
+            android:inputType="text"
+            android:imeOptions="actionNext"
             android:hint="@string/email" />
 
 

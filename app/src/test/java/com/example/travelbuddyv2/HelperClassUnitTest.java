@@ -195,9 +195,47 @@ public class HelperClassUnitTest {
     }
 
     @Test
-    public void durationToText(){
+    public void minuteToHour(){
+        int actual = Helper.minutesToHour(70);
+        assertEquals(1,actual);
+        int actual2 = Helper.minutesToHour(120);
+        assertEquals(2,actual2);
+    }
+
+    @Test
+    public void minuteToMinute(){
+        int actual = Helper.minutesToMinute(70);
+        assertEquals(10,actual);
+        int actual2 = Helper.minutesToMinute(70);
+        assertNotEquals(70,actual2);
+    }
+
+    @Test
+    public void durationToTextWithBothHourAndMin(){
         String actual = Helper.changeDurationToText(2,1);
-        assertEquals("23",actual);
+        assertEquals("2 hours 1 min",actual);
+        String actual2 = Helper.changeDurationToText(1,12);
+        assertEquals("1 hour 12 mins",actual2);
+        String actual3 = Helper.changeDurationToText(1,1);
+        assertEquals("1 hour 1 min",actual3);
+        String actual4 = Helper.changeDurationToText(2,59);
+        assertEquals("2 hours 59 mins",actual4);
+    }
+
+    @Test
+    public void durationToTextOnlyHour(){
+        String actual = Helper.changeDurationToText(1,0);
+        assertEquals("1 hour",actual);
+        String actual2 = Helper.changeDurationToText(2,0);
+        assertEquals("2 hours",actual2);
+    }
+
+    @Test
+    public void durationToTextOnlyMin(){
+        String actual = Helper.changeDurationToText(0,1);
+        assertEquals("1 min",actual);
+        String actual2 = Helper.changeDurationToText(0,12);
+        assertEquals("12 mins",actual2);
     }
 
 

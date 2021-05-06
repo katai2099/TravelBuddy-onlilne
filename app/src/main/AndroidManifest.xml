@@ -36,7 +36,8 @@
 
         <activity
             android:name=".AttractionDetailActivity"
-            android:label="@string/title_activity_attraction_detail"></activity>
+            android:label="@string/title_activity_attraction_detail"
+            android:screenOrientation="portrait" />
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,19 +45,33 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ClickedItemActivity" />
-        <activity android:name=".PermissionModificationActivity" />
-        <activity android:name=".MemberActivity" />
+        <activity
+            android:name=".ClickedItemActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PermissionModificationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MemberActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".GroupTripDetailActivity"
             android:label="@string/title_activity_group_trip_detail"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".DateSelectionActivity" />
-        <activity android:name=".TripSelectionActivity" />
+        <activity
+            android:name=".DateSelectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TripSelectionActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ResetPasswordActivity"
-            android:parentActivityName=".loginActivity" />
-        <activity android:name=".ResetPasswordCompletedActivity" />
+            android:parentActivityName=".loginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ResetPasswordCompletedActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -67,26 +82,36 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity android:name=".InviteFriendActivity" />
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".InviteFriendActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".TripDetailActivity"
             android:label="@string/title_activity_trip_detail"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Main2Activity"
-            android:label="@string/title_activity_main2">
+            android:label="@string/title_activity_main2"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".Main2Activity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".confirmEmailActivity" />
+        <activity
+            android:name=".confirmEmailActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".registerActivity"
-            android:parentActivityName=".loginActivity" />
-        <activity android:name=".loginActivity"></activity>
+            android:parentActivityName=".loginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".loginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".EditTripDetailWithAdditionalData"
             android:theme="@style/Theme.AppCompat.Dialog" />

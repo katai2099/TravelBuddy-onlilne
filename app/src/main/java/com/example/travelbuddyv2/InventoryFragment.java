@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.travelbuddyv2.adapter.InventoryGridViewAdapter;
@@ -63,6 +64,7 @@ import java.util.List;
 public class InventoryFragment extends Fragment implements InventoryListViewAdapter.InventoryAdapterCallBack ,
             InventoryGridViewAdapter.InventoryGridViewAdapterCallBack {
 
+    TextView itemSize;
     Boolean isListView = true ;
     ImageButton btnListView,btnGridView;
     RecyclerView rcvItems;
@@ -111,6 +113,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                 tripOwner = bundle.getString("TRIP_OWNER");
             }
         }
+        itemSize = root.findViewById(R.id.itemSize);
         emptyListPlaceholder = root.findViewById(R.id.emptyListPlaceholder);
         btnGridView = root.findViewById(R.id.btnGridView);
         btnListView = root.findViewById(R.id.btnListView);
@@ -299,6 +302,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                         btnListView.setVisibility(View.GONE);
                     }
                     emptyListPlaceholder.setVisibility(View.VISIBLE);
+                    itemSize.setVisibility(View.INVISIBLE);
                 }else{
                     if(isListView){
                         btnGridView.setVisibility(View.VISIBLE);
@@ -306,6 +310,11 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                         btnListView.setVisibility(View.VISIBLE);
                     }
                     emptyListPlaceholder.setVisibility(View.INVISIBLE);
+                    if(inventoryList.size()>1)
+                        itemSize.setText(inventoryList.size() + " files");
+                    else {
+                        itemSize.setText(inventoryList.size() + " file");
+                    }
                 }
                 inventoryAdapter.notifyDataSetChanged();
                 inventoryGridViewAdapter.notifyDataSetChanged();

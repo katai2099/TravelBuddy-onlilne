@@ -1,5 +1,8 @@
 package com.example.travelbuddyv2;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -89,6 +92,7 @@ import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private ActivityResultLauncher<String> permissionResult;
     private float offset;
     private final String tag = "MAP_ACTIVITY";
     private boolean isWorkingButton = true;
@@ -121,6 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerAskingForPermission();
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
          mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -158,7 +163,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnSearchForAttraction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  locationButton.performClick();
+                if(locationButton!=null){
+                    locationButton.performClick();
+                }
                 findNearByAttraction();
                 btnSearchForAttraction.setVisibility(View.GONE);
                 btnHideAttraction.setVisibility(View.VISIBLE);
@@ -199,9 +206,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
-                if(enabled && (googleMapInformationLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED ||
-                        googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)){
-                    Log.d(tag,"Search typed");
+//                if(enabled && (googleMapInformationLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED ||
+//                        googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)){
+//                    Log.d(tag,"Search typed");
+//                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+//                }
+                if(enabled){
                     googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
                 if(enabled && (btnHideAttraction.getVisibility() == View.VISIBLE || btnSearchForAttraction.getVisibility() == View.VISIBLE)){
@@ -367,7 +377,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+           // ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }else{
             behaviorWhenLocationPermissionIsGiven(googleMap);
         }
@@ -411,8 +422,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(imm!=null){
                     imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(),0);
                 }
-                materialSearchBar.closeSearch();
-                materialSearchBar.clearSuggestions();
+                if(materialSearchBar.isSearchOpened()) {
+                    materialSearchBar.closeSearch();
+                    materialSearchBar.clearSuggestions();
+                }
                 final String placeId = pointOfInterest.placeId;
                 final String placeName = pointOfInterest.name;
                 final LatLng placeLatLng = pointOfInterest.latLng;
@@ -436,7 +449,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
- /*   @Override
+    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 51) {
@@ -445,7 +458,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
-    }*/
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -478,7 +491,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
 
-            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
 
         }else{
             fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -599,13 +613,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED){
                     btnAddTrip.setVisibility(View.VISIBLE);
                 }
-                if(offset>1 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING)
-                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                Log.d(tag,previousState.name() + " previous state");
-                Log.d(tag,newState.name() + " previous state");
-                if(materialSearchBar.isSearchOpened()){
-                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-                }
+//                if(offset>1 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING)
+//                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+//                Log.d(tag,previousState.name() + " previous state");
+//                Log.d(tag,newState.name() + " previous state");
+//                if(materialSearchBar.isSearchOpened()){
+//                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+//                }
             }
         });
 
@@ -873,6 +887,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }else if(btnHideAttraction.getVisibility() == View.VISIBLE){
             btnHideAttraction.setVisibility(View.GONE);
         }
+    }
+
+    public void registerAskingForPermission(){
+        permissionResult = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
+            @Override
+            public void onActivityResult(Boolean result) {
+                if(result){
+                    getDeviceLocation();
+                    behaviorWhenLocationPermissionIsGiven(mMap);
+                }else{
+                    behaviorWhenLocationPermissionIsNotGiven();
+                }
+            }
+        });
     }
 
 

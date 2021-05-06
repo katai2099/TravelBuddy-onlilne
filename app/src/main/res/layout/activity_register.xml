@@ -48,6 +48,8 @@
             android:ems="15"
             android:drawableStart="@drawable/ic_baseline_email_24"
             android:drawablePadding="10dp"
+            android:inputType="text"
+            android:imeOptions="actionNext"
             />
 
     </com.google.android.material.textfield.TextInputLayout>

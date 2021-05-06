@@ -53,5 +53,6 @@
     <string name="trip_name">Trip name</string>
     <string name="resend_email">Resend email</string>
     <string name="updating">updating...</string>
+    <string name="title_activity_maps2">Map</string>
 
 </resources>

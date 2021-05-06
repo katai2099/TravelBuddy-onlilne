@@ -1,5 +1,6 @@
 package com.example.travelbuddyv2.adapter;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelbuddyv2.Helper;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.model.Inventory;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -46,6 +48,8 @@ public class InventoryGridViewAdapter extends RecyclerView.Adapter<InventoryGrid
         Inventory currentInventory = inventoryList.get(position);
 
         holder.tvInventoryName.setText(currentInventory.getFileName());
+        if(currentInventory.getOwner().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+            holder.tvInventoryName.setTextColor(Color.parseColor("#0faaae"));
         if(Helper.isPdf(currentInventory.getFileName())){
             holder.imgInventoryThumbnail.setImageResource(R.drawable.ic_baseline_picture_as_pdf_24);
         }

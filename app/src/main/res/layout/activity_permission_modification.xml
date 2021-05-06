@@ -4,48 +4,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".PermissionModificationActivity">
 
-    <TextView
-        android:id="@+id/tvCanEdit"
+
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:id="@+id/firstLayout"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_toEndOf="@id/imgTick1"
-        android:text="Can Edit"
-        android:textColor="@color/quantum_black_100"
-        android:gravity="bottom"
-        android:paddingLeft="10dp"
-        />
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imgTick1"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/ic_baseline_check_24" />
+        <ImageView
+            android:layout_marginTop="3dp"
+            android:layout_marginStart="5dp"
+            android:id="@+id/imgTick1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_baseline_check_24" />
 
-    <TextView
-        android:id="@+id/tvCanView"
+        <TextView
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/tvCanEdit"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_toEndOf="@id/imgTick1"
+            android:text="Can Edit"
+            android:textColor="@color/quantum_black_100"
+            android:gravity="bottom"
+            android:paddingLeft="10dp"
+            />
+
+
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/separatorDividerline"
+        android:layout_below="@+id/firstLayout"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_toEndOf="@id/imgTick2"
-        android:layout_below="@id/tvCanEdit"
-        android:text="Can View"
-        android:textColor="@color/quantum_black_100"
-        android:gravity="bottom"
-        android:paddingLeft="10dp"/>
+        android:layout_height="2dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray" />
 
-    <ImageView
-        android:id="@+id/imgTick2"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_below="@id/imgTick1"
-        android:background="@drawable/ic_baseline_check_24"/>
+
+
+    <View
+        android:layout_below="@+id/secondLayout"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray" />
+
+    <LinearLayout
+        android:layout_below="@id/separatorDividerline"
+        android:id="@+id/secondLayout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginTop="3dp"
+            android:paddingTop="5dp"
+            android:layout_marginStart="5dp"
+            android:id="@+id/imgTick2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/separatorDividerline"
+            android:background="@drawable/ic_baseline_check_24"/>
+
+        <TextView
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/tvCanView"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="Can View"
+            android:textColor="@color/quantum_black_100"
+            android:gravity="bottom"
+            android:paddingLeft="10dp"/>
+
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvOptionDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imgTick2"/>
+        android:layout_below="@id/secondLayout"/>
+
 
 </RelativeLayout>

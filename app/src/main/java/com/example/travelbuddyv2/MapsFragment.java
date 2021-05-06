@@ -1,5 +1,8 @@
 package com.example.travelbuddyv2;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -105,6 +108,9 @@ import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment {
 
+
+
+    private ActivityResultLauncher<String> permissionResult;
     private float offset;
     private boolean isWorkingButton = true;
     private boolean isHideAttractionButtonHide = true;
@@ -152,7 +158,8 @@ public class MapsFragment extends Fragment {
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
                 Log.d(tag, "ASKING FOR PERMISSION");
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                //requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
             } else {
                 behaviorWhenLocationPermissionIsGiven(googleMap);
             }
@@ -187,8 +194,10 @@ public class MapsFragment extends Fragment {
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(), 0);
                     }
-                    materialSearchBar.closeSearch();
-                    materialSearchBar.clearSuggestions();
+                    if(materialSearchBar.isSearchOpened()){
+                        materialSearchBar.closeSearch();
+                        materialSearchBar.clearSuggestions();
+                    }
                     final String placeName = pointOfInterest.name;
                     final String placeId = pointOfInterest.placeId;
                     final LatLng placeLatLng = pointOfInterest.latLng;
@@ -212,6 +221,7 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        registerAskingForPermission();
         View root = inflater.inflate(R.layout.fragment_maps, container, false);
         materialSearchBar = root.findViewById(R.id.searchBar);
         googleMapInformationLayout = root.findViewById(R.id.sliding_layout);
@@ -251,13 +261,14 @@ public class MapsFragment extends Fragment {
                 isHideAttractionButtonHide = true;
             }
         });
-
-
         materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
-                if (enabled && (googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
-                        googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)) {
+//                if (enabled && (googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
+//                        googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)) {
+//                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+//                }
+                if(enabled){
                     googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
                 if (enabled && (btnHideAttraction.getVisibility() == View.VISIBLE || btnSearchForAttraction.getVisibility() == View.VISIBLE)) {
@@ -277,6 +288,7 @@ public class MapsFragment extends Fragment {
                     materialSearchBar.closeSearch();
                     materialSearchBar.clearSuggestions();
                     setButtonVisible();
+                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
             }
         });
@@ -349,7 +361,7 @@ public class MapsFragment extends Fragment {
                 setButtonGone();
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
-                    imm.hideSoftInputFromWindow(getView().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
                 final String placeId = selectedPrediction.getPlaceId();
                 List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.NAME);
@@ -397,7 +409,7 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    /*  @Override
+      @Override
       public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
           super.onActivityResult(requestCode, resultCode, data);
           if (requestCode == 51) {
@@ -405,26 +417,27 @@ public class MapsFragment extends Fragment {
                   getDeviceLocation();
               }
           }
-      }*/
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(tag, "GET PERMISSION RESULT");
-        switch (requestCode) {
-            case 1:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(tag, "PERMISSION GRANTED");
-                    if (ContextCompat.checkSelfPermission(getContext(),
-                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        Log.d(tag, "ACCESS_FIND_LOCATION GRANTED");
-                        getDeviceLocation();
-                        behaviorWhenLocationPermissionIsGiven(map);
-                    }
-                } else {
-                    Log.d(tag, "PERMISSION DENIED");
-                    behaviorWhenLocationPermissionIsNotGiven();
-                }
-        }
-    }
+      }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        Log.d(tag, "GET PERMISSION RESULT");
+//        switch (requestCode) {
+//            case 1:
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Log.d(tag, "PERMISSION GRANTED");
+//                    if (ContextCompat.checkSelfPermission(getContext(),
+//                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                        Log.d(tag, "ACCESS_FIND_LOCATION GRANTED");
+//                        getDeviceLocation();
+//                        behaviorWhenLocationPermissionIsGiven(map);
+//                    }
+//                } else {
+//                    Log.d(tag, "PERMISSION DENIED");
+//                    behaviorWhenLocationPermissionIsNotGiven();
+//                }
+//        }
+//    }
 
     public void getDeviceLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -435,8 +448,9 @@ public class MapsFragment extends Fragment {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
 
+           // ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
             fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
@@ -485,12 +499,12 @@ public class MapsFragment extends Fragment {
                 if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     btnAddTrip.setVisibility(View.VISIBLE);
                 }
-                if(offset>1 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING) {
-                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                }
-                if(materialSearchBar.isSearchOpened()){
-                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-                }
+//                if(offset>1 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING) {
+//                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+//                }
+//                if(materialSearchBar.isSearchOpened()){
+//                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+//                }
                 Log.d(tag,previousState.name() + " previous state");
                 Log.d(tag,newState.name() + " new state");
             }
@@ -692,6 +706,20 @@ public class MapsFragment extends Fragment {
                     } catch (IntentSender.SendIntentException e1) {
                         e1.printStackTrace();
                     }
+                }
+            }
+        });
+    }
+
+    public void registerAskingForPermission(){
+        permissionResult = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
+            @Override
+            public void onActivityResult(Boolean result) {
+                if(result){
+                    getDeviceLocation();
+                    behaviorWhenLocationPermissionIsGiven(map);
+                }else{
+                    behaviorWhenLocationPermissionIsNotGiven();
                 }
             }
         });
