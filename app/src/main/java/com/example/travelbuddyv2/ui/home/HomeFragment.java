@@ -25,7 +25,6 @@ import com.example.travelbuddyv2.adapter.TripAdapter;
 import com.example.travelbuddyv2.addNewTrip;
 import com.example.travelbuddyv2.loginActivity;
 import com.example.travelbuddyv2.model.tripModel;
-import com.example.travelbuddyv2.myTripAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements myTripAdapter.OnListListener {
+public class HomeFragment extends Fragment  {
 
     int ID = 0;
 
@@ -144,15 +143,6 @@ public class HomeFragment extends Fragment implements myTripAdapter.OnListListen
         FirebaseAuth.getInstance().signOut();
 
     }
-
-
-
-    @Override
-    public void onListClick(int position) {
-
-
-    }
-
 
 
 }
