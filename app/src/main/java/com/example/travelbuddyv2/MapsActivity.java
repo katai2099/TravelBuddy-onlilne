@@ -128,7 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         registerAskingForPermission();
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-         mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapView = mapFragment.getView();
@@ -163,7 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnSearchForAttraction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(locationButton!=null){
+                if (currentLng != 0 || currentLat != 0) {
                     locationButton.performClick();
                 }
                 findNearByAttraction();
@@ -211,10 +211,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                    Log.d(tag,"Search typed");
 //                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 //                }
-                if(enabled){
+                if (enabled) {
                     googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
-                if(enabled && (btnHideAttraction.getVisibility() == View.VISIBLE || btnSearchForAttraction.getVisibility() == View.VISIBLE)){
+                if (enabled && (btnHideAttraction.getVisibility() == View.VISIBLE || btnSearchForAttraction.getVisibility() == View.VISIBLE)) {
                     setButtonGone();
                 }
             }
@@ -246,7 +246,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                String countryCode="HU";
+                String countryCode = "HU";
                 Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
                 try {
@@ -259,7 +259,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
 
-                Log.d(tag,countryCode);
+                Log.d(tag, countryCode);
                 FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                         .setCountry(countryCode)
                         .setTypeFilter(TypeFilter.ESTABLISHMENT)
@@ -272,19 +272,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         predictionList = findAutocompletePredictionsResponse.getAutocompletePredictions();
                         List<String> suggestionList = new ArrayList<>();
-                        for(int i=0;i<predictionList.size();i++){
+                        for (int i = 0; i < predictionList.size(); i++) {
                             AutocompletePrediction prediction = predictionList.get(i);
                             suggestionList.add(prediction.getFullText(null).toString());
                         }
                         materialSearchBar.updateLastSuggestions(suggestionList);
-                        if(!materialSearchBar.isSuggestionsVisible()){
+                        if (!materialSearchBar.isSuggestionsVisible()) {
                             materialSearchBar.showSuggestionsList();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if(e instanceof ApiException){
+                        if (e instanceof ApiException) {
                             ApiException apiException = (ApiException) e;
                             Log.d(tag, String.valueOf(apiException.getStatusCode()));
                         }
@@ -295,7 +295,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().isEmpty())
+                if (s.toString().isEmpty())
                     materialSearchBar.clearSuggestions();
             }
         });
@@ -303,7 +303,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         materialSearchBar.setSuggestionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
             @Override
             public void OnItemClickListener(int position, View v) {
-                if(position >= predictionList.size()){
+                if (position >= predictionList.size()) {
                     return;
                 }
                 materialSearchBar.closeSearch();
@@ -314,12 +314,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                if(imm!=null){
-                    imm.hideSoftInputFromWindow(v.getWindowToken(),InputMethodManager.HIDE_IMPLICIT_ONLY);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
                 }
 
                 final String placeId = selectedPrediction.getPlaceId();
-                List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG,Place.Field.NAME);
+                List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.NAME);
 
                 FetchPlaceRequest fetchPlaceRequest = FetchPlaceRequest.builder(placeId, placeFields).build();
                 placesClient.fetchPlace(fetchPlaceRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
@@ -328,7 +328,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Place place = fetchPlaceResponse.getPlace();
                         LatLng latLngOfPlace = place.getLatLng();
                         String placeName = place.getName();
-                        if (latLngOfPlace != null && placeName!=null) {
+                        if (latLngOfPlace != null && placeName != null) {
                             mMap.clear();
                             MarkerOptions markerOptions = new MarkerOptions();
                             markerOptions.title(placeName);
@@ -337,7 +337,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mMap.addMarker(markerOptions);
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOfPlace, 15));
 
-                            showBottomLayoutWithDetail(placeId,placeName,latLngOfPlace);
+                            showBottomLayoutWithDetail(placeId, placeName, latLngOfPlace);
 
                         }
                     }
@@ -366,7 +366,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(tag,"I AM HERE");
+        Log.d(tag, "I AM HERE");
         mapView = mapFragment.getView();
         mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -377,12 +377,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-           // ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            // ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
-        }else{
+        } else {
             behaviorWhenLocationPermissionIsGiven(googleMap);
         }
-
 
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -390,7 +389,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapClick(LatLng latLng) {
                 googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 setButtonVisible();
-                if(materialSearchBar.isSearchOpened()){
+                if (materialSearchBar.isSearchOpened()) {
                     materialSearchBar.clearSuggestions();
                     materialSearchBar.closeSearch();
                 }
@@ -419,10 +418,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 setButtonGone();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                if(imm!=null){
-                    imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(),0);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(), 0);
                 }
-                if(materialSearchBar.isSearchOpened()) {
+                if (materialSearchBar.isSearchOpened()) {
                     materialSearchBar.closeSearch();
                     materialSearchBar.clearSuggestions();
                 }
@@ -430,8 +429,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 final String placeName = pointOfInterest.name;
                 final LatLng placeLatLng = pointOfInterest.latLng;
 
-            showBottomLayoutWithDetail(placeId,placeName,placeLatLng);
-
+                showBottomLayoutWithDetail(placeId, placeName, placeLatLng);
 
 
             }
@@ -440,9 +438,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Log.d(tag,marker.getSnippet());
+                Log.d(tag, marker.getSnippet());
                 setButtonGone();
-                showBottomLayoutWithDetail(marker.getSnippet(),marker.getTitle(),marker.getPosition());
+                showBottomLayoutWithDetail(marker.getSnippet(), marker.getTitle(), marker.getPosition());
                 return true;
             }
         });
@@ -494,15 +492,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
 
-        }else{
+        } else {
             fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
                     if (task.isSuccessful()) {
-                        Log.d(tag,"GET DEVICE LOCATION SUCCESSFUL");
+                        Log.d(tag, "GET DEVICE LOCATION SUCCESSFUL");
                         lastKnownLocation = task.getResult();
-                        if(lastKnownLocation!=null){
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude()),15));
+                        if (lastKnownLocation != null) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), 15));
                             currentLat = lastKnownLocation.getLatitude();
                             currentLng = lastKnownLocation.getLongitude();
                         }
@@ -526,10 +524,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         googleMap.setMyLocationEnabled(true);
         Log.d(tag, String.valueOf(googleMap.isMyLocationEnabled()));
 
-        if(mapView==null) {
-            Log.d(tag,"Map view null") ;
-        }else{
-            Log.d(tag,"Map view is not null");
+        if (mapView == null) {
+            Log.d(tag, "Map view null");
+        } else {
+            Log.d(tag, "Map view is not null");
         }
 
         if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
@@ -538,7 +536,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 40, 80);
-            Log.d(tag,"Tryna locate get current location button");
+            Log.d(tag, "Tryna locate get current location button");
         }
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
@@ -550,7 +548,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
             @Override
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                Log.d(tag,"TRY TO GET DEVICE LOCATION");
+                Log.d(tag, "TRY TO GET DEVICE LOCATION");
                 getDeviceLocation();
             }
         });
@@ -569,15 +567,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void findNearByAttraction(){
+    private void findNearByAttraction() {
 
-        String url =  "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
-                "location=" + currentLat + "," + currentLng +
-                "&radius=1000" +
-                "&type=tourist_attraction" +
-                "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
-
-        new PlaceTask(mMap).execute(url);
+        if (currentLat == 0 || currentLng == 0) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            }else {
+                fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(tag, "GET DEVICE LOCATION SUCCESSFUL");
+                            lastKnownLocation = task.getResult();
+                            if (lastKnownLocation != null) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), 15));
+                                currentLat = lastKnownLocation.getLatitude();
+                                currentLng = lastKnownLocation.getLongitude();
+                                String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                                        "location=" + currentLat + "," + currentLng +
+                                        "&radius=1000" +
+                                        "&type=tourist_attraction" +
+                                        "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
+                                new PlaceTask(mMap).execute(url);
+                            }
+                        } else {
+                            Toast.makeText(MapsActivity.this, "Unable to get last location, please try again", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }else {
+            String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                    "location=" + currentLat + "," + currentLng +
+                    "&radius=1000" +
+                    "&type=tourist_attraction" +
+                    "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
+            new PlaceTask(mMap).execute(url);
+        }
     }
 
     private void initPlaceInformationLayout(){

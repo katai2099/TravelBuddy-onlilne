@@ -77,25 +77,11 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -107,7 +93,6 @@ import java.util.Locale;
 import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment {
-
 
 
     private ActivityResultLauncher<String> permissionResult;
@@ -194,7 +179,7 @@ public class MapsFragment extends Fragment {
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(), 0);
                     }
-                    if(materialSearchBar.isSearchOpened()){
+                    if (materialSearchBar.isSearchOpened()) {
                         materialSearchBar.closeSearch();
                         materialSearchBar.clearSuggestions();
                     }
@@ -243,7 +228,7 @@ public class MapsFragment extends Fragment {
         btnSearchForAttraction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(locationButton!=null){
+                if(currentLat != 0 || currentLng != 0){
                     locationButton.performClick();
                 }
                 findNearByAttraction();
@@ -268,13 +253,13 @@ public class MapsFragment extends Fragment {
 //                        googleMapInformationLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)) {
 //                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 //                }
-                if(enabled){
+                if (enabled) {
                     googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
                 if (enabled && (btnHideAttraction.getVisibility() == View.VISIBLE || btnSearchForAttraction.getVisibility() == View.VISIBLE)) {
                     setButtonGone();
                 }
-                Log.d(tag,enabled + " search state");
+                Log.d(tag, enabled + " search state");
             }
 
             @Override
@@ -345,7 +330,7 @@ public class MapsFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().isEmpty())
+                if (s.toString().isEmpty())
                     materialSearchBar.clearSuggestions();
             }
         });
@@ -388,11 +373,11 @@ public class MapsFragment extends Fragment {
 
             @Override
             public void OnItemDeleteListener(int position, View v) {
-               List tmp = materialSearchBar.getLastSuggestions();
-               Log.d(tag,"position " + position);
-                Log.d(tag,"last suggestion size " + tmp.size());
-               tmp.remove(position);
-               materialSearchBar.updateLastSuggestions(tmp);
+                List tmp = materialSearchBar.getLastSuggestions();
+                Log.d(tag, "position " + position);
+                Log.d(tag, "last suggestion size " + tmp.size());
+                tmp.remove(position);
+                materialSearchBar.updateLastSuggestions(tmp);
             }
         });
         return root;
@@ -409,15 +394,15 @@ public class MapsFragment extends Fragment {
         }
     }
 
-      @Override
-      public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-          super.onActivityResult(requestCode, resultCode, data);
-          if (requestCode == 51) {
-              if (resultCode == RESULT_OK) {
-                  getDeviceLocation();
-              }
-          }
-      }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 51) {
+            if (resultCode == RESULT_OK) {
+                getDeviceLocation();
+            }
+        }
+    }
 
 
     public void getDeviceLocation() {
@@ -430,8 +415,7 @@ public class MapsFragment extends Fragment {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
-
-           // ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            // ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
             fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
@@ -442,9 +426,11 @@ public class MapsFragment extends Fragment {
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), 15));
                             currentLat = lastKnownLocation.getLatitude();
                             currentLng = lastKnownLocation.getLongitude();
+                            Log.d(tag, "lat " + currentLat);
+                            Log.d(tag, "lng " + currentLng);
                         }
                     } else {
-                        Toast.makeText(getContext(), "Unable to get last location", Toast.LENGTH_SHORT).show();
+                        Log.d(tag, "Fail retrieving last location");
                     }
                 }
             });
@@ -470,7 +456,7 @@ public class MapsFragment extends Fragment {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
                 offset = slideOffset;
-                if(slideOffset>0)
+                if (slideOffset > 0)
                     btnAddTrip.setVisibility(View.GONE);
                 Log.d(tag, String.valueOf(slideOffset));
             }
@@ -486,8 +472,8 @@ public class MapsFragment extends Fragment {
 //                if(materialSearchBar.isSearchOpened()){
 //                    googleMapInformationLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 //                }
-                Log.d(tag,previousState.name() + " previous state");
-                Log.d(tag,newState.name() + " new state");
+                Log.d(tag, previousState.name() + " previous state");
+                Log.d(tag, newState.name() + " new state");
             }
         });
     }
@@ -574,9 +560,9 @@ public class MapsFragment extends Fragment {
                             @Override
                             public void onSuccess(FetchPhotoResponse fetchPhotoResponse) {
                                 Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                                if(cnt ==0){
+                                if (cnt == 0) {
                                     locationSinglePic.setImageBitmap(bitmap);
-                                }else {
+                                } else {
                                     bitmapList.add(bitmap);
                                     googleMapPictureAdapter.notifyDataSetChanged();
                                 }
@@ -593,7 +579,7 @@ public class MapsFragment extends Fragment {
                             }
                         });
                     }
-                }else{
+                } else {
                     locationSinglePic.setImageResource(R.drawable.ic_baseline_photo_24);
                 }
             }
@@ -625,13 +611,42 @@ public class MapsFragment extends Fragment {
             }
         });
     }
+
     private void findNearByAttraction() {
-        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
-                "location=" + currentLat + "," + currentLng +
-                "&radius=1000" +
-                "&type=tourist_attraction" +
-                "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
-        new PlaceTask(map).execute(url);
+        if (currentLat == 0 || currentLng == 0) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            }else{
+                fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            lastKnownLocation = task.getResult();
+                            if (lastKnownLocation != null) {
+                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), 15));
+                                currentLat = lastKnownLocation.getLatitude();
+                                currentLng = lastKnownLocation.getLongitude();
+                                String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                                        "location=" + currentLat + "," + currentLng +
+                                        "&radius=1000" +
+                                        "&type=tourist_attraction" +
+                                        "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
+                                new PlaceTask(map).execute(url);
+                            }
+                        } else {
+                            Toast.makeText(getContext(),"Unable to get last location, please try again",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }else{
+            String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                    "location=" + currentLat + "," + currentLng +
+                    "&radius=1000" +
+                    "&type=tourist_attraction" +
+                    "&key=AIzaSyA9ND3V5NWS18Gr0sIjO-e1A3hPF1uONAw";
+            new PlaceTask(map).execute(url);
+        }
     }
 
     private void setButtonVisible() {
