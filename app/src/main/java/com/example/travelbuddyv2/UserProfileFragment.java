@@ -97,6 +97,7 @@ public class UserProfileFragment extends Fragment {
         tvLogOut = root.findViewById(R.id.tvUserLogOut);
         imgUserProfileImage = root.findViewById(R.id.imgProfilePic);
         loadingBar = new ProgressDialog(getContext());
+        loadingBar.setTitle("Updating");
         user = new User();
         getCurrentUserInformation();
         imgUserProfileImage.setImageResource(R.drawable.ic_baseline_person_24);
@@ -235,6 +236,15 @@ public class UserProfileFragment extends Fragment {
         filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                //update current user node
+                final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                //update current user in member node
+                final DatabaseReference memberReference = FirebaseDatabase.getInstance().getReference().child("Member");
+                //update current user in knownList node
+                final DatabaseReference knownListReference = FirebaseDatabase.getInstance().getReference().child("Known_lists");
+
                 if (task.isSuccessful()) {
                     final Task<Uri> firebaseUri = task.getResult().getStorage().getDownloadUrl();
                     firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -242,75 +252,71 @@ public class UserProfileFragment extends Fragment {
                         public void onSuccess(Uri uri) {
                             String downloadUrl = uri.toString();
                             user.setProfile_image(downloadUrl);
-                        }
-                    });
-                    //update current user node
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    //update current user in member node
-                    final DatabaseReference memberReference = FirebaseDatabase.getInstance().getReference().child("Member");
-                    //update current user in knownList node
-                    final DatabaseReference knownListReference = FirebaseDatabase.getInstance().getReference().child("Known_lists");
-                    reference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                memberReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        for (DataSnapshot tripOwner : snapshot.getChildren()) {
-                                            for (DataSnapshot tripStringID : tripOwner.getChildren()) {
-                                                for (DataSnapshot member : tripStringID.getChildren()) {
-                                                    Member currentMember = member.getValue(Member.class);
-                                                    if (currentMember.getID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                            && currentMember.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                                                        currentMember.setProfileImg(user.getProfile_image());
-                                                        DatabaseReference toUpdate = member.getRef();
-                                                        toUpdate.setValue(currentMember);
-                                                        break;
+                            reference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        memberReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for (DataSnapshot tripOwner : snapshot.getChildren()) {
+                                                    for (DataSnapshot tripStringID : tripOwner.getChildren()) {
+                                                        for (DataSnapshot member : tripStringID.getChildren()) {
+                                                            Member currentMember = member.getValue(Member.class);
+                                                            if (currentMember.getID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                    && currentMember.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                                                currentMember.setProfileImg(user.getProfile_image());
+                                                                DatabaseReference toUpdate = member.getRef();
+                                                                toUpdate.setValue(currentMember);
+                                                                break;
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                    }
-                                });
-                                knownListReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        for (DataSnapshot owner : snapshot.getChildren()) {
-                                            if (!owner.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                for (DataSnapshot userList : owner.getChildren()) {
-                                                    User currentUser = userList.getValue(User.class);
-                                                    if (currentUser.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                            && currentUser.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                                                        currentUser.setProfile_image(user.getProfile_image());
-                                                        DatabaseReference toUpdate = userList.getRef();
-                                                        toUpdate.setValue(currentUser);
-                                                        break;
+                                            }
+                                        });
+                                        knownListReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for (DataSnapshot owner : snapshot.getChildren()) {
+                                                    if (!owner.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                        for (DataSnapshot userList : owner.getChildren()) {
+                                                            User currentUser = userList.getValue(User.class);
+                                                            if (currentUser.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                    && currentUser.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                                                currentUser.setProfile_image(user.getProfile_image());
+                                                                DatabaseReference toUpdate = userList.getRef();
+                                                                toUpdate.setValue(currentUser);
+                                                                break;
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
+                                            }
+                                        });
+                                        Toast.makeText(getContext(), "Upload finished", Toast.LENGTH_SHORT).show();
+                                        loadingBar.dismiss();
+                                        Picasso.get().load(user.getProfile_image()).fit().into(imgUserProfileImage);
+                                    } else {
+                                        loadingBar.dismiss();
                                     }
-                                });
-                                Toast.makeText(getContext(), "Upload finished", Toast.LENGTH_SHORT).show();
-                                loadingBar.dismiss();
-                                Picasso.get().load(user.getProfile_image()).fit().into(imgUserProfileImage);
-                            } else {
-                                loadingBar.dismiss();
-                            }
+                                }
+                            });
+
                         }
                     });
+
+
                 } else {
                     String message = task.getException().toString();
                     Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
@@ -339,6 +345,7 @@ public class UserProfileFragment extends Fragment {
                 user.setEmail(tmp.getEmail());
                 user.setUser_id(tmp.getUser_id());
                 user.setProfile_image(tmp.getProfile_image());
+                user.setDeviceToken(tmp.getDeviceToken());
                 tvUserName.setText(user.getName());
                 tvUserEmail.setText(user.getEmail());
                 etEditProfileName.setText(user.getName());

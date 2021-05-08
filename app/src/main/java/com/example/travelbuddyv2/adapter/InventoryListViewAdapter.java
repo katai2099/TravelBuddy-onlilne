@@ -3,6 +3,7 @@ package com.example.travelbuddyv2.adapter;
 
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +26,8 @@ import java.util.List;
 
 public class InventoryListViewAdapter extends RecyclerView.Adapter <InventoryListViewAdapter.InventoryHolder> {
 
-
+    private int cnt = 0;
+    private final String tag = "inventoryAdapter";
     List<Inventory> inventoryList;
     InventoryAdapterCallBack inventoryAdapterCallBack;
 
@@ -51,14 +53,19 @@ public class InventoryListViewAdapter extends RecyclerView.Adapter <InventoryLis
         Inventory currentInventory = inventoryList.get(position);
 
         holder.tvInventoryName.setText(currentInventory.getFileName());
-        if(currentInventory.getOwner().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+        if(currentInventory.getOwner().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             holder.tvInventoryName.setTextColor(Color.parseColor("#0faaae"));
+            Log.d(tag, currentInventory.getFileName() +" Same item owner " + currentInventory.getOwner() + " current user " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }else{
+            holder.tvInventoryName.setTextColor(Color.parseColor("#000000"));
+        }
         if(Helper.isPdf(currentInventory.getFileName())){
             holder.imgInventoryThumbnail.setImageResource(R.drawable.ic_baseline_picture_as_pdf_24);
         }
         else{
             Picasso.get().load(currentInventory.getFileUri()).into(holder.imgInventoryThumbnail);
         }
+        holder.tvItemPermission.setText(currentInventory.getPermission());
 
 
         holder.btnInventoryOption.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +110,7 @@ public class InventoryListViewAdapter extends RecyclerView.Adapter <InventoryLis
 
     class InventoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        final TextView tvInventoryName;
+        final TextView tvInventoryName , tvItemPermission;
         final Button btnInventoryOption;
         final ImageView imgInventoryThumbnail;
 
@@ -111,6 +118,7 @@ public class InventoryListViewAdapter extends RecyclerView.Adapter <InventoryLis
             super(itemView);
 
             tvInventoryName = itemView.findViewById(R.id.tvInventoryName);
+            tvItemPermission = itemView.findViewById(R.id.tvItemPermission);
             btnInventoryOption = itemView.findViewById(R.id.btnInventoryOption);
             imgInventoryThumbnail = itemView.findViewById(R.id.imgInventoryThumbnail);
             itemView.setOnClickListener(this);

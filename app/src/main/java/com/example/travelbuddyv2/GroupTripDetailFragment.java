@@ -46,7 +46,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     private final String tag = "GROUPDETAILFRAGMENT";
     private boolean firstLoad = true;
     private String tripID, tripOwner;
-
+    private boolean isDayListClicked = false;
     List<TripSection> tripSectionList;
     ParentGroupTripDetailAdapter parentGroupTripDetailAdapter;
     RecyclerView rcvGroupTripDetail,rcvDays;
@@ -111,21 +111,20 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int position = ((LinearLayoutManager) rcvGroupTripDetail.getLayoutManager())
-                        .findFirstVisibleItemPosition();
-                for(int i=0;i<dayList.size();i++){
-                    if(i!=position){
-                        TextView tmp = rcvDays.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tvDayRow);
-                        tmp.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+                if(!isDayListClicked) {
+                    int position = ((LinearLayoutManager) rcvGroupTripDetail.getLayoutManager())
+                            .findFirstVisibleItemPosition();
+                    for (int i = 0; i < dayList.size(); i++) {
+                        if (i != position) {
+                            TextView tmp = rcvDays.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tvDayRow);
+                            tmp.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+                        }
                     }
+                    TextView v = rcvDays.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.tvDayRow);
+                    v.setTextColor(Color.parseColor("#0faaae"));
                 }
-                TextView v = rcvDays.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.tvDayRow);
-                v.setTextColor(Color.parseColor("#0faaae"));
+                isDayListClicked = true;
             }
-
-
-
-
         });
 
     }
@@ -206,7 +205,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     }
     @Override
     public void onListClicked(int position) {
-//        rcvGroupTripDetailView.scrollToPosition(position);
+        isDayListClicked = true;
         LinearLayoutManager linear =  (LinearLayoutManager) rcvGroupTripDetail.getLayoutManager();
         assert linear != null;
         linear.scrollToPositionWithOffset(position,0);

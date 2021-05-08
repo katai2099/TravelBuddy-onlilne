@@ -315,6 +315,7 @@ public class InventoryFragment extends Fragment implements InventoryListViewAdap
                     else {
                         itemSize.setText(inventoryList.size() + " file");
                     }
+                    itemSize.setVisibility(View.VISIBLE);
                 }
                 inventoryAdapter.notifyDataSetChanged();
                 inventoryGridViewAdapter.notifyDataSetChanged();

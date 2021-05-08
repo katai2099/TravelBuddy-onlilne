@@ -44,12 +44,14 @@ public class InventoryGridViewAdapter extends RecyclerView.Adapter<InventoryGrid
 
     @Override
     public void onBindViewHolder(@NonNull final InventoryGridViewHolder holder, final int position) {
-
         Inventory currentInventory = inventoryList.get(position);
-
         holder.tvInventoryName.setText(currentInventory.getFileName());
+        holder.tvItemPermission.setText(currentInventory.getPermission());
         if(currentInventory.getOwner().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
             holder.tvInventoryName.setTextColor(Color.parseColor("#0faaae"));
+        else {
+            holder.tvInventoryName.setTextColor(Color.parseColor("#000000"));
+        }
         if(Helper.isPdf(currentInventory.getFileName())){
             holder.imgInventoryThumbnail.setImageResource(R.drawable.ic_baseline_picture_as_pdf_24);
         }
@@ -97,14 +99,15 @@ public class InventoryGridViewAdapter extends RecyclerView.Adapter<InventoryGrid
 
     class InventoryGridViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView imgInventoryThumbnail;
-        TextView tvInventoryName;
+        ImageView imgInventoryThumbnail ;
+        TextView tvInventoryName ,tvItemPermission;
         Button btnInventoryOption;
 
         public InventoryGridViewHolder(@NonNull View itemView) {
             super(itemView);
             imgInventoryThumbnail = itemView.findViewById(R.id.imgInventoryGridThumbnail);
             tvInventoryName = itemView.findViewById(R.id.tvInventoryGridName);
+            tvItemPermission = itemView.findViewById(R.id.tvItemPermission);
             btnInventoryOption = itemView.findViewById(R.id.btnInventoryGridOption);
             itemView.setOnClickListener(this);
         }

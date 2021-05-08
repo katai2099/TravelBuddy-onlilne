@@ -419,25 +419,6 @@ public class MapsFragment extends Fragment {
           }
       }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        Log.d(tag, "GET PERMISSION RESULT");
-//        switch (requestCode) {
-//            case 1:
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.d(tag, "PERMISSION GRANTED");
-//                    if (ContextCompat.checkSelfPermission(getContext(),
-//                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//                        Log.d(tag, "ACCESS_FIND_LOCATION GRANTED");
-//                        getDeviceLocation();
-//                        behaviorWhenLocationPermissionIsGiven(map);
-//                    }
-//                } else {
-//                    Log.d(tag, "PERMISSION DENIED");
-//                    behaviorWhenLocationPermissionIsNotGiven();
-//                }
-//        }
-//    }
 
     public void getDeviceLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -681,7 +662,7 @@ public class MapsFragment extends Fragment {
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 40, 230 );
-
+       //     locationButton.performClick();
         }
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);

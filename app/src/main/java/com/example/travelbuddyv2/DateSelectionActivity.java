@@ -193,17 +193,13 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
                     .child("td"+dateAndItsIdPair.get(dates.get(position)));
             destination.setDestinationStringID("td"+dateAndItsIdPair.get(dates.get(position)));
         }
-
         destination.setStartDate(dates.get(position));
-
         checkLatestEndTime(position,owner,userTripDetailNode);
-
     }
 
 
     @Override
     public void onListClicked(final int position) {
-
         if(isFromPersonalTrip){
             addTripDetailToDatabase(position,FirebaseAuth.getInstance().getCurrentUser().getUid());
         }
@@ -220,13 +216,12 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
     }
 
     private void checkLatestEndTime(final int position, String owner, final DatabaseReference userTripDetailNode){
-
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.bringToFront();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(owner)
                 .child(tripStringID)
                 .child(dates.get(position));
-
-
         reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
@@ -250,34 +245,33 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
                         }
                        cnt++;
                     }
-
                     Log.d(tag,lastDestination.toString());
                     destination.setStartTime(lastDestination.getEndTime());
                     destination.setEndTime(Helper.getNextThirtyMinute(lastDestination.getEndTime()));
-
                     //check for number Of extra Day in case destination took more than one day
-
-
                         int extraDayFromLastDestination = lastDestination.getExtraDay();
                         int endResult = Helper.calculateExtraDay(dates.get(position),lastDestination.getEndTime(),extraDayFromLastDestination);
                         endResult += extraDayFromLastDestination;
                         destination.setExtraDay(endResult);
-
                             userTripDetailNode.setValue(destination).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(DateSelectionActivity.this,"ADD SUCCESS",Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.GONE);
                                     goBackToMapFragment();
                                 }
                             });
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(DateSelectionActivity.this,getString(R.string.unexpectedBehavior),Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    public void setValueForDatabaseReference(DatabaseReference reference){
-
-    }
 
     @Override
     protected void onResume() {

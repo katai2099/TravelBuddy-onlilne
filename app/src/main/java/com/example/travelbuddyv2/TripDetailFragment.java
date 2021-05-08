@@ -41,6 +41,7 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
         ChildTripDetailAdapter.ChildTripDetailAdapterCallBack,
         ParentTripDetailAdapter.ParentTripDetailAdapterCallBack {
 
+    private boolean isDayListClicked = false;
     private final String tag = "TRIP_DETAIL_FRAGMENT" ;
     boolean firstLoad = true;
     List<TripSection> tripSectionList;
@@ -64,9 +65,6 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
         Bundle bundle = getArguments();
         if(bundle!=null){
             tripID = bundle.getString("TRIP_STRING_ID");
-           //  Toast.makeText(getContext(),bundle.getString("TRIP_STRING_ID"),Toast.LENGTH_SHORT).show();
-        }else{
-             Toast.makeText(getContext(),"NULL",Toast.LENGTH_SHORT).show();
         }
         tripSectionList = new ArrayList<>();
         rcvTripDetail = root.findViewById(R.id.rcvFragmentTripDetailList);
@@ -141,27 +139,27 @@ public class TripDetailFragment extends Fragment implements DayAdapter.DayAdapte
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                    int position = ((LinearLayoutManager)rcvTripDetail.getLayoutManager())
+                if(!isDayListClicked) {
+                    int position = ((LinearLayoutManager) rcvTripDetail.getLayoutManager())
                             .findFirstVisibleItemPosition();
-                   for(int i=0;i<dayList.size();i++){
-                       if(i!=position){
-                           TextView tmp = rcvDays.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tvDayRow);
-                           tmp.setTextColor(getResources().getColor(android.R.color.primary_text_light));
-                       }
-                   }
-                   TextView v = rcvDays.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.tvDayRow);
-                   v.setTextColor(Color.parseColor("#0faaae"));
+                    for (int i = 0; i < dayList.size(); i++) {
+                        if (i != position) {
+                            TextView tmp = rcvDays.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tvDayRow);
+                            tmp.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+                        }
+                    }
+                    TextView v = rcvDays.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.tvDayRow);
+                    v.setTextColor(Color.parseColor("#0faaae"));
+                }
+                isDayListClicked = false;
             }
-
-
-
-
         });
 
     }
 
     @Override
     public void onListClicked(int position) {
+        isDayListClicked = true;
         LinearLayoutManager linear =  (LinearLayoutManager)rcvTripDetail.getLayoutManager();
         assert linear != null;
         linear.scrollToPositionWithOffset(position,0);
