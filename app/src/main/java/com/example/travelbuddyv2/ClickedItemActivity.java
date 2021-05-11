@@ -27,8 +27,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+//this activity is called when user click on one of the item (to enlarge the file/image)
 public class ClickedItemActivity extends AppCompatActivity {
-
     Inventory itemInfoFromPreviousActivity;
     ImageView imgItemImage;
     TextView tvItemName;
@@ -45,8 +45,8 @@ public class ClickedItemActivity extends AppCompatActivity {
         currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         imgItemImage = findViewById(R.id.imgEnlargeImage);
         tvItemName = findViewById(R.id.tvEnlargeImageName);
-
         Bundle bundle = getIntent().getExtras();
+        //extra information from inventory fragment
         if(bundle!=null){
             itemInfoFromPreviousActivity.setOwner(bundle.getString("itemOwner"));
             itemInfoFromPreviousActivity.setFileName(bundle.getString("itemName"));
@@ -77,7 +77,6 @@ public class ClickedItemActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()){
             case R.id.optionEnlargeImageDelete:
                 deleteFile();
@@ -91,7 +90,6 @@ public class ClickedItemActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     private void deleteFile(){

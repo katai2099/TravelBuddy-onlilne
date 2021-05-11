@@ -42,6 +42,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.*;
 
+//this test required the running device to login using this credential
+//Email : kataix2@outlook.com
+//Password : Welcome1@
+
 @RunWith(AndroidJUnit4.class)
 public class addNewTripTest {
 
@@ -96,7 +100,6 @@ public class addNewTripTest {
             }
         });
         TimeUnit.SECONDS.sleep(2);
-
         onView(withId(R.id.optionSaveTrip)).perform(click());
         onView(withText("Start Date before EndDate")).inRoot(withDecorView(not(is(decorView))) ).check(matches(isDisplayed()));
     }
@@ -114,10 +117,8 @@ public class addNewTripTest {
                 endDate.setText("2021-02-03");
                 EditText tripName = activity.findViewById(R.id.etTripName);
                 tripName.setText("katai");
-
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trips")
                         .child("WFcvp08VpoS3MHdeRZXFojMtCUF3");
-
                 reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
@@ -130,9 +131,7 @@ public class addNewTripTest {
         });
 
         TimeUnit.SECONDS.sleep(4);
-
         onView(withId(R.id.optionSaveTrip)).perform(click());
-
         scenario.onActivity(new ActivityScenario.ActivityAction() {
             @Override
             public void perform(Activity activity) {
@@ -146,14 +145,11 @@ public class addNewTripTest {
                 });
             }
         });
-
         TimeUnit.SECONDS.sleep(3);
-
         assertEquals(cnt+1,afterAdded);
         Activity mainActivity = getInstrumentation().waitForMonitorWithTimeout(monitorMainActivity, 10000);
         assertNotNull(mainActivity);
         mainActivity.finish();
     }
-
 
 }

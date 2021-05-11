@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class DateSelectionActivity extends AppCompatActivity implements DateSelectionAdapter.DateSelectionAdapterCallBack {
 
     private final String tag ="DATE_SELECTION_ACTIVITY";
@@ -48,13 +49,11 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_date_selection);
-
         destination = new Destination();
         idList = new ArrayList<>();
         dateAndItsIdPair = new HashMap<>();
-
         Bundle bundle = getIntent().getExtras();
-
+        //extra information from tripSelection activity
         if(bundle!=null){
             tripStringID = bundle.getString("tripStringId");
             destination.setName(bundle.getString("googleMapPlaceName"));
@@ -64,18 +63,16 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
             destination.setAddress(bundle.getString("googleMapAddress"));
             isFromPersonalTrip = bundle.getBoolean("isFromPersonalTrip");
         }
-
+        //if user decided to add attraction to group trip, we will retrieve Owner's UUID so that we could store attraction there
         if(!isFromPersonalTrip){
             tripOwnerUUID = bundle.getString("tripOwnerUUID");
         }
-
         dates = new ArrayList<>();
         dateSelectionAdapter = new DateSelectionAdapter(dates,this);
         rcvDate = findViewById(R.id.rcvDateSelection);
         progressBar = findViewById(R.id.simpleProgressBar);
         rcvDate.setLayoutManager(new LinearLayoutManager(this));
         rcvDate.setAdapter(dateSelectionAdapter);
-
         if(isFromPersonalTrip){
             String userUUID=FirebaseAuth.getInstance().getCurrentUser().getUid();
             fillListWithDate(userUUID);
@@ -84,11 +81,9 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
             fillListWithDate(tripOwnerUUID);
             getEachDateLatestTripDetailID(tripOwnerUUID);
         }
-
-        Log.d(tag,"Oncreate " + dateAndItsIdPair.toString());
-
     }
 
+    //get date interval of the selected trip
     private void fillListWithDate(String owner){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(owner)
@@ -112,12 +107,11 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
         });
     }
 
+    //get latest destincationStringID of each date
     private void getEachDateLatestTripDetailID(String owner){
-
          DatabaseReference tripDetailStringID = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(owner)
                 .child(tripStringID);
-
          tripDetailStringID.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
              @Override
              public void onSuccess(DataSnapshot dataSnapshot) {
@@ -132,43 +126,32 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
                          dateAndItsIdPair.put(date.getKey(),size+1);
                      }
                  }
-                 Log.d(tag,"This is inside of one time GET()" + dateAndItsIdPair);
              }
          });
-
-
          tripDetailStringID.addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(@NonNull DataSnapshot snapshot) {
-                 //Log.d(tag,"This is called");
                  for(DataSnapshot date:snapshot.getChildren()){
-                     //Log.d(tag,"date from snapshot " + date.getKey());
                      idList.clear();
                      for(DataSnapshot id:date.getChildren()){
-                       //  Log.d(tag,"trip detail id from snapshot " + id.getKey());
                          idList.add(Helper.tripDetailStringIDToInt(id.getKey()));
                      }
                      if(idList.size()!=0) {
                          Collections.sort(idList);
                          int size = idList.get(idList.size() - 1);
-                     //    Log.d(tag,"latest trip detail ID is " + size);
                          dateAndItsIdPair.put(date.getKey(),size+1);
                      }
                  }
-                Log.d(tag,"This is inside on dataChange " + dateAndItsIdPair.toString());
              }
-
              @Override
              public void onCancelled(@NonNull DatabaseError error) {
 
              }
          });
-        Log.d(tag,"This is outside on dataChange " + dateAndItsIdPair.toString());
     }
 
+    //add destination to trip_detail node based on the selected date
     private void addTripDetailToDatabase(int position,String owner){
-
-
         Log.d(tag,"This is after user decide to add " + dateAndItsIdPair.toString());
 
         int latestID = dateAndItsIdPair.get(dates.get(position));
@@ -177,7 +160,6 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
 
         //to sort firebase database tripDetailID
         if(latestID<10 ){
-
             userTripDetailNode = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                     .child(owner)
                     .child(tripStringID)
@@ -215,6 +197,8 @@ public class DateSelectionActivity extends AppCompatActivity implements DateSele
         startActivity(i);
     }
 
+    //this is to check the latest end time of the selected date, in case this is the first attraction, it will be set to 8:00 by default
+    //otherwise we want to use the last attraction end time as a start time of the new attraction
     private void checkLatestEndTime(final int position, String owner, final DatabaseReference userTripDetailNode){
         progressBar.setVisibility(View.VISIBLE);
         progressBar.bringToFront();

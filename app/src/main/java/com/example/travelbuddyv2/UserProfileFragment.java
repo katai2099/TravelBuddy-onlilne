@@ -378,6 +378,7 @@ public class UserProfileFragment extends Fragment {
                                     if (currentMember.getID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                             && currentMember.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
                                         DatabaseReference toUpdate = member.getRef();
+                                        user.setName(newName);
                                         toUpdate.child("name").setValue(newName);
                                         break;
                                     }

@@ -15,6 +15,7 @@ public class alarmHandler {
         setRepeatingAlarm();
     }
 
+    //repeat the alarm when application is launched (in case alarm is killed by system)
     public void setRepeatingAlarm(){
         DatabaseHelper db = new DatabaseHelper(context);
         Intent intent = new Intent(context,ResetAlarmBroadcast.class);

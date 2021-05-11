@@ -51,7 +51,6 @@ public class GroupTripFragment extends Fragment implements GroupTripAdapter.Grou
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

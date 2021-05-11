@@ -13,17 +13,15 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.List;
 
+// this is an adapter that holds place image fetches from place api
 public class GoogleMapPhotoAdapter extends PagerAdapter {
-
 
     List<Bitmap> bitmapList ;
     Context context;
-
     public GoogleMapPhotoAdapter(Context context,List<Bitmap> bitmapList) {
         this.bitmapList = bitmapList;
         this.context = context;
     }
-
     @Override
     public int getCount() {
         return bitmapList.size();
@@ -45,7 +43,6 @@ public class GoogleMapPhotoAdapter extends PagerAdapter {
         imageView =  itemView.findViewById(R.id.googleImage);
         imageView.setImageBitmap(bitmapList.get(position));
         container.addView(itemView,0);
-
         return itemView;
     }
 

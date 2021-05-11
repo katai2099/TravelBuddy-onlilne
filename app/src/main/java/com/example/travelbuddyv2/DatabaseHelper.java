@@ -13,13 +13,12 @@ import com.example.travelbuddyv2.model.tripModel;
 import java.util.ArrayList;
 import java.util.List;
 
+//offline database is used to store pending notification (trip notification that has not been fired yet)
 public class DatabaseHelper extends SQLiteOpenHelper {
-
     private final String tripName = "TRIP_NAME";
     private final String tripStringID = "TRIP_STRING_ID";
     private final String tripStareDate = "START_DATE";
     private final String tripNotificationTable = "TRIP_NOTIFICATION" ;
-
     public DatabaseHelper(@Nullable Context context) {
         super(context, "Trip.db", null, 1);
     }
@@ -28,8 +27,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createUpcomingTripNotification = "CREATE TABLE TRIP_NOTIFICATION (ID INTEGER PRIMARY KEY AUTOINCREMENT, TRIP_NAME TEXT,TRIP_STRING_ID NAME,START_DATE TIME)";
         db.execSQL(createUpcomingTripNotification);
-
-
     }
 
     @Override
@@ -40,25 +37,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean addNewPendingNotification(String tripName,String tripStringID,String startDate){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-
         cv.put(this.tripName,tripName);
         cv.put(this.tripStringID,tripStringID);
         cv.put(this.tripStareDate,startDate);
-
         long insert = db.insert(tripNotificationTable,null,cv);
-
         return insert != -1;
     }
 
 
     public List<tripModel> getPendingNotificationList() {
         List<tripModel> returnlist = new ArrayList<>();
-
         String queryString = "SELECT * FROM " + tripNotificationTable;
         //get data from database
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null, null);
-
         if (cursor.moveToFirst()) {
             do {
                 String tmpTripName = cursor.getString(1);
@@ -70,18 +62,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         db.close();
-
         return returnlist;
     }
 
     public boolean deletePendingNotification(String tripStringID){
         SQLiteDatabase db = this.getWritableDatabase();
-
         String whereClause = this.tripStringID + " = ?";
         String [] whereArgs = new String[] {tripStringID};
-
         long res = db.delete(tripNotificationTable,whereClause,whereArgs);
-
         return res != -1;
     }
 
@@ -97,11 +85,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean deleteAllPendingNotification(){
         SQLiteDatabase db = this.getWritableDatabase();
-
         long res = db.delete(tripNotificationTable,null,null);
-
         return res != -1;
-
     }
 
 

@@ -38,7 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//store information of group trip, called when member click on the group
 public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayAdapterCallback,
         ParentGroupTripDetailAdapter.ParentGroupTripDetailAdapterCallback ,
         ChildTripDetailAdapter.ChildTripDetailAdapterCallBack {
@@ -55,28 +55,23 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
     View updatingText;
     ProgressBar progressBar,updatingProgressBar;
     int updatingDestinationSize, updatingCurrentPosition;
+    //variable to check if any data is being updated
     boolean isUpdate = false;
-
+    //variable to check if current member has permission to edit the trip
     private boolean hasPermission = false;
-
-   // private GroupTripAdapter.AdapterCallBack adapterCallBack;
 
     public GroupTripDetailFragment() {
         // Required empty public constructor
-
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         Bundle bundle = getArguments();
         if(bundle!=null){
             tripID = bundle.getString("TRIP_STRING_ID");
@@ -84,6 +79,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         }else{
             Log.d(tag,"NULL");
         }
+        //first we add value evenet listener to check if current member has permission to edit or not
         checkUserPermission();
         View root = inflater.inflate(R.layout.fragment_group_trip_detail, container, false);
         tripSectionList = new ArrayList<>();
@@ -92,7 +88,6 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcvGroupTripDetail.setLayoutManager(layoutManager);
         rcvGroupTripDetail.setAdapter(parentGroupTripDetailAdapter);
-        //
         dayList = new ArrayList<>();
         rcvDays = root.findViewById(R.id.rcvFragmentGroupTripDetailToSelectedList);
         rcvDays.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
@@ -106,6 +101,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         return root;
     }
 
+    //onScroll listener is used to change the color text in daylist adapter based on current scroll position
     private void registerOnScrollListener(){
         rcvGroupTripDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -123,13 +119,13 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
                     TextView v = rcvDays.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.tvDayRow);
                     v.setTextColor(Color.parseColor("#0faaae"));
                 }
-                isDayListClicked = true;
+                isDayListClicked = false;
             }
         });
 
     }
 
-
+    //initialize data on the list
     private void fillDateInterval(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trip_detail")
                 .child(tripOwner)
@@ -153,7 +149,6 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
                     //Add to tripSection
                     TripSection tripSection = new TripSection(tmp,tmpDestination);
                     tripSectionList.add(tripSection);
-
                     //add to DayList
                     String day = "Day " + (dayCount+1);
                     dayList.add(day);
@@ -203,6 +198,8 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
             }
         });
     }
+
+    //we change the text color of daylist adapter when user click on them
     @Override
     public void onListClicked(int position) {
         isDayListClicked = true;
@@ -219,6 +216,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         v.setTextColor(Color.parseColor("#0faaae"));
     }
 
+    // move maps activity when user click on attraction button
     @Override
     public void addNewAttractionClicked(int position) {
         Intent i = new Intent(getContext(),MapsActivity.class);
@@ -229,6 +227,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         startActivity(i);
     }
 
+    //display timepicker dialog when user click on start time button
     @Override
     public void changeStartTimeClicked(final int position) {
         if(hasPermission) {
@@ -256,6 +255,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         }
     }
 
+    //remove the attraction from trip detail node
     @Override
     public void onDeleteDestinationClick(final String date, String destinationStringID) {
         if(hasPermission){
@@ -290,6 +290,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         }
     }
 
+    //remove the attraction from the list and update current date attraction list (extra day,start date,end date)
     @Override
     public void onDeleteDestinationClicked(String date, String destinationStringID, int position) {
         if(hasPermission) {
@@ -304,6 +305,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
                 Destination deletedOne = destinationsOfCurrentDateReplica.get(position);
                 boolean updateTheRest = false;
                 onDeleteDestinationClick(date, destinationStringID);
+                // if there are two attraction in list, after delete the first one we have to update second one data
                 if (destinationsOfCurrentDateReplica.size() != 1 && position != destinationsOfCurrentDateReplica.size() - 1) {
                     isUpdate = true;
                     updatingProgressBar.setVisibility(View.VISIBLE);
@@ -321,6 +323,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
                     updateToFirebaseAfterPeriodChanged(toUpdateDestination);
                     updateTheRest = true;
                 }
+                //in case there are more than 2 attractions in the list we have to update them all
                 if (updateTheRest && destinationsOfCurrentDateReplica.size() != 2) {
                     for (int i = position + 2; i < destinationsOfCurrentDateReplica.size(); i++) {
                         Destination lastDestination = destinationsOfCurrentDateReplica.get(i - 1);
@@ -354,6 +357,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         return destinations;
     }
 
+    //display timepicker dialog when user click on clock icon
     @Override
     public void onDurationEditingClicked(final int position, final String curDate) {
         if(hasPermission) {
@@ -371,7 +375,6 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
                             updatingProgressBar.setVisibility(View.VISIBLE);
                             updatingProgressBar.bringToFront();
                         }
-
                     }
                 }, hour, min, true);
                 timePickerDialog.setTitle("Modify stay period");
@@ -392,7 +395,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         startActivity(i);
     }
 
-
+    //change stay period of the destination based on user picked time
     private void changeStayPeriodOfDestination(int hour, int minute, int position,String currentDate){
         isUpdate = true;
         List<Destination> destinations = new ArrayList<>();
@@ -424,6 +427,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         }
     }
 
+    //we want to sync the current destination with firebase database after its value has been updated
     private void updateToFirebaseAfterPeriodChanged(Destination destination){
         final int size = updatingDestinationSize-1;
         final int currentPos = updatingCurrentPosition;
@@ -453,6 +457,7 @@ public class GroupTripDetailFragment extends Fragment implements DayAdapter.DayA
         });
     }
 
+    // reset start time of current date trip_detail (update all destination start time , end time, extra day)
     private void resetStartTimeOfCurrentDate(int position,int hourOfDay,int minute){
         isUpdate = true;
         List<Destination> currentDestinationsOfThisDate = tripSectionList.get(position).getDestinations();

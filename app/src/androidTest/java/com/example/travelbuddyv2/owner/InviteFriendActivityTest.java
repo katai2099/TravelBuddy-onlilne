@@ -16,7 +16,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.travelbuddyv2.InviteFriendActivity;
 import com.example.travelbuddyv2.R;
 import com.example.travelbuddyv2.networkManager.NetworkObserver;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,6 +40,10 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.*;
 import static org.mockito.asm.tree.InsnList.check;
 
+//this test required the running device to login using this credential
+//Email : kataix2@outlook.com
+//Password : Welcome1@
+
 @RunWith(AndroidJUnit4.class)
 public class InviteFriendActivityTest {
 
@@ -55,15 +58,12 @@ public class InviteFriendActivityTest {
 
     ActivityScenario scenario;
     View decorView;
-    FirebaseAuth auth;
     @Rule
     public ActivityScenarioRule inviteFriendActivityRule = new ActivityScenarioRule<InviteFriendActivity>(intent);
 
     @Before
     public void setUp() throws Exception {
         NetworkObserver.isNetworkConnected=true;
-        auth = FirebaseAuth.getInstance();
-        auth.signInWithEmailAndPassword("kataix2@outlook.com","Welcome1@");
         scenario = inviteFriendActivityRule.getScenario();
         inviteFriendActivityRule.getScenario().onActivity(new ActivityScenario.ActivityAction() {
             @Override
@@ -116,6 +116,7 @@ public class InviteFriendActivityTest {
             }
         }) ;
     }
+    //ohayokatai@gmail.com has to be removed from known_list first in order for it to work
     @Test
     public void validEmailAndClickOnInviteButton() throws Exception{
         onView(withId(R.id.etFindFriendByEmail)).perform(typeText("ohayokatai@gmail.com"));

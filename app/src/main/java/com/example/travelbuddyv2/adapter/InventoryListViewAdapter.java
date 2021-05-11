@@ -67,7 +67,6 @@ public class InventoryListViewAdapter extends RecyclerView.Adapter <InventoryLis
         }
         holder.tvItemPermission.setText(currentInventory.getPermission());
 
-
         holder.btnInventoryOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

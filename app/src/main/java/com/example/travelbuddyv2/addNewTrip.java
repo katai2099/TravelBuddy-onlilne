@@ -85,7 +85,6 @@ public class addNewTrip extends AppCompatActivity {
         startDate.setInputType(InputType.TYPE_NULL);
         endDate = findViewById(R.id.etArrivalDate);
         endDate.setInputType(InputType.TYPE_NULL);
-      //  btnSave = findViewById(R.id.btnSaveTrip);
         tripName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -99,7 +98,6 @@ public class addNewTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tripName.clearFocus();
-             //   setAlarmTime.clearFocus();
                 calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -131,7 +129,6 @@ public class addNewTrip extends AppCompatActivity {
                     },year,month,date);
                 }
                 Calendar tmpcal = Calendar.getInstance();
-                // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
                 datePickerDialogStartDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
                 datePickerDialogStartDate.show();
             }
@@ -184,7 +181,6 @@ public class addNewTrip extends AppCompatActivity {
                     }, year, month, date);
                 }
                     Calendar tmpcal = Calendar.getInstance();
-                // comment here is meant for debugging purpose (notification) , uncomment to deploy the app
                     datePickerDialogEndDate.getDatePicker().setMinDate(tmpcal.getTimeInMillis());
                 datePickerDialogEndDate.show();
             }
@@ -214,6 +210,7 @@ public class addNewTrip extends AppCompatActivity {
             Toast.makeText(addNewTrip.this,"Start Date before EndDate",Toast.LENGTH_SHORT).show();
         }
         else {
+            //disable save button until trip is done/fail saving
             save.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
             final tripModel tmpTripModel = new tripModel();
@@ -265,6 +262,7 @@ public class addNewTrip extends AppCompatActivity {
         }
     }
 
+    // subscribe user to upcoming trip notification node so that after alarm fired, the application will get device token(s) from this node
     private void subscribeToUpcomingTripNotification(final String tripStringID){
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
@@ -278,6 +276,7 @@ public class addNewTrip extends AppCompatActivity {
         });
     }
 
+    //we called this function to get the current user information. We need this information to store them into member node
     private void getCurrentUserInfo() {
         currentUserInfo = new User();
         DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("User")
@@ -304,7 +303,7 @@ public class addNewTrip extends AppCompatActivity {
     }
 
 
-
+    //set alarm time so that when upcoming trip is approching the alarm will fired and FCM will send push notification to each device whose in the group
     public void setNotificationTime(tripModel passingData)
     {
         Intent intent = new Intent(addNewTrip.this,ReminderBroadcast.class);
@@ -324,7 +323,7 @@ public class addNewTrip extends AppCompatActivity {
     }
 
 
-
+    //get current trip ID of current user in Trips node
     private void getCurrentIdFromFirebaseDatabase(){
         tmp = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
@@ -351,6 +350,7 @@ public class addNewTrip extends AppCompatActivity {
         });
     }
 
+    //date interval between start date and end date
     private List<String> getDateInterval(String startDate , String endDate)  {
         SimpleDateFormat simpleDateFormat;
         Date start , end ;
@@ -383,6 +383,7 @@ public class addNewTrip extends AppCompatActivity {
         return listOfdate;
     }
 
+    //when trip is created, the owner will be added to member node to keep track of number of member
     private void addOwnerToMemberNode(final int id){
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Member")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())

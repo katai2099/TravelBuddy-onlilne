@@ -18,10 +18,9 @@ import android.view.View;
 
 import com.example.travelbuddyv2.ui.main.SectionsPagerAdapter;
 
+//Group trip detail Activity as a tabbed activity holding two fragment, groupTripDetail Fragment and inventory Fragment.
 public class GroupTripDetailActivity extends AppCompatActivity {
-
     private final String tag = "GROUP_DETAIL_ACTIVITY";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +35,5 @@ public class GroupTripDetailActivity extends AppCompatActivity {
         viewPager.setAdapter(groupSectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-
-
     }
 }

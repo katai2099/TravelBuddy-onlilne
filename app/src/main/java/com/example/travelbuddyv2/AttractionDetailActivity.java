@@ -80,6 +80,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+//this activity is used to display the information of Google Maps place based on the provided placeID in bundle
 public class AttractionDetailActivity extends FragmentActivity implements OnMapReadyCallback {
     private final String tag = "MAP_ACTIVITY";
     List<Bitmap> bitmapList;
@@ -162,18 +163,10 @@ public class AttractionDetailActivity extends FragmentActivity implements OnMapR
         mapView = mapFragment.getView();
         mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             ActivityCompat.requestPermissions(AttractionDetailActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }else{
             behaviorWhenLocationPermissionIsGiven(googleMap);
         }
-
     }
 
     @Override
@@ -198,16 +191,7 @@ public class AttractionDetailActivity extends FragmentActivity implements OnMapR
 
     public void getDeviceLocation() {
         if (ActivityCompat.checkSelfPermission(AttractionDetailActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AttractionDetailActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-
             ActivityCompat.requestPermissions(AttractionDetailActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
         }else{
             fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
