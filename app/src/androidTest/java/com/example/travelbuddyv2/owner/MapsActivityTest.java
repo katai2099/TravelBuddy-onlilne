@@ -105,7 +105,8 @@ public class MapsActivityTest {
         onView(ViewMatchers.withId(R.id.btnSearchForAttraction)).perform(click());
         UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
         UiObject marker = mDevice.findObject(new UiSelector()
-                .descriptionContains("Lao Textile Museum"));
+        .descriptionContains("Google Map")
+        .childSelector(new UiSelector().instance(0)));
 
         marker.click();
         try {
@@ -151,14 +152,16 @@ public class MapsActivityTest {
 
     }
 
-    //this will kill activity. On real device it would go back to tripDetailActivity, but for testing it would kill the app because it could not go back
+    //this will kill activity. On real device it would go back to tripDetailActivity,
+    // but for testing it would kill the app because it could not go back
     @Test
     public void clickOnAddAttractionButton() throws Exception{
         onView(withId(R.id.btnSearchForAttraction)).perform(click());
 
-        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
-        UiObject marker = uiDevice.findObject(new UiSelector()
-                .descriptionContains("Lao Textile Museum"));
+        UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
+        UiObject marker = mDevice.findObject(new UiSelector()
+                .descriptionContains("Google Map")
+                .childSelector(new UiSelector().instance(0)));
         marker.click();
 
         try {

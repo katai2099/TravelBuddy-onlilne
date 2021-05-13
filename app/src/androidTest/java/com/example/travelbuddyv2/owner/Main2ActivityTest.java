@@ -364,7 +364,6 @@ public class Main2ActivityTest {
     public void confirmDeleteTrip() throws Exception{
 
         TimeUnit.SECONDS.sleep(4);
-
         scenario.onActivity(new ActivityScenario.ActivityAction() {
             @Override
             public void perform(Activity activity) {
