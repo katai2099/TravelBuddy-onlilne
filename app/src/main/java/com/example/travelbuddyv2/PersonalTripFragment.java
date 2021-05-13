@@ -205,7 +205,12 @@ public class PersonalTripFragment extends Fragment implements TripAdapter.TripAd
         final DatabaseReference tripNodeReference = FirebaseDatabase.getInstance().getReference().child("Trips")
                 .child(userUUID)
                 .child(currentTrip.getStringID());
-        tripNodeReference.removeValue();
+        tripNodeReference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(),"Delete Success",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void removeFromGroupNode(final tripModel currentTrip){
