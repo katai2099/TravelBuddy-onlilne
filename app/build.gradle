@@ -5,6 +5,10 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.example.travelbuddyv2"
@@ -85,9 +89,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     implementation 'com.squareup.picasso:picasso:2.8'
-    //github.com/umano/AndroidSlidingUpPanel
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
     implementation platform('com.google.firebase:firebase-bom:26.4.0')
